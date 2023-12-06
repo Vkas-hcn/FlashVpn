@@ -58,10 +58,7 @@ object FlashLoadBackAd {
 
                 override fun onAdDismissedFullScreenContent() {
                     Log.d(logTagFlash, "关闭back插屏广告=")
-                    if (!BaseAppFlash.isHotStart) {
-                        closeWindowFun()
-                        BaseAppFlash.isHotStart = false
-                    }
+                    closeWindowFun()
                     adBase.appAdDataFlash = null
                     adBase.whetherToShowFlash = false
                 }

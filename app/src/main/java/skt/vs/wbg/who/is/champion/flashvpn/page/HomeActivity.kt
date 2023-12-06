@@ -7,7 +7,9 @@ import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import skt.vs.wbg.who.`is`.champion.flashvpn.R
+import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadConnectAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseActivityFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.MainViewModel
@@ -70,10 +72,11 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
     }
 
     //存储扰流数据
-    fun storeSpoilerData(){
+    fun storeSpoilerData() {
         val data = BaseAppUtils.spoilerOrNot()
         BaseAppFlash.mmkvFlash.putBoolean("raoliu", data)
     }
+
     override fun onPause() {
         super.onPause()
         mainViewModel.stopToConnectOrDisConnect()

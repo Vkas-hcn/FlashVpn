@@ -44,7 +44,7 @@ object BaseAppUtils {
     //本地买量数据
     const val local_purchase_data = """
         {
-    "onLleav": 1,
+    "onLleav": 2,
     "onLeate": 2,
     "onLmill": 2,
     "onLage": 2,
@@ -57,8 +57,8 @@ object BaseAppUtils {
     const val local_ad_logic = """
 {
     "onLmatt": "2",
-    "onLprob": "1",
-    "onLfeli": "1"
+    "onLprob": "2",
+    "onLfeli": "2"
 }    """
     fun initApp(application: Application) {
         val myPid = Process.myPid()

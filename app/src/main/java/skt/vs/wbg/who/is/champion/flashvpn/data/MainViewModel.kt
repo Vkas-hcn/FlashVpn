@@ -40,11 +40,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import skt.vs.wbg.who.`is`.champion.flashvpn.R
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadConnectAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadHomeAd
@@ -89,6 +91,7 @@ class MainViewModel : ViewModel() {
     var showConnectLive = MutableLiveData<Boolean>()
     private var showConnectJob: Job? = null
     private var isClickConnect = false
+
     enum class OpenServiceState { CONNECTING, CONNECTED, DISCONNECTING, DISCONNECTED }
 
     fun init(
@@ -151,12 +154,14 @@ class MainViewModel : ViewModel() {
                     }
 
                     OpenServiceState.CONNECTED -> {
-                        setViewEnabled(true)
-                        stopConnectAnimation()
-                        setChromometer()
-                        if(isClickConnect){
+
+                        if (isClickConnect && it.lifecycle.currentState == Lifecycle.State.RESUMED) {
                             showConnectLive.postValue(true)
                             isClickConnect = false
+                        } else {
+                            setViewEnabled(true)
+                            stopConnectAnimation()
+                            setChromometer()
                         }
                     }
 
@@ -165,12 +170,14 @@ class MainViewModel : ViewModel() {
                     }
 
                     OpenServiceState.DISCONNECTED -> {
-                        setViewEnabled(true)
-                        stopConnectAnimation()
-                        setChromometer()
-                        if(isClickConnect){
+
+                        if (isClickConnect && !isFailConnect && it.lifecycle.currentState == Lifecycle.State.RESUMED) {
                             showConnectLive.postValue(false)
                             isClickConnect = false
+                        } else {
+                            setViewEnabled(true)
+                            stopConnectAnimation()
+                            setChromometer()
                         }
                     }
 
@@ -308,6 +315,10 @@ class MainViewModel : ViewModel() {
 
     private fun toEndAc() {
         activity.get()?.let {
+            if (BaseAppFlash.isHotStart) {
+                BaseAppFlash.isHotStart = false
+                return
+            }
             val intent = Intent(it, EndActivity::class.java)
             intent.putExtra(
                 "IS_CONNECT", curServerState == "CONNECTED"
@@ -339,12 +350,14 @@ class MainViewModel : ViewModel() {
                     openServerState.postValue(OpenServiceState.DISCONNECTED)
                     mService?.disconnect()
                     cancelConnect = true
-//                    Log.e("open vpn", "Connect cancel")
+                    Log.e(logTagFlash, "Connect cancel----1")
                 }
 
                 OpenServiceState.DISCONNECTING -> {
                     userInterrupt = true
                     openServerState.postValue(OpenServiceState.CONNECTED)
+                    Log.e(logTagFlash, "Connect cancel-----2")
+
                 }
 
                 else -> {}
@@ -376,6 +389,7 @@ class MainViewModel : ViewModel() {
     private fun toConnectOrDisConnect() {
         activity.get()?.let {
             toAction = true
+            BaseAppFlash.isHotStart = false
             cancelConnect = false
             when (openServerState.value) {
                 OpenServiceState.CONNECTED -> {
@@ -467,9 +481,12 @@ class MainViewModel : ViewModel() {
     }
 
     fun showConnecetNextFun(activity: HomeActivity, isConnect: Boolean) {
-        Log.e(logTagFlash, "showConnecetNextFun: ", )
+        Log.e(logTagFlash, "showConnecetNextFun: ")
         showConnectAd(activity) {
             activity.let { it1 ->
+                setViewEnabled(true)
+                stopConnectAnimation()
+                setChromometer()
                 if (isConnect) {
                     toEndAc()
                 } else {
@@ -495,6 +512,7 @@ class MainViewModel : ViewModel() {
                     Log.d(logTagFlash, "连接成功: ")
                     userInterrupt = false
                     isClickConnect = true
+                    isFailConnect = false
                     openServerState.postValue(OpenServiceState.CONNECTED)
                 }
 
@@ -525,7 +543,7 @@ class MainViewModel : ViewModel() {
 
     }
     var cancelConnect = false
-
+    var isFailConnect = false
     fun openVTool(context: Context, server: IOpenVPNAPIService): Job? {
         activity.get()?.let { ac ->
             if (checkVPNPermission(ac)) {
@@ -558,6 +576,7 @@ class MainViewModel : ViewModel() {
                             server.startVPN(config.toString())
                             delay(12000)
                             if (curServerState != "CONNECTED" && ac.canJump) {
+                                isFailConnect = true
                                 cancelConnect = true
                                 stopToConnectOrDisConnect()
                                 Looper.prepare()
@@ -613,26 +632,33 @@ class MainViewModel : ViewModel() {
             if (adConnectData == null) {
                 BaseAd.getConnectInstance().advertisementLoadingFlash(activity)
             }
-            delay(1000)
-            while (isActive) {
-                when (FlashLoadConnectAd.displayConnectAdvertisementFlash(
-                    activity,
-                    closeWindowFun = {
-                        BaseAd.getConnectInstance().advertisementLoadingFlash(activity)
-                        nextFun()
-                    })) {
-                    2 -> {
-                        cancel()
-                        showConnectJob = null
-                    }
+            try {
+                withTimeout(8000) {
+                    while (isActive) {
+                        when (FlashLoadConnectAd.displayConnectAdvertisementFlash(
+                            activity,
+                            closeWindowFun = {
+                                BaseAd.getConnectInstance().advertisementLoadingFlash(activity)
+                                nextFun()
+                            })) {
+                            2 -> {
+                                cancel()
+                                showConnectJob = null
+                            }
 
-                    0 -> {
-                        cancel()
-                        nextFun()
-                        showConnectJob = null
+                            0 -> {
+                                cancel()
+                                nextFun()
+                                showConnectJob = null
+                            }
+                        }
+                        delay(500)
                     }
                 }
-                delay(500)
+            } catch (e: TimeoutCancellationException) {
+                showConnectJob?.cancel()
+                nextFun()
+                showConnectJob = null
             }
         }
     }

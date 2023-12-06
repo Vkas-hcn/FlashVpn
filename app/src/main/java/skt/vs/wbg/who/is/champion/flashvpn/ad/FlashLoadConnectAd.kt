@@ -58,11 +58,9 @@ object FlashLoadConnectAd {
                 }
 
                 override fun onAdDismissedFullScreenContent() {
-                    Log.d(logTagFlash, "关闭connect插屏广告=${BaseAppFlash.isFlashAppBackGround}")
-                    if(!BaseAppFlash.isHotStart){
+                    Log.d(logTagFlash, "关闭connect插屏广告=${BaseAppFlash.isHotStart}")
                         closeWindowFun()
-                        BaseAppFlash.isHotStart = false
-                    }
+
                     adBase.appAdDataFlash = null
                     adBase.whetherToShowFlash = false
                 }
