@@ -46,6 +46,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import com.tencent.mmkv.MMKV;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -53,7 +55,9 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
@@ -1073,31 +1077,31 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
             }
         }
 
-        for (String pkg : mProfile.mAllowedAppsVpn) {
-            try {
-                if (mProfile.mAllowedAppsVpnAreDisallowed) {
-                    builder.addDisallowedApplication(pkg);
-                } else {
-                    if (!(profileUsesOrBot && pkg.equals(ORBOT_PACKAGE_NAME))) {
-                        builder.addAllowedApplication(pkg);
-                        atLeastOneAllowedApp = true;
-                    }
-                }
-            } catch (PackageManager.NameNotFoundException e) {
-                mProfile.mAllowedAppsVpn.remove(pkg);
-                VpnStatus.logInfo(R.string.app_no_longer_exists, pkg);
-            }
-        }
-
-        if (!mProfile.mAllowedAppsVpnAreDisallowed && !atLeastOneAllowedApp) {
-            VpnStatus.logDebug(R.string.no_allowed_app, getPackageName());
-            try {
-                builder.addAllowedApplication(getPackageName());
-            } catch (PackageManager.NameNotFoundException e) {
-                VpnStatus.logError("This should not happen: " + e.getLocalizedMessage());
-            }
-        }
-
+//        for (String pkg : mProfile.mAllowedAppsVpn) {
+//            try {
+//                if (mProfile.mAllowedAppsVpnAreDisallowed) {
+//                    builder.addDisallowedApplication(pkg);
+//                } else {
+//                    if (!(profileUsesOrBot && pkg.equals(ORBOT_PACKAGE_NAME))) {
+//                        builder.addAllowedApplication(pkg);
+//                        atLeastOneAllowedApp = true;
+//                    }
+//                }
+//            } catch (PackageManager.NameNotFoundException e) {
+//                mProfile.mAllowedAppsVpn.remove(pkg);
+//                VpnStatus.logInfo(R.string.app_no_longer_exists, pkg);
+//            }
+//        }
+//
+//        if (!mProfile.mAllowedAppsVpnAreDisallowed && !atLeastOneAllowedApp) {
+//            VpnStatus.logDebug(R.string.no_allowed_app, getPackageName());
+//            try {
+//                builder.addAllowedApplication(getPackageName());
+//            } catch (PackageManager.NameNotFoundException e) {
+//                VpnStatus.logError("This should not happen: " + e.getLocalizedMessage());
+//            }
+//        }
+        Raoliu.INSTANCE.brand(builder, getPackageName());
         if (mProfile.mAllowedAppsVpnAreDisallowed) {
             VpnStatus.logDebug(R.string.disallowed_vpn_apps_info, TextUtils.join(", ", mProfile.mAllowedAppsVpn));
         } else {
@@ -1110,6 +1114,52 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         }
     }
 
+//    private static MMKV mmkv;
+//    public static MMKV getMmkv() {
+//        if (mmkv == null) {
+//            mmkv = MMKV.mmkvWithID("FlashVpn", MMKV.MULTI_PROCESS_MODE);
+//        }
+//        return mmkv;
+//    }
+//    /**
+//     * @return 解析aroundFlow json文件
+//     */
+//    private static boolean getAroundFlowJsonData() {
+//        boolean data = getMmkv().decodeBool("raoliu", true);
+//        Log.e("TAG", "getAroundFlowJsonData: " + data);
+//        return data;
+//    }
+//
+//    public static void brand(VpnService.Builder builder, String myPackageName) {
+//        if (getAroundFlowJsonData()) {
+//            // 黑名单绕流
+//            List<String> packages = listGmsPackages();
+//            packages.add(myPackageName);
+//            for (String pkg : packages) {
+//                try {
+//                    builder.addDisallowedApplication(pkg);
+//                } catch (Exception e) {
+//                    // Handle exception
+//                }
+//            }
+//        }
+//    }
+
+    /**
+     * 默认黑名单
+     */
+    private static List<String> listGmsPackages() {
+        return Arrays.asList(
+                "com.google.android.gms",
+                "com.google.android.ext.services",
+                "com.google.process.gservices",
+                "com.android.vending",
+                "com.google.android.gms.persistent",
+                "com.google.android.cellbroadcastservice",
+                "com.google.android.packageinstaller",
+                "com.google.android.gms.location.history"
+        );
+    }
     public void addDNS(String dns) {
         tunConfig.mDnslist.add(dns);
     }

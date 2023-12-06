@@ -2,8 +2,13 @@ package skt.vs.wbg.who.`is`.champion.flashvpn.page
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.KeyEvent
+import androidx.activity.viewModels
 import skt.vs.wbg.who.`is`.champion.flashvpn.R
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseActivityFlash
+import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.data.EndViewModel
+import skt.vs.wbg.who.`is`.champion.flashvpn.data.MainViewModel
 import skt.vs.wbg.who.`is`.champion.flashvpn.databinding.ConnectedLayoutBinding
 
 class EndActivity : BaseActivityFlash<ConnectedLayoutBinding>() {
@@ -14,12 +19,14 @@ class EndActivity : BaseActivityFlash<ConnectedLayoutBinding>() {
         set(value) {}
     private var isConnected = false
 
+    private val endViewModel: EndViewModel by viewModels()
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isConnected = intent.getBooleanExtra("IS_CONNECT", false)
-        mBinding.back.setOnClickListener { finish() }
+        mBinding.back.setOnClickListener { endViewModel.showEndScAd(this) }
+        BaseAd.getBackInstance().advertisementLoadingFlash(this)
         val data: LocaleProfile
         if (VPNDataHelper.cachePosition != -1) {
             data = VPNDataHelper.allLocaleProfiles[VPNDataHelper.cachePosition]
@@ -50,5 +57,12 @@ class EndActivity : BaseActivityFlash<ConnectedLayoutBinding>() {
 
     override fun onResume() {
         super.onResume()
+        endViewModel.showEndAd(this)
+    }
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            endViewModel.showEndScAd(this)
+        }
+        return true
     }
 }

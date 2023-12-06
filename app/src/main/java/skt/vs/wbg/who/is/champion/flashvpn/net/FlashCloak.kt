@@ -26,6 +26,7 @@ import retrofit2.http.Query
 import skt.vs.wbg.who.`is`.champion.flashvpn.BuildConfig
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.SPUtils
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 import java.io.IOException
 import java.lang.reflect.Type
 import java.util.concurrent.TimeUnit
@@ -142,6 +143,7 @@ open class FlashCloak {
                     call.enqueue(object : Callback<String> {
                         override fun onResponse(call: Call<String>, response: Response<String>) {
                             if (response.isSuccessful) {
+                                Log.e(logTagFlash, "黑名单:${response.body().toString()} ")
                                 when (response.body().toString()) {
                                     "surgery" -> {
                                         SPUtils.getInstance().put(IS_HAVE_GET_CLOAK, true)

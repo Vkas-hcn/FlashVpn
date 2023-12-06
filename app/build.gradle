@@ -3,12 +3,12 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     //    id 'com.google.firebase.crashlytics'
     //    id 'com.google.gms.google-services'
-//    id 'stringfog'
+    id 'stringfog'
 }
-//stringfog {
-//    implementation 'com.github.megatronking.stringfog.xor.StringFogImpl'
-//    fogPackages = ['skt.vs.wbg.who.is.champion.flashvpn']
-//}
+stringfog {
+    implementation 'com.github.megatronking.stringfog.xor.StringFogImpl'
+    fogPackages = ['skt.vs.wbg.who.is.champion.flashvpn']
+}
 
 android {
     namespace 'skt.vs.wbg.who.is.champion.flashvpn'
@@ -18,15 +18,21 @@ android {
         applicationId "skt.vs.wbg.who.is.champion.flashvpn"
         minSdk 24
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
         release {
             minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

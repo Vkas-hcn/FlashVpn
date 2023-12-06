@@ -3,13 +3,16 @@ package skt.vs.wbg.who.`is`.champion.flashvpn.page
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import skt.vs.wbg.who.`is`.champion.flashvpn.R
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseActivityFlash
+import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.MainViewModel
 import skt.vs.wbg.who.`is`.champion.flashvpn.databinding.MainLayoutBinding
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 
 class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
 
@@ -45,7 +48,16 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
         mBinding.guideMask.setOnTouchListener { _, _ ->
             return@setOnTouchListener true
         }
-
+        mainViewModel.showConnectLive.observe(this) {
+            mainViewModel.showConnecetNextFun(this, it)
+        }
+        if (!BaseAppUtils.blockAdUsers()) {
+            Log.d(BaseAppUtils.logTagFlash, "根据买量屏蔽Home广告。。。")
+            mBinding.showAd = 2
+        } else {
+            mBinding.showAd = 0
+        }
+        storeSpoilerData()
     }
 
     var isShowGuide = true
@@ -57,7 +69,11 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
         mBinding.guideMask.isVisible = false
     }
 
-
+    //存储扰流数据
+    fun storeSpoilerData(){
+        val data = BaseAppUtils.spoilerOrNot()
+        BaseAppFlash.mmkvFlash.putBoolean("raoliu", data)
+    }
     override fun onPause() {
         super.onPause()
         mainViewModel.stopToConnectOrDisConnect()
@@ -66,6 +82,8 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
     override fun onResume() {
         super.onResume()
         mainViewModel.activityResume()
+        mainViewModel.showHomeAd(this)
+
     }
 
     override fun onDestroy() {

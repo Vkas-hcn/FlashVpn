@@ -7,3 +7,4 @@ data class FlashAdBean(
     val onLnose: String,
     val onLmemor: String,
 )
+

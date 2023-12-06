@@ -45,7 +45,6 @@ object IPUtils {
         return builder.connectTimeout(10, TimeUnit.SECONDS).writeTimeout(10, TimeUnit.SECONDS)
             .addNetworkInterceptor(netInterceptor).readTimeout(30, TimeUnit.SECONDS)
             .retryOnConnectionFailure(true).build()
-
     }
 
     fun checkIp(activity: BaseActivityFlash<*>) {

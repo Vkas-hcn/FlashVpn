@@ -20,6 +20,8 @@ import android.os.strictmode.Violation;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import com.tencent.mmkv.MMKV;
+
 import java.util.concurrent.Executors;
 
 import de.blinkt.openvpn.BuildConfig;
@@ -31,10 +33,11 @@ public class ICSOpenVPNApplication extends Application {
 
     @Override
     public void onCreate() {
+        MMKV.initialize(this);
         if (BuildConfig.BUILD_TYPE.equals("debug"))
             enableStrictModes();
 
-        if("robolectric".equals(Build.FINGERPRINT))
+        if ("robolectric".equals(Build.FINGERPRINT))
             return;
 
         LocaleHelper.setDesiredLocale(this);
@@ -57,7 +60,6 @@ public class ICSOpenVPNApplication extends Application {
         StrictMode.ThreadPolicy.Builder tpbuilder = new StrictMode.ThreadPolicy.Builder()
                 .detectAll()
                 .penaltyLog();
-
 
 
         StrictMode.VmPolicy.Builder vpbuilder = new StrictMode.VmPolicy.Builder()

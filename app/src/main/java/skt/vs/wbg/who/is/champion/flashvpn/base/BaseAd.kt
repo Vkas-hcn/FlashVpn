@@ -2,7 +2,15 @@ package skt.vs.wbg.who.`is`.champion.flashvpn.base
 
 import android.content.Context
 import android.util.Log
+import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadBackAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadConnectAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadEndAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadHomeAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadOpenAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
+import java.util.Date
 
 class BaseAd private constructor() {
     companion object {
@@ -10,12 +18,13 @@ class BaseAd private constructor() {
 
         fun getOpenInstance() = instanceHelper.openLoadFlash
         fun getHomeInstance() = instanceHelper.homeLoadFlash
-        fun getResultInstance() = instanceHelper.resultLoadFlash
+        fun getEndInstance() = instanceHelper.resultLoadFlash
         fun getConnectInstance() = instanceHelper.connectLoadFlash
         fun getBackInstance() = instanceHelper.backLoadFlash
 
         private var idCounter = 0
     }
+
     object InstanceHelper {
         val openLoadFlash = BaseAd()
         val homeLoadFlash = BaseAd()
@@ -23,6 +32,7 @@ class BaseAd private constructor() {
         val connectLoadFlash = BaseAd()
         val backLoadFlash = BaseAd()
     }
+
     private val id = generateId()
 
     private fun generateId(): Int {
@@ -36,7 +46,7 @@ class BaseAd private constructor() {
         return when (id) {
             1 -> "open"
             2 -> "home"
-            3 -> "result"
+            3 -> "end"
             4 -> "connect"
             5 -> "back"
             else -> ""
@@ -47,12 +57,13 @@ class BaseAd private constructor() {
 
     var isLoadingFlash = false
 
-    var loadTimeFlash: Long = getCurrentTimeMillis()
 
     var whetherToShowFlash = false
 
-    var adIndexFlash = 0
+    var loadTimeFlash: Long = Date().time
 
+    private fun whetherAdExceedsOneHour(loadTime: Long): Boolean =
+        Date().time - loadTime < 60 * 60 * 1000
 
     fun advertisementLoadingFlash(context: Context) {
 
@@ -60,32 +71,30 @@ class BaseAd private constructor() {
             Log.d(logTagFlash, "$instanceName--广告加载中，不能再次加载")
             return
         }
-//        if ((getInstanceName() == "back" || getInstanceName() == "connect")
-//            && ZELZ.isBuyBlackListBan()) {
-//            LogUtils.eTag(logTagFlash,"黑名单屏蔽用户不加载${getInstanceName()}广告")
-//            return
-//        }
-//        if ((getInstanceName() == "back" || getInstanceName() == "connect"||getInstanceName() == "home")
-//            && ZELZ.isBuyQuantityBan()) {
-//            LogUtils.eTag(logTagFlash,"买量屏蔽用户不加载${getInstanceName()}广告")
-//            return
-//        }
-        when {
-            appAdDataFlash == null -> {
+        val userData = BaseAppUtils.blockAdUsers()
+        val blacklistState = BaseAppUtils.blockAdBlacklist()
+        if (!blacklistState && (instanceName == "connect" || instanceName == "back")) {
+            Log.d(logTagFlash, "根据黑名单不加载插屏广告。。。")
+            return
+        }
+        if (!userData && (instanceName == "connect" || instanceName == "back" || instanceName == "home")) {
+            Log.d(logTagFlash, "根据买量不加载广告。。。")
+            return
+        }
+        when (appAdDataFlash) {
+            null -> {
                 isLoadingFlash = true
                 Log.d(logTagFlash, "$instanceName--广告开始加载")
-                loadStartupPageAdvertisementFlash(context, ZELZ.getAdServerDataFlash())
+                loadStartupPageAdvertisementFlash(context, BaseAppUtils.getAdJson())
             }
-            appAdDataFlash != null && !whetherAdExceedsOneHour(loadTimeFlash) -> {
-                isLoadingFlash = true
-                LogUtils.d(logTagFlash, "$instanceName--广告过期重新加载")
-                loadStartupPageAdvertisementFlash(context, ZELZ.getAdServerDataFlash())
-            }
+        }
+        if (appAdDataFlash != null && !whetherAdExceedsOneHour(loadTimeFlash)) {
+            isLoadingFlash = true
+            Log.d(logTagFlash, "$instanceName--广告过期重新加载")
+            loadStartupPageAdvertisementFlash(context, BaseAppUtils.getAdJson())
         }
     }
 
-    private fun whetherAdExceedsOneHour(loadTime: Long): Boolean =
-        getCurrentTimeMillis() - loadTime < 60 * 60 * 1000
 
     private fun loadStartupPageAdvertisementFlash(context: Context, adData: FlashAdBean) {
         adLoaders[id]?.invoke(context, adData)
@@ -97,12 +106,7 @@ class BaseAd private constructor() {
         val adLoadersMap = mutableMapOf<Int, (Context, FlashAdBean) -> Unit>()
 
         adLoadersMap[1] = { context, adData ->
-            val adType = adData.open.getOrNull(adIndexFlash)?.Gu0_entrpe
-            if (adType == "calet") {
-                FlashLoadOpenAd.loadStartInsertAdFlash(context, adData)
-            } else {
-                FlashLoadOpenAd.loadOpenAdvertisementFlash(context, adData)
-            }
+            FlashLoadOpenAd.loadOpenAdFlash(context, adData)
         }
 
         adLoadersMap[2] = { context, adData ->
@@ -110,7 +114,7 @@ class BaseAd private constructor() {
         }
 
         adLoadersMap[3] = { context, adData ->
-            FlashLoadResultAd.loadResultAdvertisementFlash(context, adData)
+            FlashLoadEndAd.loadEndAdvertisementFlash(context, adData)
         }
 
         adLoadersMap[4] = { context, adData ->
@@ -124,6 +128,5 @@ class BaseAd private constructor() {
         return adLoadersMap
     }
 
-    private fun getCurrentTimeMillis(): Long = Date().time
 }
 

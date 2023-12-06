@@ -6,8 +6,10 @@ import android.view.Gravity
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.ViewModel
 import skt.vs.wbg.who.`is`.champion.flashvpn.R
+import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadBackAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.ConfigActivity
+import skt.vs.wbg.who.`is`.champion.flashvpn.page.EndActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.HomeActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.VPNDataHelper
 import java.lang.ref.WeakReference
@@ -67,5 +69,11 @@ class ConnectListViewModel : ViewModel() {
 
     }
 
-
+    fun showEndScAd(activity: ConfigActivity) {
+        if (FlashLoadBackAd.displayBackAdvertisementFlash(activity, closeWindowFun = {
+                activity.finish()
+            }) != 2) {
+            activity.finish()
+        }
+    }
 }

@@ -132,6 +132,7 @@ dependencies {
 
     implementation("androidx.annotation:annotation:1.5.0")
     implementation("androidx.core:core:1.9.0")
+    implementation( "com.tencent:mmkv:1.3.0")
 
 
 }

@@ -29,19 +29,27 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
 import de.blinkt.openvpn.api.ExternalOpenVPNService
 import de.blinkt.openvpn.api.IOpenVPNAPIService
 import de.blinkt.openvpn.api.IOpenVPNStatusCallback
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import skt.vs.wbg.who.`is`.champion.flashvpn.R
+import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadConnectAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadHomeAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash.Companion.isUserMainBack
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.ConfigActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.EndActivity
@@ -49,6 +57,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.page.HomeActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.LocaleProfile
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.VPNDataHelper
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.WebFlashActivity
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.lang.ref.WeakReference
@@ -77,7 +86,9 @@ class MainViewModel : ViewModel() {
     lateinit var rotateAnimation: Animation
     private var curServerState: String? = ""
 
-
+    var showConnectLive = MutableLiveData<Boolean>()
+    private var showConnectJob: Job? = null
+    private var isClickConnect = false
     enum class OpenServiceState { CONNECTING, CONNECTED, DISCONNECTING, DISCONNECTED }
 
     fun init(
@@ -143,6 +154,10 @@ class MainViewModel : ViewModel() {
                         setViewEnabled(true)
                         stopConnectAnimation()
                         setChromometer()
+                        if(isClickConnect){
+                            showConnectLive.postValue(true)
+                            isClickConnect = false
+                        }
                     }
 
                     OpenServiceState.DISCONNECTING -> {
@@ -153,6 +168,10 @@ class MainViewModel : ViewModel() {
                         setViewEnabled(true)
                         stopConnectAnimation()
                         setChromometer()
+                        if(isClickConnect){
+                            showConnectLive.postValue(false)
+                            isClickConnect = false
+                        }
                     }
 
                     else -> {}
@@ -294,6 +313,7 @@ class MainViewModel : ViewModel() {
                 "IS_CONNECT", curServerState == "CONNECTED"
             )
             it.startActivity(intent)
+            BaseAd.getEndInstance().whetherToShowFlash = false
         }
     }
 
@@ -367,6 +387,7 @@ class MainViewModel : ViewModel() {
                     playConnectAnimation()
                     shadowsocksJob =
                         activity.get()?.let { mService?.let { it1 -> openVTool(it, it1) } }
+
                 }
 
                 else -> {}
@@ -445,22 +466,36 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun showConnecetNextFun(activity: HomeActivity, isConnect: Boolean) {
+        Log.e(logTagFlash, "showConnecetNextFun: ", )
+        showConnectAd(activity) {
+            activity.let { it1 ->
+                if (isConnect) {
+                    toEndAc()
+                } else {
+                    if (!cancelConnect) toEndAc()
+                    else cancelConnect = false
+                }
+            }
+        }
+    }
+
     private val mCallback = object : IOpenVPNStatusCallback.Stub() {
         override fun newStatus(uuid: String?, state: String?, message: String?, level: String?) {
             // NOPROCESS 未连接 // CONNECTED 已连接
             // RECONNECTING 尝试重新链接 // EXITING 连接中主动掉用断开
             Log.e(
-                "open vpn state",
+                logTagFlash,
                 "${uuid.toString()},${state.toString()},${message.toString()},${level.toString()}"
             )
             curServerState = state
             when (state) {
                 "CONNECTED" -> {
                     if (toAction) toAction = false
+                    Log.d(logTagFlash, "连接成功: ")
                     userInterrupt = false
+                    isClickConnect = true
                     openServerState.postValue(OpenServiceState.CONNECTED)
-                    toEndAc()
-
                 }
 
                 "RECONNECTING" -> {
@@ -468,12 +503,17 @@ class MainViewModel : ViewModel() {
                 }
 
                 "NOPROCESS" -> {
+                    Log.d(logTagFlash, "断开成功: 1")
+
                     if (toAction) {
+                        Log.d(logTagFlash, "断开成功: 2")
+
                         toAction = false
                         userInterrupt = false
+                        isClickConnect = true
                         openServerState.postValue(OpenServiceState.DISCONNECTED)
-                        if (!cancelConnect) toEndAc()
-                        else cancelConnect = false
+
+
                     }
                 }
 
@@ -546,4 +586,54 @@ class MainViewModel : ViewModel() {
     }
 
 
+    fun showHomeAd(activity: HomeActivity) {
+        activity.lifecycleScope.launch {
+            delay(200)
+            if (activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
+                return@launch
+            }
+            val adHomeData = BaseAd.getHomeInstance().appAdDataFlash
+            if (adHomeData == null) {
+                BaseAd.getHomeInstance().advertisementLoadingFlash(activity)
+            }
+            while (isActive) {
+                if (adHomeData != null) {
+                    FlashLoadHomeAd.setDisplayHomeNativeAdFlash(activity)
+                    cancel()
+                    break
+                }
+                delay(500)
+            }
+        }
+    }
+
+    fun showConnectAd(activity: HomeActivity, nextFun: () -> Unit) {
+        showConnectJob = activity.lifecycleScope.launch() {
+            val adConnectData = BaseAd.getConnectInstance().appAdDataFlash
+            if (adConnectData == null) {
+                BaseAd.getConnectInstance().advertisementLoadingFlash(activity)
+            }
+            delay(1000)
+            while (isActive) {
+                when (FlashLoadConnectAd.displayConnectAdvertisementFlash(
+                    activity,
+                    closeWindowFun = {
+                        BaseAd.getConnectInstance().advertisementLoadingFlash(activity)
+                        nextFun()
+                    })) {
+                    2 -> {
+                        cancel()
+                        showConnectJob = null
+                    }
+
+                    0 -> {
+                        cancel()
+                        nextFun()
+                        showConnectJob = null
+                    }
+                }
+                delay(500)
+            }
+        }
+    }
 }

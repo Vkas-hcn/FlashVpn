@@ -2,6 +2,7 @@ package skt.vs.wbg.who.`is`.champion.flashvpn.page
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import skt.vs.wbg.who.`is`.champion.flashvpn.R
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseActivityFlash
+import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.databinding.ListLayoutBinding
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.VPNDataHelper.getImage
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.ConnectListViewModel
@@ -29,7 +31,7 @@ class ConfigActivity : BaseActivityFlash<ListLayoutBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        BaseAd.getBackInstance().advertisementLoadingFlash(this)
         isConnect = intent.getBooleanExtra("IS_CONNECT", false)
         listViewModel.init(this, isConnect)
         dataList = VPNDataHelper.allLocaleProfiles
@@ -37,9 +39,18 @@ class ConfigActivity : BaseActivityFlash<ListLayoutBinding>() {
         val adapter = LocationsAdapter(dataList, listViewModel)
         mBinding.locationList.layoutManager = lm
         mBinding.locationList.adapter = adapter
-        mBinding.back.setOnClickListener { finish() }
+        mBinding.back.setOnClickListener {
+            listViewModel.showEndScAd(this)
+        }
 
 
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            listViewModel.showEndScAd(this)
+        }
+        return true
     }
 }
 

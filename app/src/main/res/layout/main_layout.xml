@@ -2,6 +2,16 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="showAd"
+            type="Integer"
+            android:value="0" />
+    </data>
+
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer"
         android:layout_width="match_parent"
@@ -98,45 +108,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/connectedTimeText" />
-
-
-            <View
-                android:id="@+id/guideMask"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#80000000"
-                android:clickable="false"
-                android:focusable="false" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/connectImg"
-                android:layout_width="148dp"
-                android:layout_height="148dp"
-                android:layout_marginTop="32dp"
-                android:src="@mipmap/connect_no"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/chronometer" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/connectAnimate"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@mipmap/c_noooo"
-                app:layout_constraintBottom_toBottomOf="@id/connectImg"
-                app:layout_constraintEnd_toEndOf="@id/connectImg"
-                app:layout_constraintStart_toStartOf="@id/connectImg"
-                app:layout_constraintTop_toTopOf="@id/connectImg" />
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/lottieGuide"
-                android:layout_width="131dp"
-                android:layout_height="126dp"
-                android:layout_marginStart="60dp"
-                android:layout_marginTop="60dp"
-                app:layout_constraintStart_toStartOf="@id/connectImg"
-                app:layout_constraintTop_toTopOf="@id/connectImg"
-                app:lottie_fileName="hahaha.json" />
 
 
             <RadioGroup
@@ -297,7 +268,73 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <FrameLayout
+                android:id="@+id/ad_frame_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="32dp"
+                android:background="@drawable/gray_8"
+                android:visibility="@{showAd != 2 ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
+                <ImageView
+                    android:id="@+id/img_op_ad_frame"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_occupy"
+                    android:visibility="@{showAd == 0 ? View.VISIBLE : View.GONE}" />
+
+                <FrameLayout
+                    android:id="@+id/ad_frame"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="@{showAd == 1 ? View.VISIBLE : View.GONE}" />
+
+            </FrameLayout>
+
+            <View
+                android:id="@+id/guideMask"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#80000000"
+                android:clickable="false"
+                android:focusable="false" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/connectImg"
+                android:layout_width="148dp"
+                android:layout_height="148dp"
+                android:layout_marginTop="32dp"
+                android:src="@mipmap/connect_no"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/chronometer" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/connectAnimate"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@mipmap/c_noooo"
+                app:layout_constraintBottom_toBottomOf="@id/connectImg"
+                app:layout_constraintEnd_toEndOf="@id/connectImg"
+                app:layout_constraintStart_toStartOf="@id/connectImg"
+                app:layout_constraintTop_toTopOf="@id/connectImg" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottieGuide"
+                android:layout_width="131dp"
+                android:layout_height="126dp"
+                android:layout_marginStart="60dp"
+                android:layout_marginTop="60dp"
+                app:layout_constraintStart_toStartOf="@id/connectImg"
+                app:layout_constraintTop_toTopOf="@id/connectImg"
+                app:lottie_fileName="hahaha.json" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
