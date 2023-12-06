@@ -53,7 +53,6 @@ abstract class BaseActivityFlash<M : ViewDataBinding> : AppCompatActivity(), Net
     }
 
     override fun onNetworkChanged(isConnected: Boolean) {
-        Log.e("ip open", "$isConnected")
         if (isConnected) IPUtils.checkIp(this)
     }
 

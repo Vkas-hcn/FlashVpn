@@ -68,7 +68,6 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
             isFlashAppBackGround = false
             if ((System.currentTimeMillis() - exitAppTime) / 1000 > 3) {
                 toSplash(activity)
-                Log.d(logTagFlash, "onActivityStarted: ")
                 if (adActivity != null) adActivity?.finish()
             } else if (isUserMainBack) {
                 isUserMainBack = false
@@ -117,7 +116,6 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
         referJobFlash = GlobalScope.launch {
             while (isActive) {
                 if (SPUtils.getInstance().getString(BaseAppUtils.refer_data).isNullOrEmpty()) {
-                    Log.e(logTagFlash, "获取买量信息")
                     getReferrerData(context)
                 } else {
                     cancel()

@@ -54,7 +54,6 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
             mainViewModel.showConnecetNextFun(this, it)
         }
         if (!BaseAppUtils.blockAdUsers()) {
-            Log.d(BaseAppUtils.logTagFlash, "根据买量屏蔽Home广告。。。")
             mBinding.showAd = 2
         } else {
             mBinding.showAd = 0

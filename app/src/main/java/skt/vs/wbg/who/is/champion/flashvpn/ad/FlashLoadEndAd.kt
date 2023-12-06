@@ -27,7 +27,6 @@ import java.util.Date
 object FlashLoadEndAd {
     private val adBase = BaseAd.getEndInstance()
     fun loadEndAdvertisementFlash(context: Context, adData: FlashAdBean) {
-        Log.d(logTagFlash, "end---原生广告id=${adData.onLbibl}")
 
         val vpnNativeAds = AdLoader.Builder(
             context.applicationContext,
@@ -60,19 +59,16 @@ object FlashLoadEndAd {
           """"
                 adBase.isLoadingFlash = false
                 adBase.appAdDataFlash = null
-                Log.d(logTagFlash, "end---加载vpn原生加载失败: $error")
             }
 
             override fun onAdLoaded() {
                 super.onAdLoaded()
-                Log.d(logTagFlash, "end---加载vpn原生广告成功")
                 adBase.loadTimeFlash = Date().time
                 adBase.isLoadingFlash = false
             }
 
             override fun onAdOpened() {
                 super.onAdOpened()
-                Log.d(logTagFlash, "end---点击vpn原生广告")
             }
         }).build().loadAd(AdRequest.Builder().build())
     }
@@ -109,7 +105,6 @@ object FlashLoadEndAd {
                     binding.showAd =1
                     adBase.whetherToShowFlash = true
                     adBase.appAdDataFlash = null
-                    Log.d(logTagFlash, "end--原生广告--展示")
                 }
             }
         }

@@ -28,7 +28,6 @@ import java.util.Date
 object FlashLoadHomeAd {
     private val adBase = BaseAd.getHomeInstance()
     fun loadHomeAdvertisementFlash(context: Context, adData: FlashAdBean) {
-        Log.d(logTagFlash, "home---原生广告id=${adData.onLbibl}")
 
         val vpnNativeAds = AdLoader.Builder(
             context.applicationContext,
@@ -61,19 +60,16 @@ object FlashLoadHomeAd {
           """"
                 adBase.isLoadingFlash = false
                 adBase.appAdDataFlash = null
-                Log.d(logTagFlash, "home---加载vpn原生加载失败: $error")
             }
 
             override fun onAdLoaded() {
                 super.onAdLoaded()
-                Log.d(logTagFlash, "home---加载vpn原生广告成功")
                 adBase.loadTimeFlash = Date().time
                 adBase.isLoadingFlash = false
             }
 
             override fun onAdOpened() {
                 super.onAdOpened()
-                Log.d(logTagFlash, "home---点击vpn原生广告")
             }
         }).build().loadAd(AdRequest.Builder().build())
     }
@@ -88,7 +84,6 @@ object FlashLoadHomeAd {
                 if (adData is NativeAd && !adBase.whetherToShowFlash && state) {
                     val userData = BaseAppUtils.blockAdUsers()
                     if (!userData) {
-                        Log.d(logTagFlash, "根据买量屏蔽Home广告。。。")
                         binding.showAd = 2
                         return@let
                     }
@@ -111,7 +106,6 @@ object FlashLoadHomeAd {
                     binding.showAd = 1
                     adBase.whetherToShowFlash = true
                     adBase.appAdDataFlash = null
-                    Log.d(logTagFlash, "home--原生广告--展示")
                 }
             }
         }

@@ -21,7 +21,6 @@ object FlashLoadOpenAd {
 
 
      fun loadOpenAdFlash(context: Context, adData: FlashAdBean) {
-        Log.d(logTagFlash, "open-开屏广告id=${adData.onLnugit}")
         val request = AdRequest.Builder().build()
         AppOpenAd.load(
             context,
@@ -33,7 +32,6 @@ object FlashLoadOpenAd {
                     adBase.isLoadingFlash = false
                     adBase.appAdDataFlash = ad
                     adBase.loadTimeFlash = Date().time
-                    Log.d(logTagFlash, "open-开屏广告加载成功")
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
@@ -43,7 +41,6 @@ object FlashLoadOpenAd {
                         adBase.advertisementLoadingFlash(context)
                         isFirstLoad = true
                     }
-                    Log.d(logTagFlash, "open-开屏广告加载失败: " + loadAdError.message)
                 }
             }
         )
@@ -58,7 +55,6 @@ object FlashLoadOpenAd {
             object : FullScreenContentCallback() {
                 //取消全屏内容
                 override fun onAdDismissedFullScreenContent() {
-                    Log.d(logTagFlash, "open-关闭开屏内容")
                     adBase.whetherToShowFlash = false
                     adBase.appAdDataFlash = null
                     fullScreenFun()
@@ -68,19 +64,16 @@ object FlashLoadOpenAd {
                 override fun onAdFailedToShowFullScreenContent(adError: AdError) {
                     adBase.whetherToShowFlash = false
                     adBase.appAdDataFlash = null
-                    Log.d(logTagFlash, "open-全屏内容无法显示时调用")
                 }
 
                 //显示全屏内容时调用
                 override fun onAdShowedFullScreenContent() {
                     adBase.appAdDataFlash = null
                     adBase.whetherToShowFlash = true
-                    Log.d(logTagFlash, "open--开屏广告展示")
                 }
 
                 override fun onAdClicked() {
                     super.onAdClicked()
-                    Log.d(logTagFlash, "open--点击open广告")
                 }
             }
     }
@@ -88,11 +81,9 @@ object FlashLoadOpenAd {
 
     fun displayOpenAdvertisementFlash(activity: AppCompatActivity,fullScreenFun: () -> Unit): Boolean {
         if (adBase.appAdDataFlash == null) {
-            Log.d(logTagFlash, "open--开屏广告加载中。。。")
             return false
         }
         if (adBase.whetherToShowFlash || activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
-            Log.d(logTagFlash, "open--前一个开屏广告展示中或者生命周期不对")
             return false
         }
         advertisingOpenCallbackFlash(fullScreenFun)

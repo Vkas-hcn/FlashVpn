@@ -25,17 +25,13 @@ object FlashLoadConnectAd {
     private val adBase = BaseAd.getConnectInstance()
     fun loadConnectAdvertisementFlash(context: Context, adData: FlashAdBean) {
         val adRequest = AdRequest.Builder().build()
-        Log.d(
-            logTagFlash,
-            "connect--插屏广告id=${adData.onLnose}"
-        )
+
         InterstitialAd.load(
             context,
             adData.onLnose,
             adRequest,
             object : InterstitialAdLoadCallback() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
-                    adError.toString().let { Log.d(logTagFlash, "connect---连接插屏加载失败=$it") }
                     adBase.isLoadingFlash = false
                     adBase.appAdDataFlash = null
                 }
@@ -44,7 +40,6 @@ object FlashLoadConnectAd {
                     adBase.loadTimeFlash = Date().time
                     adBase.isLoadingFlash = false
                     adBase.appAdDataFlash = interstitialAd
-                    Log.d(logTagFlash, "connect---连接插屏加载成功")
                 }
             })
     }
@@ -54,11 +49,9 @@ object FlashLoadConnectAd {
         (adBase.appAdDataFlash as? InterstitialAd)?.fullScreenContentCallback =
             object : FullScreenContentCallback() {
                 override fun onAdClicked() {
-                    Log.d(logTagFlash, "connect插屏广告点击")
                 }
 
                 override fun onAdDismissedFullScreenContent() {
-                    Log.d(logTagFlash, "关闭connect插屏广告=${BaseAppFlash.isHotStart}")
                         closeWindowFun()
 
                     adBase.appAdDataFlash = null
@@ -74,7 +67,6 @@ object FlashLoadConnectAd {
 
                 override fun onAdImpression() {
                     // Called when an impression is recorded for an ad.
-                    Log.e("TAG", "Ad recorded an impression.")
                 }
 
                 override fun onAdShowedFullScreenContent() {
@@ -94,21 +86,17 @@ object FlashLoadConnectAd {
         val userData = BaseAppUtils.blockAdUsers()
         val blacklistState = BaseAppUtils.blockAdBlacklist()
         if (!blacklistState) {
-            Log.d(logTagFlash,"根据黑名单屏蔽connect广告。。。")
             return 0
         }
         if (!userData) {
-            Log.d(logTagFlash, "根据买量屏蔽connect广告。。。")
             return 0
         }
 
         if (adBase.appAdDataFlash == null) {
-            Log.d(logTagFlash, "connect--插屏广告加载中")
             return 1
         }
 
         if (adBase.whetherToShowFlash || activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
-            Log.d(logTagFlash, "connect--前一个插屏广告展示中或者生命周期不对")
             return 1
         }
         connectScreenAdCallback(closeWindowFun)

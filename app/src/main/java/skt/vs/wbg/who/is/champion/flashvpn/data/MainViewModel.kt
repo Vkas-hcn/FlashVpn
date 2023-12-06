@@ -350,13 +350,11 @@ class MainViewModel : ViewModel() {
                     openServerState.postValue(OpenServiceState.DISCONNECTED)
                     mService?.disconnect()
                     cancelConnect = true
-                    Log.e(logTagFlash, "Connect cancel----1")
                 }
 
                 OpenServiceState.DISCONNECTING -> {
                     userInterrupt = true
                     openServerState.postValue(OpenServiceState.CONNECTED)
-                    Log.e(logTagFlash, "Connect cancel-----2")
 
                 }
 
@@ -481,7 +479,6 @@ class MainViewModel : ViewModel() {
     }
 
     fun showConnecetNextFun(activity: HomeActivity, isConnect: Boolean) {
-        Log.e(logTagFlash, "showConnecetNextFun: ")
         showConnectAd(activity) {
             activity.let { it1 ->
                 setViewEnabled(true)
@@ -501,15 +498,11 @@ class MainViewModel : ViewModel() {
         override fun newStatus(uuid: String?, state: String?, message: String?, level: String?) {
             // NOPROCESS 未连接 // CONNECTED 已连接
             // RECONNECTING 尝试重新链接 // EXITING 连接中主动掉用断开
-            Log.e(
-                logTagFlash,
-                "${uuid.toString()},${state.toString()},${message.toString()},${level.toString()}"
-            )
+
             curServerState = state
             when (state) {
                 "CONNECTED" -> {
                     if (toAction) toAction = false
-                    Log.d(logTagFlash, "连接成功: ")
                     userInterrupt = false
                     isClickConnect = true
                     isFailConnect = false
@@ -521,11 +514,7 @@ class MainViewModel : ViewModel() {
                 }
 
                 "NOPROCESS" -> {
-                    Log.d(logTagFlash, "断开成功: 1")
-
                     if (toAction) {
-                        Log.d(logTagFlash, "断开成功: 2")
-
                         toAction = false
                         userInterrupt = false
                         isClickConnect = true

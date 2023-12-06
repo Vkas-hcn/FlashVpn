@@ -108,7 +108,6 @@ open class FlashCloak {
 
     @OptIn(DelicateCoroutinesApi::class)
     fun getCloakType(a: Int) {
-        Log.e("okhttp","startRequest")
         MainScope().launch {
             val androidId = getAndroidID()
             val clientTime = System.currentTimeMillis()
@@ -143,7 +142,6 @@ open class FlashCloak {
                     call.enqueue(object : Callback<String> {
                         override fun onResponse(call: Call<String>, response: Response<String>) {
                             if (response.isSuccessful) {
-                                Log.e(logTagFlash, "黑名单:${response.body().toString()} ")
                                 when (response.body().toString()) {
                                     "surgery" -> {
                                         SPUtils.getInstance().put(IS_HAVE_GET_CLOAK, true)

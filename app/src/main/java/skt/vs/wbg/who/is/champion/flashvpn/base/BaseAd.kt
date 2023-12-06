@@ -68,29 +68,24 @@ class BaseAd private constructor() {
     fun advertisementLoadingFlash(context: Context) {
 
         if (isLoadingFlash) {
-            Log.d(logTagFlash, "$instanceName--广告加载中，不能再次加载")
             return
         }
         val userData = BaseAppUtils.blockAdUsers()
         val blacklistState = BaseAppUtils.blockAdBlacklist()
         if (!blacklistState && (instanceName == "connect" || instanceName == "back")) {
-            Log.d(logTagFlash, "根据黑名单不加载插屏广告。。。")
             return
         }
         if (!userData && (instanceName == "connect" || instanceName == "back" || instanceName == "home")) {
-            Log.d(logTagFlash, "根据买量不加载广告。。。")
             return
         }
         when (appAdDataFlash) {
             null -> {
                 isLoadingFlash = true
-                Log.d(logTagFlash, "$instanceName--广告开始加载")
                 loadStartupPageAdvertisementFlash(context, BaseAppUtils.getAdJson())
             }
         }
         if (appAdDataFlash != null && !whetherAdExceedsOneHour(loadTimeFlash)) {
             isLoadingFlash = true
-            Log.d(logTagFlash, "$instanceName--广告过期重新加载")
             loadStartupPageAdvertisementFlash(context, BaseAppUtils.getAdJson())
         }
     }
