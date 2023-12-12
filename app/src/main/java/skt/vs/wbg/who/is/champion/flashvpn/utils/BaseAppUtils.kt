@@ -97,13 +97,8 @@ object BaseAppUtils {
     }
 
     fun fromJson(json: String): FlashAdBean {
-        return FlashAdBean(
-            json.substringAfter("onLnugit\":\"").substringBefore("\","),
-            json.substringAfter("onLbibl\":\"").substringBefore("\","),
-            json.substringAfter("onLconcer\":\"").substringBefore("\","),
-            json.substringAfter("onLnose\":\"").substringBefore("\","),
-            json.substringAfter("onLmemor\":\"").substringBefore("\","),
-        )
+        val gson = Gson()
+        return gson.fromJson(json, FlashAdBean::class.java)
     }
 
     fun fromUserJson(json: String): FlashUserBean {

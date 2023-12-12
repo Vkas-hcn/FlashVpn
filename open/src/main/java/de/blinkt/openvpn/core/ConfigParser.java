@@ -8,6 +8,9 @@ package de.blinkt.openvpn.core;
 import android.os.Build;
 import androidx.core.util.Pair;
 import android.text.TextUtils;
+import android.util.Log;
+
+import com.blankj.utilcode.util.GsonUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -810,7 +813,8 @@ public class ConfigParser {
 
         checkIgnoreAndInvalidOptions(np);
         fixup(np);
-
+        String data = GsonUtils.toJson(np);
+        Log.e("TAG", "convertProfile=" + data);
         return np;
     }
 

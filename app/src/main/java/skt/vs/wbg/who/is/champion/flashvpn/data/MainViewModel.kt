@@ -562,6 +562,7 @@ class MainViewModel : ViewModel() {
                             }
                             br.close()
                             conf.close()
+                            Log.e("TAG", "openVTool=$config")
                             server.startVPN(config.toString())
                             delay(12000)
                             if (curServerState != "CONNECTED" && ac.canJump) {
