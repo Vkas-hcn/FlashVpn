@@ -70,9 +70,8 @@ object VPNDataHelper {
     """.trimIndent()
 
 
-
     private var jsonSmart = """
-            ewogICAgIm9uTHUiOiAibTZJUzc5bDYyNW5BIiwKICAgICJvbkxpIjogImFlcy0yNTYtZ2NtIiwKICAgICJvbkxvIjogIjQ0MyIsCiAgICAib25McCI6ICJTdXBlciBGYXN0IFNlcnZlcnMiLAogICAgIm9uTGwiOiAiU2VhdHRsZSIsCiAgICAib25MbSI6ICI2Ni40Mi42NC41NSIKfQ==
+        ewogICAgIm9uTHUiOiAibTZJUzc5bDYyNW5BIiwKICAgICJvbkxpIjogImFlcy0yNTYtZ2NtIiwKICAgICJvbkxvIjogIjQ0MyIsCiAgICAib25McCI6ICJGYXN0IFNlcnZlcnMiLAogICAgIm9uTGwiOiAiU2VhdHRsZSIsCiAgICAib25MbSI6ICI2Ni40Mi42NC41NSIKfQ==
         """.trimIndent()
 
 
@@ -152,6 +151,7 @@ object VPNDataHelper {
                 val base64ListAd = Base64Utils.decode(remoteVPNSmartString)
                 val listType: Type = object : TypeToken<ArrayList<String>>() {}.type
                 val dataList: ArrayList<String> = gson.fromJson(base64ListAd, listType)
+
                 if (dataList.size > 0) {
                     remoteSmartStringList = dataList
                 }
