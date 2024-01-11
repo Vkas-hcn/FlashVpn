@@ -144,7 +144,7 @@ class MainViewModel : ViewModel() {
 
     private fun requestPermissionForResult(result: ActivityResult) {
         if (result.resultCode == AppCompatActivity.RESULT_OK) {
-            putPointYep("permission", this.activity.get()!!)
+            "permission".putPointYep(this.activity.get()!!)
 
             activity.get()?.let { mService?.let { it1 -> toConnectVerifyNet() } }
         } else {
@@ -468,7 +468,7 @@ fun connectPut(activity: HomeActivity){
                     return@launch
                 } else if (isActive) {
                     mService?.disconnect()
-                    putPointYep("o11", activity.get()!!)
+                    "o11".putPointYep(activity.get()!!)
                 }
             }
         }
@@ -583,8 +583,7 @@ fun connectPut(activity: HomeActivity){
                     openServerState.postValue(OpenServiceState.CONNECTING)
                     if (isAppOnline(ac)) {
                         connectTime = System.currentTimeMillis()
-
-                        putPointYep("o1vpn", context)
+                        "o1vpn".putPointYep(context)
                         val data = VPNDataHelper.allLocaleProfiles[VPNDataHelper.nodeIndex]
                         runCatching {
                             BaseAppUtils.setLoadData(BaseAppUtils.vpn_ip, data.onLm_host)
@@ -598,11 +597,11 @@ fun connectPut(activity: HomeActivity){
                                 line = br.readLine()
                                 if (line == null) break
                                 if (line.contains("remote 66", true)) {
-//                                    line = "remote ${data.onLm_host} ${data.onLo_Port}"
+                                    line = "remote ${data.onLm_host} ${data.onLo_Port}"
                                 } else if (line.contains("wrongpassword", true)) {
-//                                    line = data.onLu_password
+                                    line = data.onLu_password
                                 } else if (line.contains("cipher AES-256-GCM", true)) {
-//                                    line = "cipher ${data.onLi}"
+                                    line = "cipher ${data.onLi}"
                                 }
                                 config.append(line).append("\n")
                             }

@@ -7,6 +7,7 @@ import com.android.installreferrer.api.ReferrerDetails
 import com.google.android.gms.ads.AdValue
 import com.google.android.gms.ads.ResponseInfo
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 
@@ -124,7 +125,7 @@ class FlashOkHttpUtils {
 
 
     fun getVpnData(context: Context) {
-        DataHelp.putPointYep("ye_qq", context)
+        "ye_qq".putPointYep( context)
         val date = System.currentTimeMillis()
         try {
             client.get(context, BaseAppUtils.vpn_url, object : NetClientHelp.Callback {
@@ -132,7 +133,7 @@ class FlashOkHttpUtils {
                     val responseData = processString(response)
                     BaseAppUtils.setLoadData(BaseAppUtils.vpn_online, responseData)
                     Log.e(TAG, "获取下发服务器数据-成功->$responseData")
-                    DataHelp.putPointYep("ye_hq", context)
+                    "ye_hq".putPointYep(context)
                     val date2 = (System.currentTimeMillis()-date)/1000
                     DataHelp.putPointTimeYep("ye_tm", date2,"time",context)
                 }

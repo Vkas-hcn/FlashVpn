@@ -341,14 +341,6 @@ object DataHelp {
 
 
 
-    fun putPointYep(name: String, context: Context) {
-        FlashOkHttpUtils().getTbaList(context, name)
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "触发埋点----name=${name}")
-        } else {
-            Firebase.analytics.logEvent(name, null)
-        }
-    }
 
     fun String.putPointYep(context: Context) {
         FlashOkHttpUtils().getTbaList(context, this)

@@ -20,6 +20,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.MainViewModel
 import skt.vs.wbg.who.`is`.champion.flashvpn.databinding.MainLayoutBinding
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 
 class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
@@ -49,10 +50,10 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
         mBinding.lottieGuide.repeatCount = ValueAnimator.INFINITE
         mBinding.lottieGuide.playAnimation()
         if(!DataHelp.isConnectFun()){
-            DataHelp.putPointYep("o1guideexposure", this)
+            "o1guideexposure".putPointYep(this)
         }
         mBinding.lottieGuide.setOnClickListener {
-            DataHelp.putPointYep("o1guidecc", this)
+            "o1guidecc".putPointYep( this)
             cancelGuideLottie()
             mainViewModel.toConnectVerifyNet()
         }
@@ -95,7 +96,7 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
         super.onResume()
         mainViewModel.activityResume()
         mainViewModel.showBannerAd(this)
-        DataHelp.putPointYep("o1frontview",this)
+        "o1frontview".putPointYep(this)
     }
 
     override fun onDestroy() {

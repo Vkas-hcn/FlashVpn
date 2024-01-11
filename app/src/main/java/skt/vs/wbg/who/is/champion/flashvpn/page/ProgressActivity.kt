@@ -27,6 +27,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.databinding.ProgressLayoutBinding
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 
@@ -176,7 +177,7 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
                 }
             }
             if (BaseAppUtils.isStartYep) {
-                DataHelp.putPointYep("o1startup", this@ProgressActivity)
+                "o1startup".putPointYep(this@ProgressActivity)
                 BaseAppUtils.isStartYep = false
             }
         }
