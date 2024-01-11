@@ -72,7 +72,7 @@ class ConnectListViewModel : ViewModel() {
 
     fun showEndScAd(activity: ConfigActivity) {
         "o25".putPointYep(activity)
-        if (FlashLoadBackAd.displayBackAdvertisementFlash(activity, closeWindowFun = {
+        if (FlashLoadBackAd.displayBackAdvertisementFlash(2,activity, closeWindowFun = {
                 activity.finish()
             }) != 2) {
             activity.finish()

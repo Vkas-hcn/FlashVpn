@@ -27,7 +27,6 @@ class EndActivity : BaseActivityFlash<ConnectedLayoutBinding>() {
         super.onCreate(savedInstanceState)
         isConnected = intent.getBooleanExtra("IS_CONNECT", false)
         mBinding.back.setOnClickListener { endViewModel.showEndScAd(this) }
-        BaseAd.getBackInstance().advertisementLoadingFlash(this)
         val data: LocaleProfile
         if (VPNDataHelper.cachePosition != -1) {
             data = VPNDataHelper.allLocaleProfiles[VPNDataHelper.cachePosition]
@@ -41,7 +40,6 @@ class EndActivity : BaseActivityFlash<ConnectedLayoutBinding>() {
             } else mBinding.connectCountry.text = data.name
         }
         mBinding.connectedLocationImage.setImageResource(VPNDataHelper.getImage(data.name))
-
         when (isConnected) {
             true -> {
                 mBinding.tips.text = "Connection succeed"
@@ -60,6 +58,11 @@ class EndActivity : BaseActivityFlash<ConnectedLayoutBinding>() {
         super.onResume()
         endViewModel.showEndAd(this)
         "o22".putPointYep(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
     }
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {

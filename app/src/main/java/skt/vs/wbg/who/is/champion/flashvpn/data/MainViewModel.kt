@@ -33,6 +33,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
+import com.google.android.ump.ConsentInformation
+import com.google.android.ump.ConsentRequestParameters
+import com.google.android.ump.UserMessagingPlatform
+import com.google.gson.Gson
 import de.blinkt.openvpn.api.ExternalOpenVPNService
 import de.blinkt.openvpn.api.IOpenVPNAPIService
 import de.blinkt.openvpn.api.IOpenVPNStatusCallback
@@ -221,7 +225,6 @@ class MainViewModel : ViewModel() {
 
     private fun initViewAndListener() {
         activity.get()?.let { ac ->
-
             chronometer.onChronometerTickListener = Chronometer.OnChronometerTickListener { cArg ->
                 val time = System.currentTimeMillis() - cArg.base
                 val d = Date(time)
@@ -305,8 +308,9 @@ class MainViewModel : ViewModel() {
         }
 
     }
-fun connectPut(activity: HomeActivity){
+private fun connectPut(activity: HomeActivity){
     if (DataHelp.isConnectFun()) {
+        BaseAd.getBackInstance().advertisementLoadingFlash(activity)
         "o29".putPointYep(activity)
     } else {
         "o28".putPointYep(activity)
@@ -414,6 +418,7 @@ fun connectPut(activity: HomeActivity){
     private fun isNextConnect(activity: HomeActivity, nextFun: () -> Unit) {
         activity.lifecycleScope.launch {
             val data = OnlineVpnHelp.checkServerData(activity)
+            activity.mBinding.inLoad.tvLoading.text = "Loading..."
             activity.mBinding.showLoad = true
             if (data) {
                 nextFun()
@@ -422,6 +427,7 @@ fun connectPut(activity: HomeActivity){
                 delay(2000)
                 activity.mBinding.showLoad = false
             }
+            activity.mBinding.inLoad.tvLoading.text = "Ad about to play!"
         }
     }
 
@@ -550,10 +556,14 @@ fun connectPut(activity: HomeActivity){
                     isClickConnect = true
                     isFailConnect = false
                     openServerState.postValue(OpenServiceState.CONNECTED)
+                    Log.e(TAG, "newStatus: CONNECTED", )
+                    BaseAd.getBackInstance().advertisementLoadingFlash(activity.get()!!)
                 }
 
                 "RECONNECTING" -> {
                     Toast.makeText(activity.get(), "Reconnecting", Toast.LENGTH_LONG).show()
+                    Log.e(TAG, "newStatus: RECONNECTING", )
+
                 }
 
                 "NOPROCESS" -> {
@@ -562,6 +572,7 @@ fun connectPut(activity: HomeActivity){
                         userInterrupt = false
                         isClickConnect = true
                         openServerState.postValue(OpenServiceState.DISCONNECTED)
+                        Log.e(TAG, "newStatus: NOPROCESS", )
                     }
                 }
 
@@ -584,12 +595,12 @@ fun connectPut(activity: HomeActivity){
                     if (isAppOnline(ac)) {
                         connectTime = System.currentTimeMillis()
                         "o1vpn".putPointYep(context)
-                        val data = VPNDataHelper.allLocaleProfiles[VPNDataHelper.nodeIndex]
+                        val data = VPNDataHelper.getAllLocaleProfile()[VPNDataHelper.nodeIndex]
                         runCatching {
                             BaseAppUtils.setLoadData(BaseAppUtils.vpn_ip, data.onLm_host)
                             BaseAppUtils.setLoadData(BaseAppUtils.vpn_city, data.city)
                             Log.e(TAG, "openVTool: ip=${data.onLm_host};city=${data.city}")
-                            val conf = context.assets.open("fast_onlinenetmanager.ovpn")
+                            val conf = context.assets.open("fast_onlinenetmanager_ippool.ovpn")
                             val br = BufferedReader(InputStreamReader(conf))
                             val config = StringBuilder()
                             var line: String?

@@ -4,13 +4,21 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
+import com.google.android.ump.ConsentDebugSettings
+import com.google.android.ump.ConsentInformation
+import com.google.android.ump.ConsentRequestParameters
+import com.google.android.ump.UserMessagingPlatform
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.TimeoutCancellationException
@@ -30,16 +38,20 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadBooleanData
 
 class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
     private var jobOpenAdsFlash: Job? = null
     private var startCateFlash: Job? = null
+    private lateinit var consentInformation: ConsentInformation
     override var conetcntLayoutId: Int
         get() = R.layout.progress_layout
         set(value) {}
     var progressInt = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        updateUserOpinions()
         getFileBaseData()
         lifecycleScope.launch(Dispatchers.IO) {
             if (!DataHelp.isConnectFun()) {
@@ -106,18 +118,30 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
     private fun loadAdFun() {
         // 开屏
         BaseAd.getOpenInstance().advertisementLoadingFlash(this)
-        loadOpenAd()
+        waitForTheOpenAdToAppear()
         // 首页banner
         BaseAd.getBannerInstance().advertisementLoadingFlash(this)
         // 结果页原生
         BaseAd.getEndInstance().advertisementLoadingFlash(this)
         // 连接插屏
         BaseAd.getConnectInstance().advertisementLoadingFlash(this)
-        // 服务器页插屏
-        BaseAd.getBackInstance().advertisementLoadingFlash(this)
-    }
 
+    }
+    //等待展示open广告
+    private fun waitForTheOpenAdToAppear(){
+        GlobalScope.launch {
+            while (isActive){
+                val data = BaseAppUtils.ad_user_state.getLoadBooleanData()
+                if (data) {
+                    loadOpenAd()
+                    cancel()
+                }
+                delay(500)
+            }
+        }
+    }
     private fun loadOpenAd() {
+
         jobOpenAdsFlash?.cancel()
         jobOpenAdsFlash = null
         jobOpenAdsFlash = lifecycleScope.launch {
@@ -181,5 +205,36 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
                 BaseAppUtils.isStartYep = false
             }
         }
+    }
+
+    //更新用户的意见
+    private fun updateUserOpinions() {
+        val data = BaseAppUtils.ad_user_state.getLoadBooleanData()
+        if (data) {
+            return
+        }
+
+        val debugSettings =
+            ConsentDebugSettings.Builder(this)
+                .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
+                .build()
+        val params = ConsentRequestParameters
+            .Builder()
+            .setConsentDebugSettings(debugSettings)
+            .build()
+        consentInformation = UserMessagingPlatform.getConsentInformation(this)
+        consentInformation.requestConsentInfoUpdate(
+            this,
+            params, {
+                UserMessagingPlatform.loadAndShowConsentFormIfRequired(this) { loadAndShowError ->
+                    if (consentInformation.canRequestAds()) {
+                        BaseAppUtils.setLoadData(BaseAppUtils.ad_user_state, true)
+                    }
+                }
+            },
+            {
+                BaseAppUtils.setLoadData(BaseAppUtils.ad_user_state, true)
+            }
+        )
     }
 }

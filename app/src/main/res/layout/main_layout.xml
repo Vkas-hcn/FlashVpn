@@ -281,7 +281,7 @@
                 android:layout_marginBottom="32dp"
                 android:padding="1dp"
                 android:background="@drawable/gray_8"
-                android:visibility="@{showAd != 2 ? View.VISIBLE : View.GONE}"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
@@ -350,15 +350,10 @@
                 app:layout_constraintTop_toTopOf="@id/connectImg"
                 app:lottie_fileName="hahaha.json" />
 
-            <ProgressBar
-                android:id="@+id/pb_online"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <include
+                android:id="@+id/in_load"
                 android:visibility="@{showLoad ? View.VISIBLE : View.GONE}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                layout="@layout/layout_load"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout

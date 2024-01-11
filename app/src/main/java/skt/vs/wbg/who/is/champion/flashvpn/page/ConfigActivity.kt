@@ -43,8 +43,6 @@ class ConfigActivity : BaseActivityFlash<ListLayoutBinding>() {
         mBinding.back.setOnClickListener {
             listViewModel.showEndScAd(this)
         }
-
-
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

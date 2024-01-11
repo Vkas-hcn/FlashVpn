@@ -12,6 +12,7 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
@@ -128,6 +129,9 @@ object FlashLoadConnectAd {
         connectScreenAdCallback(closeWindowFun)
         activity.lifecycleScope.launch(Dispatchers.Main) {
             if (activity.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                activity.mBinding.showLoad = true
+                delay(1500)
+                activity.mBinding.showLoad = false
                 (adBase.appAdDataFlash as InterstitialAd).show(activity)
             }
         }

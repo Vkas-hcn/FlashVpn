@@ -40,7 +40,7 @@ object VPNDataHelper {
 
 
 
-    private fun getAllLocaleProfile(): MutableList<LocaleProfile> {
+     fun getAllLocaleProfile(): MutableList<LocaleProfile> {
         val list = OnlineVpnHelp.getDataFromTheServer()
         val data = Gson().toJson(list)
         Log.e(TAG, "getAllVpnListData: ${data}")

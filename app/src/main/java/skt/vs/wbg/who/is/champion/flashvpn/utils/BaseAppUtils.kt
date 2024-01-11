@@ -29,6 +29,7 @@ object BaseAppUtils {
     const val logTagFlash = "FlashVPN"
     const val vpn_ip = "vpn_ip"
     const val vpn_city = "vpn_city"
+    const val ad_user_state = "ad_user_state"
     //refer_data
     const val refer_data = "refer_data"
     var isStartYep: Boolean = true
@@ -288,7 +289,7 @@ object BaseAppUtils {
     }
 
     fun String.getLoadBooleanData(): Boolean {
-        return SPUtils.getInstance().getBoolean(this)
+        return SPUtils.getInstance().getBoolean(this,false)
     }
 
     fun String.getLoadIntData(): Int {

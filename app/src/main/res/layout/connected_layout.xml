@@ -8,6 +8,10 @@
             name="showAd"
             type="Integer"
             android:value="" />
+        <variable
+            name="showLoad"
+            type="Boolean"
+            android:value="false"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -126,6 +130,11 @@
                 android:visibility="@{showAd == 1 ? View.VISIBLE : View.GONE}" />
 
         </FrameLayout>
+
+        <include
+            android:id="@+id/in_load"
+            android:visibility="@{showLoad ? View.VISIBLE : View.GONE}"
+            layout="@layout/layout_load"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

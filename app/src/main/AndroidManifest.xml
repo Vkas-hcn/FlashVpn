@@ -23,6 +23,7 @@
 
         <activity
             android:name=".page.ProgressActivity"
+            android:launchMode="singleTop"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,12 +38,15 @@
 
         <activity
             android:name=".page.EndActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
             android:name=".page.ConfigActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
         <activity
             android:name=".page.WebFlashActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
 

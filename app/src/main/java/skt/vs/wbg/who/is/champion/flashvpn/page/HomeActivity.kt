@@ -2,6 +2,8 @@ package skt.vs.wbg.who.`is`.champion.flashvpn.page
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -13,6 +15,11 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
+import com.google.android.ump.ConsentDebugSettings
+import com.google.android.ump.ConsentForm
+import com.google.android.ump.ConsentInformation
+import com.google.android.ump.ConsentRequestParameters
+import com.google.android.ump.UserMessagingPlatform
 import skt.vs.wbg.who.`is`.champion.flashvpn.R
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadConnectAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseActivityFlash
@@ -22,6 +29,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.databinding.MainLayoutBinding
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 
 class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
 
@@ -45,11 +53,12 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
             mBinding.chronometer
         )
 
-        mBinding.lottieGuide.visibility = View.VISIBLE
-        mBinding.lottieGuide.setAnimation("hahaha.json")
-        mBinding.lottieGuide.repeatCount = ValueAnimator.INFINITE
-        mBinding.lottieGuide.playAnimation()
+
         if(!DataHelp.isConnectFun()){
+            mBinding.lottieGuide.visibility = View.VISIBLE
+            mBinding.lottieGuide.setAnimation("hahaha.json")
+            mBinding.lottieGuide.repeatCount = ValueAnimator.INFINITE
+            mBinding.lottieGuide.playAnimation()
             "o1guideexposure".putPointYep(this)
         }
         mBinding.lottieGuide.setOnClickListener {
@@ -97,11 +106,6 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
         mainViewModel.activityResume()
         mainViewModel.showBannerAd(this)
         "o1frontview".putPointYep(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mainViewModel.mService?.disconnect()
     }
 
 }

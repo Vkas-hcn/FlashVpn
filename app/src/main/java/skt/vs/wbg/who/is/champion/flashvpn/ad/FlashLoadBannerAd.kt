@@ -26,6 +26,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.HomeActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 import java.util.Date
 
@@ -45,31 +46,31 @@ object FlashLoadBannerAd {
         adBase.adView?.adListener = object : AdListener() {
             override fun onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
-                Log.d("TAG", "首页Banner广告加载完成")
+                Log.d(TAG, "首页Banner广告加载完成")
                 isLoadSuccess = true
             }
 
-            override fun onAdFailedToLoad(adError: com.google.android.gms.ads.LoadAdError) {
+            override fun onAdFailedToLoad(adError: LoadAdError) {
                 // Code to be executed when an ad request fails.
-                Log.d("TAG", "首页Banner广告加载-onAdFailedToLoad: ${adError.message}")
+                Log.d(TAG, "首页Banner广告加载-onAdFailedToLoad: ${adError.message}")
                 isLoadSuccess = false
             }
 
             override fun onAdOpened() {
                 // Code to be executed when an ad opens an overlay that
                 // covers the screen.
-                Log.d("TAG", "首页Banner广告-onAdOpened")
+                Log.d(TAG, "首页Banner广告-onAdOpened")
             }
 
             override fun onAdClicked() {
                 // Code to be executed when the user clicks on an ad.
-                Log.d("TAG", "首页Banner广告-onAdClicked")
+                Log.d(TAG, "首页Banner广告-onAdClicked")
             }
 
             override fun onAdClosed() {
                 // Code to be executed when the user is about to return
                 // to the app after tapping on an ad.
-                Log.d("TAG", "首页Banner广告-onAdClosed")
+                Log.d(TAG, "首页Banner广告-onAdClosed")
             }
         }
         val adRequest = AdRequest.Builder().build()
@@ -83,6 +84,7 @@ object FlashLoadBannerAd {
     fun showBannerAdFlash(activity: HomeActivity) {
         val state = activity.lifecycle.currentState == Lifecycle.State.RESUMED
         if (state) {
+            activity.mBinding.adViewContainer.removeAllViews()
             activity.mBinding.adViewContainer.addView(adBase.adView)
         }
     }

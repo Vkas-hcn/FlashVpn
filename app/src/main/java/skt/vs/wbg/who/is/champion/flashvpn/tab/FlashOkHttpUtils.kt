@@ -50,23 +50,23 @@ class FlashOkHttpUtils {
 
     fun getInstallList(context: Context, rd: ReferrerDetails) {
         val data = DataHelp.getInstallJson(rd, context)
-        Log.e(TAG, "Install request data= $data")
+        Log.d(TAG, "Install request data= $data")
         try {
             client.post(BaseAppUtils.tab_url, data, object : NetClientHelp.Callback {
                 override fun onSuccess(response: String) {
-                    Log.e(TAG, "Install 事件上报成功----->${response}")
+                    Log.d(TAG, "Install 事件上报成功----->${response}")
                     BaseAppUtils.setLoadData(BaseAppUtils.refer_data, response)
                 }
 
                 override fun onFailure(error: String) {
                     BaseAppUtils.setLoadData(BaseAppUtils.refer_data, false)
-                    Log.e(TAG, "Install事件上报失败----->${error}")
+                    Log.d(TAG, "Install事件上报失败----->${error}")
 
                 }
             })
         } catch (e: Exception) {
             BaseAppUtils.setLoadData(BaseAppUtils.refer_data, false)
-            Log.e(TAG, "Install事件上报失败----->${e}")
+            Log.d(TAG, "Install事件上报失败----->${e}")
         }
     }
 
@@ -78,15 +78,15 @@ class FlashOkHttpUtils {
         flashAdBean: FlashAdBean
     ) {
         val json = DataHelp.getAdJson(context, adValue, responseInfo, type, flashAdBean)
-        Log.e(TAG, "ad---${type}--request data-->${json}")
+        Log.d(TAG, "ad---${type}--request data-->${json}")
         try {
             client.post(BaseAppUtils.tab_url, json, object : NetClientHelp.Callback {
                 override fun onSuccess(response: String) {
-                    Log.e(TAG, "${type}广告事件上报-成功->")
+                    Log.d(TAG, "${type}广告事件上报-成功->")
                 }
 
                 override fun onFailure(error: String) {
-                    Log.e(TAG, "${type}广告事件上报-失败-->${error}")
+                    Log.d(TAG, "${type}广告事件上报-失败-->${error}")
                 }
             })
         } catch (e: Exception) {
@@ -107,15 +107,15 @@ class FlashOkHttpUtils {
         } else {
             DataHelp.getTbaTimeDataJson(context, tbaValue, eventName, parameterName)
         }
-        Log.e(TAG, "${eventName}--TBA事件上报-->${json}")
+        Log.d(TAG, "${eventName}--TBA事件上报-->${json}")
         try {
             client.post(BaseAppUtils.tab_url, json, object : NetClientHelp.Callback {
                 override fun onSuccess(response: String) {
-                    Log.e(TAG, "${eventName}--TBA事件上报-成功->")
+                    Log.d(TAG, "${eventName}--TBA事件上报-成功->")
                 }
 
                 override fun onFailure(error: String) {
-                    Log.e(TAG, "${eventName}--TBA事件上报-失败-->${error}")
+                    Log.d(TAG, "${eventName}--TBA事件上报-失败-->${error}")
                 }
             })
         } catch (e: Exception) {
@@ -132,14 +132,14 @@ class FlashOkHttpUtils {
                 override fun onSuccess(response: String) {
                     val responseData = processString(response)
                     BaseAppUtils.setLoadData(BaseAppUtils.vpn_online, responseData)
-                    Log.e(TAG, "获取下发服务器数据-成功->$responseData")
+                    Log.d(TAG, "获取下发服务器数据-成功->$responseData")
                     "ye_hq".putPointYep(context)
                     val date2 = (System.currentTimeMillis()-date)/1000
                     DataHelp.putPointTimeYep("ye_tm", date2,"time",context)
                 }
 
                 override fun onFailure(error: String) {
-                    Log.e(TAG, "获取下发服务器数据-失败->${error}")
+                    Log.d(TAG, "获取下发服务器数据-失败->${error}")
                 }
             })
         } catch (e: Exception) {

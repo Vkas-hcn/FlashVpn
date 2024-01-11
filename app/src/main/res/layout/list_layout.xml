@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="showLoad"
+            type="Boolean"
+            android:value="false" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:fitsSystemWindows="true"
         android:layout_height="match_parent"
-        android:background="#F0F4F3">
-
+        android:background="#F0F4F3"
+        android:fitsSystemWindows="true">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/back"
@@ -43,5 +50,9 @@
             app:layout_constraintTop_toBottomOf="@id/resultTitle"
             tools:listitem="@layout/item_config" />
 
+        <include
+            android:id="@+id/in_load"
+            layout="@layout/layout_load"
+            android:visibility="@{showLoad ? View.VISIBLE : View.GONE}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

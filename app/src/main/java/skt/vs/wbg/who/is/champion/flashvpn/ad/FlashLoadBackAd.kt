@@ -12,10 +12,14 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
+import skt.vs.wbg.who.`is`.champion.flashvpn.page.ConfigActivity
+import skt.vs.wbg.who.`is`.champion.flashvpn.page.EndActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.HomeActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
@@ -55,7 +59,13 @@ object FlashLoadBackAd {
                     adBase.isLoadingFlash = false
                     adBase.appAdDataFlash = interstitialAd
                     interstitialAd.setOnPaidEventListener { adValue ->
-                        FlashOkHttpUtils().getAdList(context, adValue, interstitialAd.responseInfo, "back", adBackData)
+                        FlashOkHttpUtils().getAdList(
+                            context,
+                            adValue,
+                            interstitialAd.responseInfo,
+                            "back",
+                            adBackData
+                        )
                     }
                     DataHelp.putPointTimeYep(
                         "o31",
@@ -102,6 +112,7 @@ object FlashLoadBackAd {
 
 
     fun displayBackAdvertisementFlash(
+        type: Int,
         activity: AppCompatActivity,
         closeWindowFun: () -> Unit
     ): Int {
@@ -124,6 +135,18 @@ object FlashLoadBackAd {
         backScreenAdCallback(closeWindowFun)
         activity.lifecycleScope.launch(Dispatchers.Main) {
             if (activity.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                if (type == 1) {
+                    activity as EndActivity
+                    activity.mBinding.showLoad = true
+                    delay(1500)
+                    activity.mBinding.showLoad = false
+                }
+                if (type == 2) {
+                    activity as ConfigActivity
+                    activity.mBinding.showLoad = true
+                    delay(1500)
+                    activity.mBinding.showLoad = false
+                }
                 (adBase.appAdDataFlash as InterstitialAd).show(activity)
             }
         }
