@@ -12,6 +12,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.page.ConfigActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.EndActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.HomeActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.VPNDataHelper
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
 import java.lang.ref.WeakReference
 
 class ConnectListViewModel : ViewModel() {
@@ -70,6 +71,7 @@ class ConnectListViewModel : ViewModel() {
     }
 
     fun showEndScAd(activity: ConfigActivity) {
+        "o25".putPointYep(activity)
         if (FlashLoadBackAd.displayBackAdvertisementFlash(activity, closeWindowFun = {
                 activity.finish()
             }) != 2) {

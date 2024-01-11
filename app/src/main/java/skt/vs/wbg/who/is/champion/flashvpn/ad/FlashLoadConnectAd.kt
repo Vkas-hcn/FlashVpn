@@ -17,15 +17,18 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.HomeActivity
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 import java.util.Date
 
 object FlashLoadConnectAd {
     private val adBase = BaseAd.getConnectInstance()
+    private lateinit var adBackData: FlashAdBean
     fun loadConnectAdvertisementFlash(context: Context, adData: FlashAdBean) {
         val adRequest = AdRequest.Builder().build()
-
+        adBackData = adBase.beforeLoadLink(adData)
         InterstitialAd.load(
             context,
             adData.onLnose,
@@ -34,12 +37,34 @@ object FlashLoadConnectAd {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     adBase.isLoadingFlash = false
                     adBase.appAdDataFlash = null
+                    val error =
+                        """
+           domain: ${adError.domain}, code: ${adError.code}, message: ${adError.message}
+          """"
+                    DataHelp.putPointTimeYep(
+                        "o32",
+                        error,
+                        "yn",
+                        context
+                    )
                 }
 
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
                     adBase.loadTimeFlash = Date().time
                     adBase.isLoadingFlash = false
                     adBase.appAdDataFlash = interstitialAd
+                    interstitialAd.setOnPaidEventListener { adValue ->
+                        FlashOkHttpUtils().getAdList(
+                            context, adValue, interstitialAd.responseInfo, "connect",
+                            adBackData
+                        )
+                    }
+                    DataHelp.putPointTimeYep(
+                        "o31",
+                        "connect+${adData.onLnose}",
+                        "yn",
+                        context
+                    )
                 }
             })
     }
@@ -52,7 +77,7 @@ object FlashLoadConnectAd {
                 }
 
                 override fun onAdDismissedFullScreenContent() {
-                        closeWindowFun()
+                    closeWindowFun()
 
                     adBase.appAdDataFlash = null
                     adBase.whetherToShowFlash = false
@@ -74,6 +99,7 @@ object FlashLoadConnectAd {
                     // Called when ad is shown.
                     adBase.whetherToShowFlash = true
                     Log.d(logTagFlash, "connect----show")
+                    adBackData = adBase.afterLoadLink(adBackData)
                 }
             }
     }

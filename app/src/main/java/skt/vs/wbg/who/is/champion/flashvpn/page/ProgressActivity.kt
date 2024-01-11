@@ -2,12 +2,15 @@ package skt.vs.wbg.who.`is`.champion.flashvpn.page
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.ads.AdSize
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.TimeoutCancellationException
@@ -23,6 +26,8 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseActivityFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.databinding.ProgressLayoutBinding
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 
 class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
@@ -35,6 +40,13 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getFileBaseData()
+        lifecycleScope.launch(Dispatchers.IO) {
+            if (!DataHelp.isConnectFun()) {
+                FlashOkHttpUtils().getTbaIp(this@ProgressActivity)
+            }
+            FlashOkHttpUtils().getSessionList(this@ProgressActivity)
+            FlashOkHttpUtils().getVpnData(this@ProgressActivity)
+        }
         MainScope().launch {
             for (i in 1..100) {
                 if (progressInt != 100) {
@@ -94,8 +106,8 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
         // 开屏
         BaseAd.getOpenInstance().advertisementLoadingFlash(this)
         loadOpenAd()
-        // 首页原生
-        BaseAd.getHomeInstance().advertisementLoadingFlash(this)
+        // 首页banner
+        BaseAd.getBannerInstance().advertisementLoadingFlash(this)
         // 结果页原生
         BaseAd.getEndInstance().advertisementLoadingFlash(this)
         // 连接插屏
@@ -151,6 +163,7 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
         super.onStop()
         jobOpenAdsFlash?.cancel()
         jobOpenAdsFlash = null
+        BaseAppUtils.isStartYep = true
     }
 
     override fun onResume() {
@@ -161,6 +174,10 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
                 if (mBinding.flashProgressBar.progress == 100) {
                     startToMain()
                 }
+            }
+            if (BaseAppUtils.isStartYep) {
+                DataHelp.putPointYep("o1startup", this@ProgressActivity)
+                BaseAppUtils.isStartYep = false
             }
         }
     }

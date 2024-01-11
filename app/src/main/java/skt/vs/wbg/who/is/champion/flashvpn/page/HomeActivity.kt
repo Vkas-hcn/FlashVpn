@@ -3,17 +3,23 @@ package skt.vs.wbg.who.`is`.champion.flashvpn.page
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import skt.vs.wbg.who.`is`.champion.flashvpn.R
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadConnectAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseActivityFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.MainViewModel
 import skt.vs.wbg.who.`is`.champion.flashvpn.databinding.MainLayoutBinding
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 
 class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
@@ -42,7 +48,11 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
         mBinding.lottieGuide.setAnimation("hahaha.json")
         mBinding.lottieGuide.repeatCount = ValueAnimator.INFINITE
         mBinding.lottieGuide.playAnimation()
+        if(!DataHelp.isConnectFun()){
+            DataHelp.putPointYep("o1guideexposure", this)
+        }
         mBinding.lottieGuide.setOnClickListener {
+            DataHelp.putPointYep("o1guidecc", this)
             cancelGuideLottie()
             mainViewModel.toConnectVerifyNet()
         }
@@ -84,8 +94,8 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
     override fun onResume() {
         super.onResume()
         mainViewModel.activityResume()
-        mainViewModel.showHomeAd(this)
-
+        mainViewModel.showBannerAd(this)
+        DataHelp.putPointYep("o1frontview",this)
     }
 
     override fun onDestroy() {

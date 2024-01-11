@@ -17,11 +17,22 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashUserBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.net.FlashCloak
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.SPUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.VPNDataHelper.initVpnFb
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringData
 
 object BaseAppUtils {
+    const val TAG = "FlashVPN"
+    const val vpn_url = "https://test.onlinenetwork.link/tKyBVzPf/kmFHD/RMA/"
+    const val tab_url = "https://test-baste.onlinenetwork.link/summon/wound"
+    const val vpn_online = "vpn_online"
+    const val ip_tab_flash = "ip_tab_flash"
+    const val refer_tab = "refer_tab"
     const val logTagFlash = "FlashVPN"
+    const val vpn_ip = "vpn_ip"
+    const val vpn_city = "vpn_city"
     //refer_data
     const val refer_data = "refer_data"
+    var isStartYep: Boolean = true
+
     //ad
     const val onLguai = "onLguai"
 
@@ -38,9 +49,11 @@ object BaseAppUtils {
   "onLbibl":"ca-app-pub-3940256099942544/2247696110",
   "onLconcer":"ca-app-pub-3940256099942544/2247696110",
   "onLnose":"ca-app-pub-3940256099942544/8691691433",
-  "onLmemor":"ca-app-pub-3940256099942544/1033173712"
+  "onLmemor":"ca-app-pub-3940256099942544/1033173712",
+  "bannerId":"ca-app-pub-3940256099942544/6300978111"
 }
     """
+
     //本地买量数据
     const val local_purchase_data = """
         {
@@ -53,13 +66,15 @@ object BaseAppUtils {
     "onLisp": 2
 }
     """
+
     //本地广告逻辑
     const val local_ad_logic = """
 {
-    "onLmatt": "2",
+    "onLmatt": "1",
     "onLprob": "2",
     "onLfeli": "2"
 }    """
+
     fun initApp(application: Application) {
         val myPid = Process.myPid()
         val activityManager =
@@ -82,15 +97,18 @@ object BaseAppUtils {
     }
 
     //获取本地assets文件夹下的json文件
-    fun getAdString(data:String): String {
+    fun getAdString(data: String): String {
         return decodeBase64(data)
     }
-    fun getPurchaseString(data:String): String {
+
+    fun getPurchaseString(data: String): String {
         return decodeBase64(data)
     }
-    fun getAdLogicString(data:String): String {
+
+    fun getAdLogicString(data: String): String {
         return decodeBase64(data)
     }
+
     //base64解密
     private fun decodeBase64(str: String): String {
         return String(android.util.Base64.decode(str, android.util.Base64.DEFAULT))
@@ -152,6 +170,7 @@ object BaseAppUtils {
             fromLogicJson(dataJson)
         }.getOrNull() ?: fromLogicJson(local_ad_logic)
     }
+
     private fun isFacebookUser(): Boolean {
         val data = getUserJson()
         val referrer = SPUtils.getInstance().getString(refer_data)
@@ -175,53 +194,104 @@ object BaseAppUtils {
     }
 
     //屏蔽广告用户
-    fun blockAdUsers():Boolean{
+    fun blockAdUsers(): Boolean {
         val data = getLogicJson().onLmatt
-        when(data){
-            "1"->{
+        when (data) {
+            "1" -> {
                 return true
             }
-            "2"->{
+
+            "2" -> {
                 return isItABuyingUser()
             }
-            "3"->{
+
+            "3" -> {
                 return false
             }
-            else->{
+
+            else -> {
                 return true
             }
         }
     }
+
     //黑名单
-    fun blockAdBlacklist():Boolean{
+    fun blockAdBlacklist(): Boolean {
         val blackData = SPUtils.getInstance().getBoolean(FlashCloak.IS_BLACK, true)
-        when(getLogicJson().onLprob){
-            "1"->{
+        when (getLogicJson().onLprob) {
+            "1" -> {
                 return !blackData
             }
-            "2"->{
+
+            "2" -> {
                 return true
             }
-            else->{
+
+            else -> {
                 return true
             }
         }
     }
+
     //是否扰流
-    fun spoilerOrNot():Boolean{
-        when(getLogicJson().onLfeli){
-            "1"->{
+    fun spoilerOrNot(): Boolean {
+        when (getLogicJson().onLfeli) {
+            "1" -> {
                 return true
             }
-            "2"->{
+
+            "2" -> {
                 return false
             }
-            "3"->{
+
+            "3" -> {
                 return !isItABuyingUser()
             }
-            else->{
+
+            else -> {
                 return false
             }
         }
+    }
+
+
+    fun setLoadData(key: String, value: Any) {
+        when (value) {
+            is String -> {
+                SPUtils.getInstance().put(key, value)
+            }
+
+            is Int -> {
+                SPUtils.getInstance().put(key, value)
+            }
+
+            is Boolean -> {
+                SPUtils.getInstance().put(key, value)
+            }
+
+            is Float -> {
+                SPUtils.getInstance().put(key, value)
+            }
+
+            is Long -> {
+                SPUtils.getInstance().put(key, value)
+            }
+
+            else -> {
+                Log.e(TAG, "setLoadData: value is not support")
+            }
+        }
+    }
+
+    fun String.getLoadStringData(): String {
+        return SPUtils.getInstance().getString(this)
+    }
+
+    fun String.getLoadBooleanData(): Boolean {
+        return SPUtils.getInstance().getBoolean(this)
+    }
+
+    fun String.getLoadIntData(): Int {
+        return SPUtils.getInstance().getInt(this)
     }
 }

@@ -18,7 +18,11 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.ProgressActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.SPUtils
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadBooleanData
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 
 class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
@@ -40,6 +44,7 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
             //启用mmkv的多进程功能
             MMKV.mmkvWithID("FlashVpn", MMKV.MULTI_PROCESS_MODE)
         }
+        var vpnState = ""
     }
 
     var adActivity: Activity? = null
@@ -51,6 +56,8 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
         BaseAppUtils.initApp(this)
         registerActivityLifecycleCallbacks(this)
         getReferInformation(this)
+        "o16".putPointYep(this)
+
     }
 
 
@@ -79,6 +86,7 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     private fun toSplash(activity: Activity) {
+        "o15".putPointYep(activity)
         val intent = Intent(activity, ProgressActivity::class.java)
         activity.startActivity(intent)
         if (activity is ProgressActivity) activity.finish()
@@ -132,9 +140,11 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
         if (referrer.isNotBlank()) {
             return
         }
+        val date = System.currentTimeMillis()
+
 //        installReferrer = "gclid"
-        installReferrer = "fb4a"
-        SPUtils.getInstance().put(BaseAppUtils.refer_data,installReferrer)
+//        installReferrer = "fb4a"
+//        SPUtils.getInstance().put(BaseAppUtils.refer_data,installReferrer)
 
         runCatching {
             val referrerClient = InstallReferrerClient.newBuilder(context).build()
@@ -142,9 +152,19 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
                 override fun onInstallReferrerSetupFinished(p0: Int) {
                     when (p0) {
                         InstallReferrerClient.InstallReferrerResponse.OK -> {
-//                            val installReferrer =
-//                                referrerClient.installReferrer.installReferrer ?: ""
-//                            SPUtils.getInstance().put(BaseAppUtils.refer_data,installReferrer)
+                            val installReferrer =
+                                referrerClient.installReferrer.installReferrer ?: ""
+                            SPUtils.getInstance().put(BaseAppUtils.refer_data,installReferrer)
+                            DataHelp.putPointYep("o1unusual",context)
+                            val loadDate = (System.currentTimeMillis()-date)/1000
+                            DataHelp.putPointTimeYep("o1Obtain",loadDate.toInt(),"conntime",context)
+                            if (!BaseAppUtils.refer_tab.getLoadBooleanData()) {
+                                runCatching {
+                                    referrerClient?.installReferrer?.run {
+                                        FlashOkHttpUtils().getInstallList(context, this)
+                                    }
+                                }.exceptionOrNull()
+                            }
                         }
                     }
                     referrerClient.endConnection()

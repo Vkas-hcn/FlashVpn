@@ -12,6 +12,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadBackAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadEndAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.EndActivity
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 
 class EndViewModel : ViewModel() {
@@ -37,6 +38,7 @@ class EndViewModel : ViewModel() {
     }
 
     fun showEndScAd(activity: EndActivity) {
+        "o23".putPointYep(activity)
         if (FlashLoadBackAd.displayBackAdvertisementFlash(activity, closeWindowFun = {
                 activity.finish()
             }) != 2) {

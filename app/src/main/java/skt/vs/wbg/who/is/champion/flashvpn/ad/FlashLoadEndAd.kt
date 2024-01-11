@@ -1,5 +1,6 @@
 package skt.vs.wbg.who.`is`.champion.flashvpn.ad
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Outline
 import android.util.Log
@@ -21,12 +22,17 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.R
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.EndActivity
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 import java.util.Date
 
 object FlashLoadEndAd {
     private val adBase = BaseAd.getEndInstance()
+    private lateinit var adEndData: FlashAdBean
+
     fun loadEndAdvertisementFlash(context: Context, adData: FlashAdBean) {
+        adEndData = adBase.beforeLoadLink(adData)
 
         val vpnNativeAds = AdLoader.Builder(
             context.applicationContext,
@@ -45,7 +51,16 @@ object FlashLoadEndAd {
         vpnNativeAds.withNativeAdOptions(adOptions)
         vpnNativeAds.forNativeAd {
             adBase.appAdDataFlash = it
-            it.setOnPaidEventListener {
+            it.setOnPaidEventListener {advalue->
+                it.responseInfo?.let { nav ->
+                    FlashOkHttpUtils().getAdList(context, advalue, nav, "end", adEndData)
+                }
+                DataHelp.putPointTimeYep(
+                    "o31",
+                    "end+${adData.onLconcer}",
+                    "yn",
+                    context
+                )
                 //重新缓存
                 BaseAd.getEndInstance().advertisementLoadingFlash(context)
             }
@@ -53,12 +68,19 @@ object FlashLoadEndAd {
         vpnNativeAds.withAdListener(object : AdListener() {
             override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                 super.onAdFailedToLoad(loadAdError)
+
+                adBase.isLoadingFlash = false
+                adBase.appAdDataFlash = null
                 val error =
                     """
            domain: ${loadAdError.domain}, code: ${loadAdError.code}, message: ${loadAdError.message}
           """"
-                adBase.isLoadingFlash = false
-                adBase.appAdDataFlash = null
+                DataHelp.putPointTimeYep(
+                    "o32",
+                    error,
+                    "yn",
+                    context
+                )
             }
 
             override fun onAdLoaded() {
@@ -74,6 +96,7 @@ object FlashLoadEndAd {
     }
 
 
+    @SuppressLint("InflateParams")
     fun setDisplayEndNativeAdFlash(activity: EndActivity) {
         activity.runOnUiThread {
             val binding = activity.mBinding
@@ -81,13 +104,7 @@ object FlashLoadEndAd {
                 val state = activity.lifecycle.currentState == Lifecycle.State.RESUMED
 
                 if (adData is NativeAd && !adBase.whetherToShowFlash && state) {
-//                    if (!ZELZ.isBlockScreenAds(ZELZ.getLocalVpnBootData().elk_ref)) {
-//                        Log.d(logTagFlash,"根据买量屏蔽end广告。。。")
-//                        binding.frameLayout2.visibility = View.GONE
-//                        return@let
-//                    }
                     binding.showAd = 0
-
                     if (activity.isDestroyed || activity.isFinishing || activity.isChangingConfigurations) {
                         adData.destroy()
                         return@let
@@ -105,6 +122,7 @@ object FlashLoadEndAd {
                     binding.showAd =1
                     adBase.whetherToShowFlash = true
                     adBase.appAdDataFlash = null
+                    adEndData = adBase.afterLoadLink(adEndData)
                 }
             }
         }

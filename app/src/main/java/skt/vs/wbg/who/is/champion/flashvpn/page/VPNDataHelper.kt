@@ -2,6 +2,7 @@ package skt.vs.wbg.who.`is`.champion.flashvpn.page
 
 import android.annotation.SuppressLint
 import android.util.Base64
+import android.util.Log
 import androidx.annotation.Keep
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -15,6 +16,9 @@ import kotlinx.coroutines.launch
 import skt.vs.wbg.who.`is`.champion.flashvpn.BuildConfig
 import skt.vs.wbg.who.`is`.champion.flashvpn.R
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.OnlineVpnHelp
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import java.lang.reflect.Type
 
 object VPNDataHelper {
@@ -30,55 +34,50 @@ object VPNDataHelper {
 
     var cachePosition = -1
 
-    val allLocaleProfiles: ArrayList<LocaleProfile> by lazy {
+    val allLocaleProfiles: MutableList<LocaleProfile> by lazy {
         getAllLocaleProfile()
     }
 
-    private fun getAllLocaleProfile(): ArrayList<LocaleProfile> {
-        if ((remoteAllList?.size ?: 0) > 0) {
-            val dataList = remoteAllList!!
-            return if ((remoteSmartStringList?.size ?: 0) > 0) {
-                val a: LocaleProfile? = dataList.findLast {
-                    remoteVPNSmartString?.get(0).toString() == it.onLm_host
-                }
-                if (a != null)
-                    dataList.apply { this.add(a) }
-                else
-                    dataList.apply {
-                        add(0, getSmart())
-                    }
-            } else {
-                dataList.apply {
-                    add(0, getSmart())
-                }
-            }
-        } else
-            return getFileLocaleProfile().apply {
-                add(0, getSmart())
-            }
+
+
+    private fun getAllLocaleProfile(): MutableList<LocaleProfile> {
+        val list = OnlineVpnHelp.getDataFromTheServer()
+        val data = Gson().toJson(list)
+        Log.e(TAG, "getAllVpnListData: ${data}")
+        list?.add(0, getFastVpnOnLine())
+        return list ?: local
     }
 
-    fun getSmart(): LocaleProfile {
-        val gson = Gson()
-        val data = gson.fromJson(Base64Utils.decode(jsonSmart), LocaleProfile::class.java)
-        return data
-    }
+    private val local = listOf(
+        LocaleProfile(
+            city = "",
+            name = "",
+            onLi = "",
+            onLm_host = "",
+            onLo_Port = 0,
+            onLu_password = ""
+        )
+    ).toMutableList()
 
-
-    private var jsonLocaleData = """
-        WwogICAgewogICAgICAgICJvbkx1IjogIm02SVM3OWw2MjVuQSIsCiAgICAgICAgIm9uTGkiOiAiYWVzLTI1Ni1nY20iLAogICAgICAgICJvbkxvIjogIjQ0MyIsCiAgICAgICAgIm9uTHAiOiAiVW5pdGVkIFN0YXRlcyIsCiAgICAgICAgIm9uTGwiOiAiU2VhdHRsZSIsCiAgICAgICAgIm9uTG0iOiAiNjYuNDIuNjQuNTUiCiAgICB9LAogICAgewogICAgICAgICJvbkx1IjogIm02SVM3OWw2MjVuQSIsCiAgICAgICAgIm9uTGkiOiAiYWVzLTI1Ni1nY20iLAogICAgICAgICJvbkxvIjogIjQ0MyIsCiAgICAgICAgIm9uTHAiOiAiSmFwYW4iLAogICAgICAgICJvbkxsIjogIlRva3lvIiwKICAgICAgICAib25MbSI6ICI0NS43Ni4yMTQuOTQiCiAgICB9LAogICAgewogICAgICAgICJvbkx1IjogIm02SVM3OWw2MjVuQSIsCiAgICAgICAgIm9uTGkiOiAiYWVzLTI1Ni1nY20iLAogICAgICAgICJvbkxvIjogIjQ0MyIsCiAgICAgICAgIm9uTHAiOiAiVW5pdGVka2luZ2RvbSIsCiAgICAgICAgIm9uTGwiOiAiTG9uZG9uIiwKICAgICAgICAib25MbSI6ICI5NS4xNzkuMTk2LjEzMCIKICAgIH0sCiAgICB7CiAgICAgICAgIm9uTHUiOiAibTZJUzc5bDYyNW5BIiwKICAgICAgICAib25MaSI6ICJhZXMtMjU2LWdjbSIsCiAgICAgICAgIm9uTG8iOiAiNDQzIiwKICAgICAgICAib25McCI6ICJDYW5hZGEiLAogICAgICAgICJvbkxsIjogIlRvcm9udG8iLAogICAgICAgICJvbkxtIjogIjE1NS4xMzguMTM4LjEzNyAiCiAgICB9Cl0=
-    """.trimIndent()
-
-
-    private var jsonSmart = """
-        ewogICAgIm9uTHUiOiAibTZJUzc5bDYyNW5BIiwKICAgICJvbkxpIjogImFlcy0yNTYtZ2NtIiwKICAgICJvbkxvIjogIjQ0MyIsCiAgICAib25McCI6ICJGYXN0IFNlcnZlcnMiLAogICAgIm9uTGwiOiAiU2VhdHRsZSIsCiAgICAib25MbSI6ICI2Ni40Mi42NC41NSIKfQ==
-        """.trimIndent()
-
-
-    fun getFileLocaleProfile(): ArrayList<LocaleProfile> {
-        val gson = Gson()
-        val listType: Type = object : TypeToken<ArrayList<LocaleProfile>>() {}.type
-        return gson.fromJson(Base64Utils.decode(jsonLocaleData), listType)
+    private fun getFastVpnOnLine(): LocaleProfile {
+        val ufVpnBean: MutableList<LocaleProfile>? = OnlineVpnHelp.getDataFastServerData()
+        return if (ufVpnBean == null) {
+            val data = OnlineVpnHelp.getDataFromTheServer()?.getOrNull(0)
+            BaseAppUtils.setLoadData(BaseAppUtils.vpn_ip, data?.onLm_host.toString())
+            BaseAppUtils.setLoadData(BaseAppUtils.vpn_city, data?.city.toString())
+            LocaleProfile(
+                city = data?.city.toString(),
+                name = data?.name.toString(),
+                onLu_password = data?.onLu_password.toString(),
+                onLo_Port = data?.onLo_Port ?: 0,
+                onLm_host = data?.onLm_host.toString(),
+                onLi = data?.onLi.toString()
+            )
+        } else {
+            ufVpnBean.shuffled().first().apply {
+                name = "Fast Server"
+            }
+        }
     }
 
     fun getImage(name: String): Int {

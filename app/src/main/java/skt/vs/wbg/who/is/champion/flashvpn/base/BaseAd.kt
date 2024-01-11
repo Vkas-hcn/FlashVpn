@@ -2,13 +2,17 @@ package skt.vs.wbg.who.`is`.champion.flashvpn.base
 
 import android.content.Context
 import android.util.Log
+import com.google.android.gms.ads.AdView
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadBackAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadBannerAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadConnectAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadEndAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadHomeAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadOpenAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringData
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 import java.util.Date
 
@@ -22,6 +26,7 @@ class BaseAd private constructor() {
         fun getConnectInstance() = instanceHelper.connectLoadFlash
         fun getBackInstance() = instanceHelper.backLoadFlash
 
+        fun getBannerInstance() = instanceHelper.bannerLoadFlash
         private var idCounter = 0
     }
 
@@ -31,6 +36,7 @@ class BaseAd private constructor() {
         val resultLoadFlash = BaseAd()
         val connectLoadFlash = BaseAd()
         val backLoadFlash = BaseAd()
+        val bannerLoadFlash = BaseAd()
     }
 
     private val id = generateId()
@@ -49,11 +55,23 @@ class BaseAd private constructor() {
             3 -> "end"
             4 -> "connect"
             5 -> "back"
+            6 -> "banner"
             else -> ""
         }
     }
-
+    fun getID(adBean: FlashAdBean): String {
+        return when (id) {
+            1 -> "open+${adBean.onLnugit}"
+            2 -> "home+${adBean.onLbibl}"
+            3 -> "end+${adBean.onLconcer}"
+            4 -> "connect+${adBean.onLnose}"
+            5 -> "back+${adBean.onLmemor}"
+            6 -> "banner+${adBean.bannerId}"
+            else -> ""
+        }
+    }
     var appAdDataFlash: Any? = null
+    var adView: AdView? = null
 
     var isLoadingFlash = false
 
@@ -92,6 +110,7 @@ class BaseAd private constructor() {
 
 
     private fun loadStartupPageAdvertisementFlash(context: Context, adData: FlashAdBean) {
+        DataHelp.putPointTimeYep("o30", getID(adData),"yn",context)
         adLoaders[id]?.invoke(context, adData)
     }
 
@@ -119,9 +138,35 @@ class BaseAd private constructor() {
         adLoadersMap[5] = { context, adData ->
             FlashLoadBackAd.loadBackAdvertisementFlash(context, adData)
         }
-
+        adLoadersMap[6] = { context, adData ->
+            FlashLoadBannerAd.loadBannerAdFlash(context, adData)
+        }
         return adLoadersMap
     }
+    fun beforeLoadLink(yepAdBean: FlashAdBean): FlashAdBean {
+        val ipAfterVpnLink = BaseAppUtils.vpn_ip.getLoadStringData()
+        val ipAfterVpnCity = BaseAppUtils.vpn_city.getLoadStringData()
+        if (DataHelp.isConnectFun()) {
+            yepAdBean.loadIp = ipAfterVpnLink ?: ""
+            yepAdBean.loadCity = ipAfterVpnCity ?: ""
+        } else {
+            yepAdBean.loadIp = BaseAppUtils.ip_tab_flash.getLoadStringData()
+            yepAdBean.loadCity = "null"
+        }
+        return yepAdBean
+    }
 
+    fun afterLoadLink(yepAdBean: FlashAdBean): FlashAdBean {
+        val ipAfterVpnLink = BaseAppUtils.vpn_ip.getLoadStringData()
+        val ipAfterVpnCity = BaseAppUtils.vpn_city.getLoadStringData()
+        if (DataHelp.isConnectFun()) {
+            yepAdBean.showIp = ipAfterVpnLink ?: ""
+            yepAdBean.showTheCity = ipAfterVpnCity ?: ""
+        } else {
+            yepAdBean.showIp = BaseAppUtils.ip_tab_flash.getLoadStringData()
+            yepAdBean.showTheCity = "null"
+        }
+        return yepAdBean
+    }
 }
 

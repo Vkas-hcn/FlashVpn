@@ -48,6 +48,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import skt.vs.wbg.who.`is`.champion.flashvpn.R
+import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadBannerAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadConnectAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadHomeAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
@@ -59,6 +60,11 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.page.HomeActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.LocaleProfile
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.VPNDataHelper
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.WebFlashActivity
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.OnlineVpnHelp
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -138,12 +144,19 @@ class MainViewModel : ViewModel() {
 
     private fun requestPermissionForResult(result: ActivityResult) {
         if (result.resultCode == AppCompatActivity.RESULT_OK) {
+            putPointYep("permission", this.activity.get()!!)
+
             activity.get()?.let { mService?.let { it1 -> toConnectVerifyNet() } }
         } else {
             openServerState.postValue(OpenServiceState.DISCONNECTED)
         }
     }
 
+    private fun getConnectTime(context: Context) {
+        val time = (System.currentTimeMillis() - connectTime) / 1000
+        DataHelp.putPointTimeYep("o14", time, "conntime", context)
+        connectTime = 0
+    }
 
     private fun initOb() {
         activity.get()?.mBinding?.lifecycleOwner?.let {
@@ -154,7 +167,8 @@ class MainViewModel : ViewModel() {
                     }
 
                     OpenServiceState.CONNECTED -> {
-
+                        "o12".putPointYep(activity.get()!!)
+                        getConnectTime(activity.get()!!)
                         if (isClickConnect && it.lifecycle.currentState == Lifecycle.State.RESUMED) {
                             showConnectLive.postValue(true)
                             isClickConnect = false
@@ -217,23 +231,27 @@ class MainViewModel : ViewModel() {
             }
 
             setIcon.setOnClickListener {
+                "o27".putPointYep(ac)
                 if (!ac.mBinding.drawer.isOpen) ac.mBinding.drawer.open()
             }
             connectAnimate.setOnClickListener {
+                connectPut(ac)
                 if (ac.isShowGuide) ac.cancelGuideLottie()
                 toConnectVerifyNet()
             }
             connectImg.setOnClickListener {
+                connectPut(ac)
                 if (ac.isShowGuide) ac.cancelGuideLottie()
                 toConnectVerifyNet()
             }
             listCl.setOnClickListener {
-                val intent = Intent(ac, ConfigActivity::class.java)
-                intent.putExtra(
-                    "IS_CONNECT", openServerState.value == OpenServiceState.CONNECTED
-                )
-
-                mainToListResultIntent.launch(intent)
+                isNextConnect(ac) {
+                    val intent = Intent(ac, ConfigActivity::class.java)
+                    intent.putExtra(
+                        "IS_CONNECT", openServerState.value == OpenServiceState.CONNECTED
+                    )
+                    mainToListResultIntent.launch(intent)
+                }
             }
             ac.mBinding.pppppppp.setOnClickListener {
                 ac.startActivity(Intent(ac, WebFlashActivity::class.java))
@@ -287,7 +305,13 @@ class MainViewModel : ViewModel() {
         }
 
     }
-
+fun connectPut(activity: HomeActivity){
+    if (DataHelp.isConnectFun()) {
+        "o29".putPointYep(activity)
+    } else {
+        "o28".putPointYep(activity)
+    }
+}
     private fun setChromometer() {
         if (userInterrupt) {
             userInterrupt = false
@@ -350,12 +374,13 @@ class MainViewModel : ViewModel() {
                     openServerState.postValue(OpenServiceState.DISCONNECTED)
                     mService?.disconnect()
                     cancelConnect = true
+                    "o10".putPointYep(activity.get()!!)
                 }
 
                 OpenServiceState.DISCONNECTING -> {
                     userInterrupt = true
                     openServerState.postValue(OpenServiceState.CONNECTED)
-
+                    "o21".putPointYep(activity.get()!!)
                 }
 
                 else -> {}
@@ -365,7 +390,9 @@ class MainViewModel : ViewModel() {
 
     fun toConnectVerifyNet() {
         if (isAppOnline(activity.get())) {
-            toConnectOrDisConnect()
+            isNextConnect(activity.get()!!) {
+                toConnectOrDisConnect()
+            }
         } else {
             activity.get()?.let {
                 val customDialog = Dialog(it, R.style.AppDialogStyle)
@@ -383,6 +410,20 @@ class MainViewModel : ViewModel() {
     }
 
     private var toAction = false
+
+    private fun isNextConnect(activity: HomeActivity, nextFun: () -> Unit) {
+        activity.lifecycleScope.launch {
+            val data = OnlineVpnHelp.checkServerData(activity)
+            activity.mBinding.showLoad = true
+            if (data) {
+                nextFun()
+                activity.mBinding.showLoad = false
+            } else {
+                delay(2000)
+                activity.mBinding.showLoad = false
+            }
+        }
+    }
 
     private fun toConnectOrDisConnect() {
         activity.get()?.let {
@@ -427,6 +468,7 @@ class MainViewModel : ViewModel() {
                     return@launch
                 } else if (isActive) {
                     mService?.disconnect()
+                    putPointYep("o11", activity.get()!!)
                 }
             }
         }
@@ -500,6 +542,7 @@ class MainViewModel : ViewModel() {
             // RECONNECTING 尝试重新链接 // EXITING 连接中主动掉用断开
 
             curServerState = state
+            BaseAppFlash.vpnState = state ?: ""
             when (state) {
                 "CONNECTED" -> {
                     if (toAction) toAction = false
@@ -519,8 +562,6 @@ class MainViewModel : ViewModel() {
                         userInterrupt = false
                         isClickConnect = true
                         openServerState.postValue(OpenServiceState.DISCONNECTED)
-
-
                     }
                 }
 
@@ -533,14 +574,22 @@ class MainViewModel : ViewModel() {
     }
     var cancelConnect = false
     var isFailConnect = false
+    var connectTime: Long = 0
+
     fun openVTool(context: Context, server: IOpenVPNAPIService): Job? {
         activity.get()?.let { ac ->
             if (checkVPNPermission(ac)) {
                 val job = MainScope().launch(Dispatchers.IO) {
                     openServerState.postValue(OpenServiceState.CONNECTING)
                     if (isAppOnline(ac)) {
+                        connectTime = System.currentTimeMillis()
+
+                        putPointYep("o1vpn", context)
                         val data = VPNDataHelper.allLocaleProfiles[VPNDataHelper.nodeIndex]
                         runCatching {
+                            BaseAppUtils.setLoadData(BaseAppUtils.vpn_ip, data.onLm_host)
+                            BaseAppUtils.setLoadData(BaseAppUtils.vpn_city, data.city)
+                            Log.e(TAG, "openVTool: ip=${data.onLm_host};city=${data.city}")
                             val conf = context.assets.open("fast_onlinenetmanager.ovpn")
                             val br = BufferedReader(InputStreamReader(conf))
                             val config = StringBuilder()
@@ -549,14 +598,11 @@ class MainViewModel : ViewModel() {
                                 line = br.readLine()
                                 if (line == null) break
                                 if (line.contains("remote 66", true)) {
-                                    line = "remote ${data.onLm_host} ${data.onLo_Port}"
-//                                    Log.e("open vpn remote", line.toString())
+//                                    line = "remote ${data.onLm_host} ${data.onLo_Port}"
                                 } else if (line.contains("wrongpassword", true)) {
-                                    line = data.onLu_password
-//                                    Log.e("open vpn pass", line.toString())
+//                                    line = data.onLu_password
                                 } else if (line.contains("cipher AES-256-GCM", true)) {
-                                    line = "cipher ${data.onLi}"
-//                                    Log.e("open vpn pass", line.toString())
+//                                    line = "cipher ${data.onLi}"
                                 }
                                 config.append(line).append("\n")
                             }
@@ -568,6 +614,12 @@ class MainViewModel : ViewModel() {
                             if (curServerState != "CONNECTED" && ac.canJump) {
                                 isFailConnect = true
                                 cancelConnect = true
+                                DataHelp.putPointTimeYep(
+                                    "o13",
+                                    "Connect Failed!",
+                                    "re",
+                                    activity.get()!!
+                                )
                                 stopToConnectOrDisConnect()
                                 Looper.prepare()
                                 Toast.makeText(activity.get(), "Connect Failed!", Toast.LENGTH_LONG)
@@ -608,6 +660,27 @@ class MainViewModel : ViewModel() {
             while (isActive) {
                 if (adHomeData != null) {
                     FlashLoadHomeAd.setDisplayHomeNativeAdFlash(activity)
+                    cancel()
+                    break
+                }
+                delay(500)
+            }
+        }
+    }
+
+    fun showBannerAd(activity: HomeActivity) {
+        activity.lifecycleScope.launch {
+            delay(200)
+            if (activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
+                return@launch
+            }
+            val state = FlashLoadBannerAd.getAdISLoadSuccess()
+            if (!state) {
+                BaseAd.getBannerInstance().advertisementLoadingFlash(activity)
+            }
+            while (isActive) {
+                if (state) {
+                    FlashLoadBannerAd.showBannerAdFlash(activity)
                     cancel()
                     break
                 }

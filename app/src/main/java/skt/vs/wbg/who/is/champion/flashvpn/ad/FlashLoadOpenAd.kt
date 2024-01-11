@@ -11,6 +11,9 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 import java.util.Date
 
@@ -18,9 +21,11 @@ object FlashLoadOpenAd {
 
     private val adBase = BaseAd.getOpenInstance()
     var isFirstLoad: Boolean = false
+    private lateinit var adOpenData: FlashAdBean
 
 
-     fun loadOpenAdFlash(context: Context, adData: FlashAdBean) {
+    fun loadOpenAdFlash(context: Context, adData: FlashAdBean) {
+        adOpenData = adBase.beforeLoadLink(adData)
         val request = AdRequest.Builder().build()
         AppOpenAd.load(
             context,
@@ -32,6 +37,24 @@ object FlashLoadOpenAd {
                     adBase.isLoadingFlash = false
                     adBase.appAdDataFlash = ad
                     adBase.loadTimeFlash = Date().time
+                    ad.setOnPaidEventListener { adValue ->
+                        Log.e(TAG, "App open ads start reporting")
+                        adValue.let {
+                            FlashOkHttpUtils().getAdList(
+                                context,
+                                adValue,
+                                ad.responseInfo,
+                                "open",
+                                adOpenData
+                            )
+                        }
+                    }
+                    DataHelp.putPointTimeYep(
+                        "o31",
+                        "open+${adData.onLnugit}",
+                        "yn",
+                        context
+                    )
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
@@ -41,6 +64,16 @@ object FlashLoadOpenAd {
                         adBase.advertisementLoadingFlash(context)
                         isFirstLoad = true
                     }
+                    val error =
+                        """
+           domain: ${loadAdError.domain}, code: ${loadAdError.code}, message: ${loadAdError.message}
+          """"
+                    DataHelp.putPointTimeYep(
+                        "o32",
+                        error,
+                        "yn",
+                        context
+                    )
                 }
             }
         )
@@ -70,6 +103,7 @@ object FlashLoadOpenAd {
                 override fun onAdShowedFullScreenContent() {
                     adBase.appAdDataFlash = null
                     adBase.whetherToShowFlash = true
+                    adOpenData = adBase.afterLoadLink(adOpenData)
                 }
 
                 override fun onAdClicked() {
@@ -79,7 +113,10 @@ object FlashLoadOpenAd {
     }
 
 
-    fun displayOpenAdvertisementFlash(activity: AppCompatActivity,fullScreenFun: () -> Unit): Boolean {
+    fun displayOpenAdvertisementFlash(
+        activity: AppCompatActivity,
+        fullScreenFun: () -> Unit
+    ): Boolean {
         if (adBase.appAdDataFlash == null) {
             return false
         }

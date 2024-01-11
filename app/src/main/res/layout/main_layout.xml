@@ -10,6 +10,10 @@
             name="showAd"
             type="Integer"
             android:value="0" />
+        <variable
+            name="showLoad"
+            type="Boolean"
+            android:value="false"/>
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
@@ -299,6 +303,15 @@
 
             </FrameLayout>
 
+            <FrameLayout
+                android:id="@+id/ad_view_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
             <View
                 android:id="@+id/guideMask"
                 android:layout_width="match_parent"
@@ -336,6 +349,16 @@
                 app:layout_constraintStart_toStartOf="@id/connectImg"
                 app:layout_constraintTop_toTopOf="@id/connectImg"
                 app:lottie_fileName="hahaha.json" />
+
+            <ProgressBar
+                android:id="@+id/pb_online"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout

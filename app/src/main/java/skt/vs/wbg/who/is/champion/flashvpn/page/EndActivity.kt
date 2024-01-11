@@ -10,6 +10,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.EndViewModel
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.MainViewModel
 import skt.vs.wbg.who.`is`.champion.flashvpn.databinding.ConnectedLayoutBinding
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
 
 class EndActivity : BaseActivityFlash<ConnectedLayoutBinding>() {
 
@@ -58,6 +59,7 @@ class EndActivity : BaseActivityFlash<ConnectedLayoutBinding>() {
     override fun onResume() {
         super.onResume()
         endViewModel.showEndAd(this)
+        "o22".putPointYep(this)
     }
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
