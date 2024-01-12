@@ -12,6 +12,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadOpenAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringData
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 import java.util.Date
@@ -86,6 +87,7 @@ class BaseAd private constructor() {
     fun advertisementLoadingFlash(context: Context) {
 
         if (isLoadingFlash) {
+            Log.d(TAG, "${getInstanceName()}-广告加载中，不能再次加载")
             return
         }
         val userData = BaseAppUtils.blockAdUsers()
@@ -93,7 +95,7 @@ class BaseAd private constructor() {
         if (!blacklistState && (instanceName == "connect" || instanceName == "back")) {
             return
         }
-        if (!userData && (instanceName == "connect" || instanceName == "back" || instanceName == "home")) {
+        if (!userData && (instanceName == "connect" || instanceName == "back" || instanceName == "banner")) {
             return
         }
         when (appAdDataFlash) {
@@ -111,6 +113,7 @@ class BaseAd private constructor() {
 
     private fun loadStartupPageAdvertisementFlash(context: Context, adData: FlashAdBean) {
         DataHelp.putPointTimeYep("o30", getID(adData),"yn",context)
+        Log.d(TAG, "${getInstanceName()}-广告-开始加载")
         adLoaders[id]?.invoke(context, adData)
     }
 
@@ -146,7 +149,8 @@ class BaseAd private constructor() {
     fun beforeLoadLink(yepAdBean: FlashAdBean): FlashAdBean {
         val ipAfterVpnLink = BaseAppUtils.vpn_ip.getLoadStringData()
         val ipAfterVpnCity = BaseAppUtils.vpn_city.getLoadStringData()
-        if (DataHelp.isConnectFun()) {
+        val raoliu = BaseAppFlash.mmkvFlash.getBoolean("raoliu", false)
+        if (DataHelp.isConnectFun() && !raoliu) {
             yepAdBean.loadIp = ipAfterVpnLink ?: ""
             yepAdBean.loadCity = ipAfterVpnCity ?: ""
         } else {
@@ -159,7 +163,8 @@ class BaseAd private constructor() {
     fun afterLoadLink(yepAdBean: FlashAdBean): FlashAdBean {
         val ipAfterVpnLink = BaseAppUtils.vpn_ip.getLoadStringData()
         val ipAfterVpnCity = BaseAppUtils.vpn_city.getLoadStringData()
-        if (DataHelp.isConnectFun()) {
+        val raoliu = BaseAppFlash.mmkvFlash.getBoolean("raoliu", false)
+        if (DataHelp.isConnectFun() && !raoliu) {
             yepAdBean.showIp = ipAfterVpnLink ?: ""
             yepAdBean.showTheCity = ipAfterVpnCity ?: ""
         } else {

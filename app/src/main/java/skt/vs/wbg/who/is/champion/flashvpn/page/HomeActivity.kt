@@ -54,15 +54,17 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
         )
 
 
-        if(!DataHelp.isConnectFun()){
+        if (!DataHelp.isConnectFun()) {
             mBinding.lottieGuide.visibility = View.VISIBLE
             mBinding.lottieGuide.setAnimation("hahaha.json")
             mBinding.lottieGuide.repeatCount = ValueAnimator.INFINITE
             mBinding.lottieGuide.playAnimation()
             "o1guideexposure".putPointYep(this)
+        } else {
+            cancelGuideLottie()
         }
         mBinding.lottieGuide.setOnClickListener {
-            "o1guidecc".putPointYep( this)
+            "o1guidecc".putPointYep(this)
             cancelGuideLottie()
             mainViewModel.toConnectVerifyNet()
         }
@@ -108,4 +110,8 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
         "o1frontview".putPointYep(this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mainViewModel.mService?.disconnect()
+    }
 }

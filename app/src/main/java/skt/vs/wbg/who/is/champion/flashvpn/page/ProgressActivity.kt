@@ -40,6 +40,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadBooleanData
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringData
 
 class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
     private var jobOpenAdsFlash: Job? = null
@@ -125,7 +126,16 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
         BaseAd.getEndInstance().advertisementLoadingFlash(this)
         // 连接插屏
         BaseAd.getConnectInstance().advertisementLoadingFlash(this)
-
+        identificationOfBuyingVolume()
+    }
+    private fun identificationOfBuyingVolume() {
+        if(BaseAppUtils.refer_tab.getLoadBooleanData()){
+            return
+        }
+        if (BaseAppUtils.refer_data.getLoadStringData().isNotEmpty() && BaseAppUtils.isItABuyingUser()) {
+            "o1unusual".putPointYep(this)
+            BaseAppUtils.setLoadData(BaseAppUtils.refer_tab, true)
+        }
     }
     //等待展示open广告
     private fun waitForTheOpenAdToAppear(){
@@ -217,6 +227,7 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
         val debugSettings =
             ConsentDebugSettings.Builder(this)
                 .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
+                .addTestDeviceHashedId("437866A57B0FAD333A37E294AF07BB1D")
                 .build()
         val params = ConsentRequestParameters
             .Builder()

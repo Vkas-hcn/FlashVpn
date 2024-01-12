@@ -100,9 +100,12 @@ object IPUtils {
 
     }
 
+    private var isShowNum = false
     private fun showDialog(activity: BaseActivityFlash<*>) {
-        "o1IPview".putPointYep(activity)
-
+        if (!isShowNum) {
+            "o1IPview".putPointYep(activity)
+            isShowNum = true
+        }
         val customDialog = Dialog(activity, R.style.AppDialogStyle)
         val localLayoutParams = customDialog.window?.attributes
         localLayoutParams?.gravity = Gravity.CENTER

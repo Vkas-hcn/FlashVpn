@@ -24,6 +24,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.page.HomeActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 import java.util.Date
 
@@ -46,6 +47,8 @@ object FlashLoadBackAd {
                         """
            domain: ${adError.domain}, code: ${adError.code}, message: ${adError.message}
           """"
+                    Log.d(TAG, "back广告加载失败:$error ")
+
                     DataHelp.putPointTimeYep(
                         "o32",
                         error,
@@ -58,6 +61,7 @@ object FlashLoadBackAd {
                     adBase.loadTimeFlash = Date().time
                     adBase.isLoadingFlash = false
                     adBase.appAdDataFlash = interstitialAd
+                    Log.d(TAG, "back广告加载成功: ")
                     interstitialAd.setOnPaidEventListener { adValue ->
                         FlashOkHttpUtils().getAdList(
                             context,

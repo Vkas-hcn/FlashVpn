@@ -22,6 +22,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadBooleanData
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 
@@ -33,6 +34,7 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
             if (application == null) application = BaseAppFlash()
             return application ?: BaseAppFlash()
         }
+
         var isHotStart: Boolean = false
         var isUserMainBack: Boolean = false
         var isFlashAppBackGround: Boolean = false
@@ -57,7 +59,7 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
         registerActivityLifecycleCallbacks(this)
         getReferInformation(this)
         "o16".putPointYep(this)
-
+        Log.e(TAG, "onCreate: Application")
     }
 
 
@@ -67,29 +69,31 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityStarted(activity: Activity) {
+        acFlashTotal++
+
         if (activity is AdActivity) {
             adActivity = activity
         }
-        acFlashTotal++
         if (isFlashAppBackGround) {
             isFlashAppBackGround = false
             if ((System.currentTimeMillis() - exitAppTime) / 1000 > 3) {
                 toSplash(activity)
-                if (adActivity != null) adActivity?.finish()
-            } else if (isUserMainBack) {
-                isUserMainBack = false
-                toSplash(activity)
-            } else if (activity is ProgressActivity) {
-                toSplash(activity)
             }
         }
+
     }
 
     private fun toSplash(activity: Activity) {
         "o15".putPointYep(activity)
+        if (activity is ProgressActivity) {
+            activity.finish()
+        }
         val intent = Intent(activity, ProgressActivity::class.java)
         activity.startActivity(intent)
-        if (activity is ProgressActivity) activity.finish()
+        if (adActivity != null) {
+            adActivity?.finish()
+        }
+
         isHotStart = true
         BaseAd.getHomeInstance().whetherToShowFlash = false
         BaseAd.getEndInstance().whetherToShowFlash = false
@@ -135,7 +139,7 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     private fun getReferrerData(context: Context) {
-        var installReferrer =""
+        var installReferrer = ""
         val referrer = SPUtils.getInstance().getString(BaseAppUtils.refer_data)
         if (referrer.isNotBlank()) {
             return
@@ -154,10 +158,16 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
                         InstallReferrerClient.InstallReferrerResponse.OK -> {
                             val installReferrer =
                                 referrerClient.installReferrer.installReferrer ?: ""
-                            SPUtils.getInstance().put(BaseAppUtils.refer_data,installReferrer)
+                            SPUtils.getInstance().put(BaseAppUtils.refer_data, installReferrer)
                             "o1unusual".putPointYep(context)
-                            val loadDate = (System.currentTimeMillis()-date)/1000
-                            DataHelp.putPointTimeYep("o1Obtain",loadDate.toInt(),"conntime",context)
+                            Log.e(TAG, "onInstallReferrerSetupFinished: ${installReferrer}", )
+                            val loadDate = (System.currentTimeMillis() - date) / 1000
+                            DataHelp.putPointTimeYep(
+                                "o1Obtain",
+                                loadDate.toInt(),
+                                "conntime",
+                                context
+                            )
                             if (!BaseAppUtils.refer_tab.getLoadBooleanData()) {
                                 runCatching {
                                     referrerClient?.installReferrer?.run {

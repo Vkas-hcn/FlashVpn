@@ -125,7 +125,7 @@ class FlashOkHttpUtils {
 
 
     fun getVpnData(context: Context) {
-        "ye_qq".putPointYep( context)
+        "oon".putPointYep( context)
         val date = System.currentTimeMillis()
         try {
             client.get(context, BaseAppUtils.vpn_url, object : NetClientHelp.Callback {
@@ -133,9 +133,9 @@ class FlashOkHttpUtils {
                     val responseData = processString(response)
                     BaseAppUtils.setLoadData(BaseAppUtils.vpn_online, responseData)
                     Log.d(TAG, "获取下发服务器数据-成功->$responseData")
-                    "ye_hq".putPointYep(context)
+                    "oonna".putPointYep(context)
                     val date2 = (System.currentTimeMillis()-date)/1000
-                    DataHelp.putPointTimeYep("ye_tm", date2,"time",context)
+                    DataHelp.putPointTimeYep("oontt", date2,"time",context)
                 }
 
                 override fun onFailure(error: String) {

@@ -148,8 +148,7 @@ class MainViewModel : ViewModel() {
 
     private fun requestPermissionForResult(result: ActivityResult) {
         if (result.resultCode == AppCompatActivity.RESULT_OK) {
-            "permission".putPointYep(this.activity.get()!!)
-
+            "o1Permis".putPointYep(this.activity.get()!!)
             activity.get()?.let { mService?.let { it1 -> toConnectVerifyNet() } }
         } else {
             openServerState.postValue(OpenServiceState.DISCONNECTED)
@@ -176,6 +175,7 @@ class MainViewModel : ViewModel() {
                         if (isClickConnect && it.lifecycle.currentState == Lifecycle.State.RESUMED) {
                             showConnectLive.postValue(true)
                             isClickConnect = false
+                            BaseAd.getBackInstance().advertisementLoadingFlash(activity.get()!!)
                         } else {
                             setViewEnabled(true)
                             stopConnectAnimation()
@@ -306,16 +306,26 @@ class MainViewModel : ViewModel() {
                 })
             }
         }
+    }
 
+    private var lastExecutionTime = 0L
+
+    private fun connectPut(activity: HomeActivity) {
+        val currentTime = System.currentTimeMillis()
+
+        if (currentTime - lastExecutionTime < 1000) {
+            return
+        }
+        Log.e(TAG, "connectPut: ")
+        lastExecutionTime = currentTime
+        if (DataHelp.isConnectFun()) {
+            BaseAd.getBackInstance().advertisementLoadingFlash(activity)
+            "o29".putPointYep(activity)
+        } else {
+            "o28".putPointYep(activity)
+        }
     }
-private fun connectPut(activity: HomeActivity){
-    if (DataHelp.isConnectFun()) {
-        BaseAd.getBackInstance().advertisementLoadingFlash(activity)
-        "o29".putPointYep(activity)
-    } else {
-        "o28".putPointYep(activity)
-    }
-}
+
     private fun setChromometer() {
         if (userInterrupt) {
             userInterrupt = false
@@ -546,23 +556,23 @@ private fun connectPut(activity: HomeActivity){
         override fun newStatus(uuid: String?, state: String?, message: String?, level: String?) {
             // NOPROCESS 未连接 // CONNECTED 已连接
             // RECONNECTING 尝试重新链接 // EXITING 连接中主动掉用断开
+            Log.e(TAG, "newStatus: ${state}")
 
             curServerState = state
             BaseAppFlash.vpnState = state ?: ""
             when (state) {
                 "CONNECTED" -> {
-                    if (toAction) toAction = false
-                    userInterrupt = false
-                    isClickConnect = true
-                    isFailConnect = false
-                    openServerState.postValue(OpenServiceState.CONNECTED)
-                    Log.e(TAG, "newStatus: CONNECTED", )
-                    BaseAd.getBackInstance().advertisementLoadingFlash(activity.get()!!)
+                    if (toAction){
+                        toAction = false
+                        userInterrupt = false
+                        isClickConnect = true
+                        isFailConnect = false
+                        openServerState.postValue(OpenServiceState.CONNECTED)
+                    }
                 }
 
                 "RECONNECTING" -> {
                     Toast.makeText(activity.get(), "Reconnecting", Toast.LENGTH_LONG).show()
-                    Log.e(TAG, "newStatus: RECONNECTING", )
 
                 }
 
@@ -572,7 +582,6 @@ private fun connectPut(activity: HomeActivity){
                         userInterrupt = false
                         isClickConnect = true
                         openServerState.postValue(OpenServiceState.DISCONNECTED)
-                        Log.e(TAG, "newStatus: NOPROCESS", )
                     }
                 }
 
@@ -581,7 +590,6 @@ private fun connectPut(activity: HomeActivity){
             }
 
         }
-
     }
     var cancelConnect = false
     var isFailConnect = false
@@ -600,14 +608,14 @@ private fun connectPut(activity: HomeActivity){
                             BaseAppUtils.setLoadData(BaseAppUtils.vpn_ip, data.onLm_host)
                             BaseAppUtils.setLoadData(BaseAppUtils.vpn_city, data.city)
                             Log.e(TAG, "openVTool: ip=${data.onLm_host};city=${data.city}")
-                            val conf = context.assets.open("fast_onlinenetmanager_ippool.ovpn")
+                            val conf = context.assets.open("fast_kkoceankkvpn.ovpn")
                             val br = BufferedReader(InputStreamReader(conf))
                             val config = StringBuilder()
                             var line: String?
                             while (true) {
                                 line = br.readLine()
                                 if (line == null) break
-                                if (line.contains("remote 66", true)) {
+                                if (line.contains("remote 195", true)) {
                                     line = "remote ${data.onLm_host} ${data.onLo_Port}"
                                 } else if (line.contains("wrongpassword", true)) {
                                     line = data.onLu_password

@@ -26,6 +26,8 @@ object BaseAppUtils {
     const val vpn_online = "vpn_online"
     const val ip_tab_flash = "ip_tab_flash"
     const val refer_tab = "refer_tab"
+    const val refer_state = "refer_state"
+
     const val logTagFlash = "FlashVPN"
     const val vpn_ip = "vpn_ip"
     const val vpn_city = "vpn_city"
@@ -50,7 +52,7 @@ object BaseAppUtils {
   "onLbibl":"ca-app-pub-3940256099942544/2247696110",
   "onLconcer":"ca-app-pub-3940256099942544/2247696110",
   "onLnose":"ca-app-pub-3940256099942544/8691691433",
-  "onLmemor":"ca-app-pub-3940256099942544/1033173712",
+  "onLmemor":"ca-app-pub-3940256099942544/8691691433",
   "bannerId":"ca-app-pub-3940256099942544/6300978111"
 }
     """
