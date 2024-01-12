@@ -53,7 +53,7 @@ object BaseAppUtils {
   "onLconcer":"ca-app-pub-3940256099942544/2247696110",
   "onLnose":"ca-app-pub-3940256099942544/8691691433",
   "onLmemor":"ca-app-pub-3940256099942544/8691691433",
-  "bannerId":"ca-app-pub-3940256099942544/6300978111"
+  "onhhhh":"ca-app-pub-3940256099942544/6300978111"
 }
     """
 

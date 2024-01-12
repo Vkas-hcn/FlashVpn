@@ -8,7 +8,7 @@ data class FlashAdBean(
     val onLconcer: String,
     val onLnose: String,
     val onLmemor: String,
-    val bannerId:String,
+    val onhhhh:String,
     var loadCity: String,
     var showTheCity: String,
 

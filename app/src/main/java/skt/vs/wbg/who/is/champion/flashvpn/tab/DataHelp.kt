@@ -309,7 +309,7 @@ object DataHelp {
                 adType = AdType(adData.onLmemor, "back", "onLmemor", "interstitial")
             }
             "banner" -> {
-                adType = AdType(adData.bannerId, "back", "onLmemor", "banner")
+                adType = AdType(adData.onhhhh, "back", "onLmemor", "banner")
             }
         }
         return adType

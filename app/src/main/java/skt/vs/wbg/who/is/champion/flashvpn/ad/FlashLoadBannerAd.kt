@@ -45,7 +45,7 @@ object FlashLoadBannerAd {
         val screenWidth = displayMetrics.widthPixels
         val screenWidthDp = screenWidth / displayMetrics.density
         adBase.adView = AdView(context).apply {
-            adUnitId = adData.bannerId
+            adUnitId = adData.onhhhh
             setAdSize(
                 AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
                     context,
@@ -74,7 +74,7 @@ object FlashLoadBannerAd {
                 }
                 DataHelp.putPointTimeYep(
                     "o31",
-                    "banner+${adData.bannerId}",
+                    "banner+${adData.onhhhh}",
                     "yn",
                     context
                 )

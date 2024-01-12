@@ -67,7 +67,7 @@ class BaseAd private constructor() {
             3 -> "end+${adBean.onLconcer}"
             4 -> "connect+${adBean.onLnose}"
             5 -> "back+${adBean.onLmemor}"
-            6 -> "banner+${adBean.bannerId}"
+            6 -> "banner+${adBean.onhhhh}"
             else -> ""
         }
     }
