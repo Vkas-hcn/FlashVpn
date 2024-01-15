@@ -13,6 +13,7 @@ import android.webkit.WebSettings
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import com.android.installreferrer.api.ReferrerDetails
+import com.facebook.appevents.AppEventsLogger
 import com.google.android.gms.ads.AdValue
 import com.google.android.gms.ads.ResponseInfo
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
@@ -26,6 +27,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringData
+import java.util.Currency
 import java.util.Locale
 import java.util.TimeZone
 import java.util.UUID
@@ -359,7 +361,11 @@ object DataHelp {
             Firebase.analytics.logEvent(name, bundleOf(parameterName to time))
         }
     }
-
+    fun putPointAdJiaZhiOnline(adValue: Long) {
+        AppEventsLogger.newLogger(BaseAppFlash.getInstance()).logPurchase(
+            (adValue / 1000000.0).toBigDecimal(), Currency.getInstance("USD")
+        )
+    }
     fun isConnectFun(): Boolean {
         return BaseAppFlash.vpnState == "CONNECTED"
     }

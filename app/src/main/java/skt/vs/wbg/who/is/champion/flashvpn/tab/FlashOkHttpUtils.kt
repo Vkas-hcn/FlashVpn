@@ -92,6 +92,7 @@ class FlashOkHttpUtils {
         } catch (e: Exception) {
 
         }
+        DataHelp.putPointAdJiaZhiOnline(adValue.valueMicros)
     }
 
 
