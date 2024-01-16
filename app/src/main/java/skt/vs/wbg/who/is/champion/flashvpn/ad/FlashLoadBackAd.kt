@@ -37,7 +37,7 @@ object FlashLoadBackAd {
 
         InterstitialAd.load(
             context,
-            adData.onLnose,
+            adData.onLmemor,
             adRequest,
             object : InterstitialAdLoadCallback() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {

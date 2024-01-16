@@ -37,7 +37,7 @@ object FlashLoadEndAd {
 
         val vpnNativeAds = AdLoader.Builder(
             context.applicationContext,
-            adData.onLbibl
+            adData.onLconcer
         )
         val videoOptions = VideoOptions.Builder()
             .setStartMuted(true)
@@ -167,9 +167,6 @@ object FlashLoadEndAd {
             )
             adView.iconView?.visibility = View.VISIBLE
         }
-
-        // This method tells the Google Mobile Ads SDK that you have finished populating your
-        // native ad view with this native ad.
         adView.setNativeAd(nativeAd)
     }
 
