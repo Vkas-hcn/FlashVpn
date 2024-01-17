@@ -61,7 +61,6 @@ object FlashLoadBannerAd {
         adBase.adView?.adListener = object : AdListener() {
             override fun onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
-                Log.d(TAG, "首页Banner广告加载完成")
                 isLoadSuccess = true
                 adBase.adView?.setOnPaidEventListener {
                     adBase.adView?.responseInfo.let { res ->
@@ -86,7 +85,6 @@ object FlashLoadBannerAd {
 
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 // Code to be executed when an ad request fails.
-                Log.d(TAG, "首页Banner广告加载-onAdFailedToLoad: ${adError.message}")
                 isLoadSuccess = false
                 val error =
                     """
@@ -103,18 +101,15 @@ object FlashLoadBannerAd {
             override fun onAdOpened() {
                 // Code to be executed when an ad opens an overlay that
                 // covers the screen.
-                Log.d(TAG, "首页Banner广告-onAdOpened")
             }
 
             override fun onAdClicked() {
                 // Code to be executed when the user clicks on an ad.
-                Log.d(TAG, "首页Banner广告-onAdClicked")
             }
 
             override fun onAdClosed() {
                 // Code to be executed when the user is about to return
                 // to the app after tapping on an ad.
-                Log.d(TAG, "首页Banner广告-onAdClosed")
             }
         }
         val adRequest = AdRequest.Builder().build()
@@ -132,40 +127,11 @@ object FlashLoadBannerAd {
         }
         val state = activity.lifecycle.currentState == Lifecycle.State.RESUMED
         if (state) {
-            // 获取广告视图的父视图，并在需要时移除它
             val parentView = adBase.adView?.parent as? ViewGroup
             parentView?.removeView(adBase.adView)
-
-            // 清除原有的视图
             activity.mBinding.adViewContainer.removeAllViews()
-            // 将广告视图添加到容器中
             activity.mBinding.adViewContainer.addView(adBase.adView)
         }
         adBackData = adBase.afterLoadLink(adBackData)
     }
-
-
-    fun setBannerAdSize(adView: AdView, activity: Activity) {
-        // 获取屏幕宽度（以像素为单位）
-        val displayMetrics = DisplayMetrics()
-        activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val screenWidth = displayMetrics.widthPixels
-
-        // 将屏幕宽度转换为dp
-        val screenWidthDp = screenWidth / displayMetrics.density
-
-        // 设置广告尺寸为全宽，高度自适应
-        adView.setAdSize(
-            AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
-                activity,
-                screenWidthDp.toInt()
-            )
-        )
-        adView.adUnitId = "YOUR_AD_UNIT_ID"
-
-        // 加载广告
-        val adRequest = AdRequest.Builder().build()
-        adView.loadAd(adRequest)
-    }
-
 }
