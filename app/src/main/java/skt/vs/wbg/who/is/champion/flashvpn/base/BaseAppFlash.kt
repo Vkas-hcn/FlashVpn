@@ -47,6 +47,7 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
             MMKV.mmkvWithID("FlashVpn", MMKV.MULTI_PROCESS_MODE)
         }
         var vpnState = ""
+        var vpnClickState = -1
     }
 
     var adActivity: Activity? = null

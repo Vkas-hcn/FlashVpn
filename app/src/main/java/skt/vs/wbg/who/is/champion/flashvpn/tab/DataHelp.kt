@@ -19,11 +19,15 @@ import com.google.android.gms.ads.ResponseInfo
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import skt.vs.wbg.who.`is`.champion.flashvpn.BuildConfig
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.AdType
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
+import skt.vs.wbg.who.`is`.champion.flashvpn.page.SPUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringData
@@ -185,9 +189,9 @@ object DataHelp {
 
             //ad_sdk_ver
             put("impale", responseInfo.responseId)
-            put("mcginnis","gander")
+            put("mcginnis", "gander")
         }
-        topLevelJson.put("boeotia",JSONObject().apply {
+        topLevelJson.put("boeotia", JSONObject().apply {
             put("rid_yawn", yepAdBean.loadCity)
             put("rid_fist", yepAdBean.showTheCity)
         })
@@ -310,8 +314,9 @@ object DataHelp {
             "back" -> {
                 adType = AdType(adData.onLmemor, "back", "onLmemor", "interstitial")
             }
+
             "banner" -> {
-                adType = AdType(adData.onhhhh, "back", "onLmemor", "banner")
+                adType = AdType(adData.onhhhh, "back", "onhhhh", "banner")
             }
         }
         return adType
@@ -341,32 +346,23 @@ object DataHelp {
         }
     }
 
-
-
-
     fun String.putPointYep(context: Context) {
         FlashOkHttpUtils().getTbaList(context, this)
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "触发埋点----name=${this}")
-        } else {
-            Firebase.analytics.logEvent(this, null)
-        }
     }
 
     fun putPointTimeYep(name: String, time: Any, parameterName: String, context: Context) {
         FlashOkHttpUtils().getTbaList(context, name, parameterName, time, 1)
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "触发埋点----name=${name}---time=${time}")
-        } else {
-            Firebase.analytics.logEvent(name, bundleOf(parameterName to time))
-        }
     }
+
     fun putPointAdJiaZhiOnline(adValue: Long) {
         AppEventsLogger.newLogger(BaseAppFlash.getInstance()).logPurchase(
             (adValue / 1000000.0).toBigDecimal(), Currency.getInstance("USD")
         )
     }
+
     fun isConnectFun(): Boolean {
         return BaseAppFlash.vpnState == "CONNECTED"
     }
+
+
 }

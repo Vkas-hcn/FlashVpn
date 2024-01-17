@@ -227,7 +227,6 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
         val debugSettings =
             ConsentDebugSettings.Builder(this)
                 .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
-                .addTestDeviceHashedId("437866A57B0FAD333A37E294AF07BB1D")
                 .build()
         val params = ConsentRequestParameters
             .Builder()

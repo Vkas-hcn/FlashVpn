@@ -223,6 +223,20 @@ class MainViewModel : ViewModel() {
         connectImg.isEnabled = b
     }
 
+    private var lastClickTime: Long = 0
+    private val delayMillis: Long = 2000
+    private fun clickToAction(activity: HomeActivity) {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastClickTime >= delayMillis) {
+            connectPut(activity)
+            if (activity.isShowGuide) {
+                activity.cancelGuideLottie()
+            }
+            toConnectVerifyNet()
+            lastClickTime = currentTime
+        }
+    }
+
     private fun initViewAndListener() {
         activity.get()?.let { ac ->
             chronometer.onChronometerTickListener = Chronometer.OnChronometerTickListener { cArg ->
@@ -238,14 +252,10 @@ class MainViewModel : ViewModel() {
                 if (!ac.mBinding.drawer.isOpen) ac.mBinding.drawer.open()
             }
             connectAnimate.setOnClickListener {
-                connectPut(ac)
-                if (ac.isShowGuide) ac.cancelGuideLottie()
-                toConnectVerifyNet()
+                clickToAction(ac)
             }
             connectImg.setOnClickListener {
-                connectPut(ac)
-                if (ac.isShowGuide) ac.cancelGuideLottie()
-                toConnectVerifyNet()
+                clickToAction(ac)
             }
             listCl.setOnClickListener {
                 isNextConnect(ac) {
@@ -448,17 +458,17 @@ class MainViewModel : ViewModel() {
             cancelConnect = false
             when (openServerState.value) {
                 OpenServiceState.CONNECTED -> {
+                    BaseAppFlash.vpnClickState = 1
                     playConnectAnimation()
                     shadowsocksJob = disconnectShadowsocks()
                 }
 
                 OpenServiceState.DISCONNECTED -> {
+                    BaseAppFlash.vpnClickState = 0
                     playConnectAnimation()
                     shadowsocksJob =
                         activity.get()?.let { mService?.let { it1 -> openVTool(it, it1) } }
-
                 }
-
                 else -> {}
             }
         }
@@ -629,7 +639,7 @@ class MainViewModel : ViewModel() {
                             Log.e("TAG", "openVTool=$config")
                             server.startVPN(config.toString())
                             delay(12000)
-                            if (curServerState != "CONNECTED" && ac.canJump) {
+                            if ((!DataHelp.isConnectFun()) && BaseAppFlash.vpnClickState==0) {
                                 isFailConnect = true
                                 cancelConnect = true
                                 DataHelp.putPointTimeYep(
@@ -646,7 +656,7 @@ class MainViewModel : ViewModel() {
                                 cancel()
                             }
                         }.onFailure {
-//                            Log.e("open vpn error", it.message.toString())
+                            Log.e("open vpn error", it.message.toString())
                         }
                     } else {
                         stopToConnectOrDisConnect()

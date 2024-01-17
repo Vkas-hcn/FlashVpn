@@ -55,17 +55,16 @@ class FlashOkHttpUtils {
             client.post(BaseAppUtils.tab_url, data, object : NetClientHelp.Callback {
                 override fun onSuccess(response: String) {
                     Log.d(TAG, "Install 事件上报成功----->${response}")
-                    BaseAppUtils.setLoadData(BaseAppUtils.refer_data, response)
+                    BaseAppUtils.setLoadData(BaseAppUtils.refer_tab, true)
                 }
 
                 override fun onFailure(error: String) {
-                    BaseAppUtils.setLoadData(BaseAppUtils.refer_data, false)
+                    BaseAppUtils.setLoadData(BaseAppUtils.refer_tab, false)
                     Log.d(TAG, "Install事件上报失败----->${error}")
-
                 }
             })
         } catch (e: Exception) {
-            BaseAppUtils.setLoadData(BaseAppUtils.refer_data, false)
+            BaseAppUtils.setLoadData(BaseAppUtils.refer_tab, false)
             Log.d(TAG, "Install事件上报失败----->${e}")
         }
     }

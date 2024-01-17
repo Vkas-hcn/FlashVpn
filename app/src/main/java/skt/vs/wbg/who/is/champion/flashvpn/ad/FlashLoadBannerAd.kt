@@ -39,7 +39,11 @@ import java.util.Date
 object FlashLoadBannerAd {
     private val adBase = BaseAd.getHomeInstance()
     private var isLoadSuccess: Boolean = false
+    private lateinit var adBackData: FlashAdBean
+
     fun loadBannerAdFlash(context: Context, adData: FlashAdBean) {
+       adBackData = adBase.beforeLoadLink(adData)
+
         isLoadSuccess = false
         val displayMetrics = context.resources.displayMetrics
         val screenWidth = displayMetrics.widthPixels
@@ -67,7 +71,7 @@ object FlashLoadBannerAd {
                                 it,
                                 res,
                                 "banner",
-                                adData
+                                adBackData
                             )
                         }
                     }
@@ -137,6 +141,7 @@ object FlashLoadBannerAd {
             // 将广告视图添加到容器中
             activity.mBinding.adViewContainer.addView(adBase.adView)
         }
+        adBackData = adBase.afterLoadLink(adBackData)
     }
 
 
