@@ -35,7 +35,7 @@ object BaseAppUtils {
     //refer_data
     const val refer_data = "refer_data"
     var isStartYep: Boolean = true
-
+    var raoLiuTba = "raoLiuTba"
     //ad
     const val onLguai = "onLguai"
 
