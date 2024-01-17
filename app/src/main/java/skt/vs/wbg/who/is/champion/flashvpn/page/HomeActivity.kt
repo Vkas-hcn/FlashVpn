@@ -30,6 +30,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadBooleanData
 
 class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
 
@@ -95,7 +96,12 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
     //存储扰流数据
     fun storeSpoilerData() {
         val data = BaseAppUtils.spoilerOrNot()
+        val raoLiuTba = BaseAppUtils.raoLiuTba.getLoadBooleanData()
         BaseAppFlash.mmkvFlash.putBoolean("raoliu", data)
+        if(!raoLiuTba && !data){
+            "o34".putPointYep(this)
+            BaseAppUtils.setLoadData(BaseAppUtils.raoLiuTba, true)
+        }
     }
 
     override fun onPause() {

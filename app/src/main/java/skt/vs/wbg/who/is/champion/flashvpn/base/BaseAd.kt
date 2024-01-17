@@ -112,7 +112,11 @@ class BaseAd private constructor() {
 
 
     private fun loadStartupPageAdvertisementFlash(context: Context, adData: FlashAdBean) {
-        DataHelp.putPointTimeYep("o30", getID(adData),"yn",context)
+        DataHelp.putPointTimeYep("o30", getID(adData), "yn", context)
+        val raolui = BaseAppFlash.mmkvFlash.getBoolean("raoliu", false)
+        if (DataHelp.isConnectFun() && !raolui) {
+            DataHelp.putPointTimeYep("o33", getID(adData), "yn", context)
+        }
         Log.d(TAG, "${getInstanceName()}-广告-开始加载")
         adLoaders[id]?.invoke(context, adData)
     }

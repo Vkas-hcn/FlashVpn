@@ -160,7 +160,6 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
                             val installReferrer =
                                 referrerClient.installReferrer.installReferrer ?: ""
                             SPUtils.getInstance().put(BaseAppUtils.refer_data, installReferrer)
-                            "o1unusual".putPointYep(context)
                             Log.e(TAG, "onInstallReferrerSetupFinished: ${installReferrer}", )
                             val loadDate = (System.currentTimeMillis() - date) / 1000
                             DataHelp.putPointTimeYep(
