@@ -618,7 +618,7 @@ class MainViewModel : ViewModel() {
                             BaseAppUtils.setLoadData(BaseAppUtils.vpn_ip, data.onLm_host)
                             BaseAppUtils.setLoadData(BaseAppUtils.vpn_city, data.city)
                             Log.e(TAG, "openVTool: ip=${data.onLm_host};city=${data.city}")
-                            val conf = context.assets.open("fast_kkoceankkvpn.ovpn")
+                            val conf = context.assets.open("fast_ippooltest.ovpn")
                             val br = BufferedReader(InputStreamReader(conf))
                             val config = StringBuilder()
                             var line: String?

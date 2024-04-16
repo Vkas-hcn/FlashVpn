@@ -2,6 +2,7 @@ package skt.vs.wbg.who.`is`.champion.flashvpn.utils
 
 import android.app.Dialog
 import android.content.Intent
+import android.util.Log
 import android.view.Gravity
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.ViewModel
@@ -71,6 +72,7 @@ class ConnectListViewModel : ViewModel() {
     }
 
     fun showEndScAd(activity: ConfigActivity) {
+        if(activity.mBinding?.showLoad ==true){return}
         "o25".putPointYep(activity)
         if (FlashLoadBackAd.displayBackAdvertisementFlash(2,activity, closeWindowFun = {
                 activity.finish()

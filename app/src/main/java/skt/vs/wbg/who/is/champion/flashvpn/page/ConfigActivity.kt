@@ -6,6 +6,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
@@ -43,13 +44,9 @@ class ConfigActivity : BaseActivityFlash<ListLayoutBinding>() {
         mBinding.back.setOnClickListener {
             listViewModel.showEndScAd(this)
         }
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            listViewModel.showEndScAd(this)
+        onBackPressedDispatcher.addCallback(this){
+            listViewModel.showEndScAd(this@ConfigActivity)
         }
-        return true
     }
 
     override fun onResume() {
@@ -82,11 +79,12 @@ class LocationsAdapter(
         val check = holder.itemView.findViewById<AppCompatImageView>(R.id.itemLocationCheckImage)
         if (position == 0) {
             name.text = "Fast Server"
+            image.setImageResource(R.mipmap.flash_list_icon)
         } else {
             name.text = dataList[position].name + "-" + dataList[position].city
+            Glide.with(holder.itemView.context)
+                .load(getImage(dataList[position].name)).into(image)
         }
-        Glide.with(holder.itemView.context)
-            .load(getImage(dataList[position].name)).into(image)
         if (listViewModel.isConnected && VPNDataHelper.nodeIndex == position) {
             holder.itemView.setBackgroundResource(R.drawable.orange_2)
             check.setImageResource(R.mipmap.flash_checked)

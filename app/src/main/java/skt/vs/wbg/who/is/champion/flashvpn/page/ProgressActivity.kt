@@ -239,12 +239,12 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
             params, {
                 UserMessagingPlatform.loadAndShowConsentFormIfRequired(this) { loadAndShowError ->
                     if (consentInformation.canRequestAds()) {
-//                        BaseAppUtils.setLoadData(BaseAppUtils.ad_user_state, true)
+                        BaseAppUtils.setLoadData(BaseAppUtils.ad_user_state, true)
                     }
                 }
             },
             {
-//                BaseAppUtils.setLoadData(BaseAppUtils.ad_user_state, true)
+                BaseAppUtils.setLoadData(BaseAppUtils.ad_user_state, true)
             }
         )
     }

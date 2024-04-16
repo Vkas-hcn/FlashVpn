@@ -195,6 +195,7 @@ object BaseAppUtils {
                 || (data.onLiden == "1" && referrer.contains("%7B%22", true))
                 || (data.onLclem == "1" && referrer.contains("adjust", true))
                 || (data.onLisp == "1" && referrer.contains("bytedance", true))
+                || adjust_data.getLoadBooleanData()
     }
 
     //屏蔽广告用户

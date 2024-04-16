@@ -166,7 +166,7 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
                             val installReferrer =
                                 referrerClient.installReferrer.installReferrer ?: ""
                             SPUtils.getInstance().put(BaseAppUtils.refer_data, installReferrer)
-                            Log.e(TAG, "onInstallReferrerSetupFinished: ${installReferrer}", )
+                            Log.e(TAG, "onInstallReferrerSetupFinished: ${installReferrer}")
                             val loadDate = (System.currentTimeMillis() - date) / 1000
                             DataHelp.putPointTimeYep(
                                 "o1Obtain",
@@ -196,20 +196,23 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
 
     @SuppressLint("HardwareIds")
     private fun initAdJust(application: Application) {
-        Adjust.addSessionCallbackParameter("customer_user_id", Settings.Secure.getString(application.contentResolver, Settings.Secure.ANDROID_ID))
+        Adjust.addSessionCallbackParameter(
+            "customer_user_id",
+            Settings.Secure.getString(application.contentResolver, Settings.Secure.ANDROID_ID)
+        )
         val appToken = "ih2pm2dr3k74"
-        val environment: String = AdjustConfig.ENVIRONMENT_PRODUCTION
+        val environment: String = AdjustConfig.ENVIRONMENT_SANDBOX
         val config = AdjustConfig(application, appToken, environment)
         config.needsCost = true
         config.setOnAttributionChangedListener { attribution ->
-            Log.e("TAG","adjust =${attribution}")
-            val data = BaseAppUtils.adjust_data.getLoadStringData()
-            if (data.isEmpty() && attribution.network.isNotEmpty() && attribution.network.contains(
+            Log.e("TAG", "adjust=${attribution}")
+            val data = BaseAppUtils.adjust_data.getLoadBooleanData()
+            if (!data && attribution.network.isNotEmpty() && attribution.network.contains(
                     "organic",
                     true
                 ).not()
             ) {
-                BaseAppUtils.setLoadData(BaseAppUtils.adjust_data, attribution.network)
+                BaseAppUtils.setLoadData(BaseAppUtils.adjust_data, true)
             }
         }
         Adjust.onCreate(config)
