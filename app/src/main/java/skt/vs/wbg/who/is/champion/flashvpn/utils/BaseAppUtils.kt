@@ -7,6 +7,7 @@ import android.os.Process
 import android.util.Log
 import android.webkit.WebView
 import com.google.android.gms.ads.MobileAds
+import com.google.firebase.FirebaseApp
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
 import com.google.gson.Gson
@@ -21,7 +22,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringDat
 
 object BaseAppUtils {
     const val TAG = "FlashVPN"
-    const val vpn_url = "https://test.onlinenetwork.link/tKyBVzPf/kmFHD/RMA/"
+    const val vpn_url = "https://api.onlinenetwork.link/tKyBVzPf/kmFHD/RMA/"
     const val tab_url = "https://test-baste.onlinenetwork.link/summon/wound"
     const val vpn_online = "vpn_online"
     const val ip_tab_flash = "ip_tab_flash"
@@ -61,8 +62,8 @@ object BaseAppUtils {
     //本地买量数据
     const val local_purchase_data = """
         {
-    "onLleav": 2,
-    "onLeate": 2,
+    "onLleav": 1,
+    "onLeate": 1,
     "onLmill": 2,
     "onLage": 2,
     "onLiden": 2,
@@ -89,6 +90,7 @@ object BaseAppUtils {
             if (info!!.pid == myPid && packageName == info.processName) {
                 MobileAds.initialize(application) {}
                 Firebase.initialize(application)
+//                FirebaseApp.initializeApp(application)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     if (application.packageName != Application.getProcessName()) {
                         WebView.setDataDirectorySuffix(Application.getProcessName())

@@ -16,7 +16,7 @@ class NetClientHelp {
 
     fun get(context: Context, url: String, callback: Callback) {
         val request = Request.Builder()
-            .addHeader("QAVD", context.packageName)
+            .addHeader("QAVD", "com.online.network.procy.manager")
             .addHeader("PXNVV", "ZZ")
             .url(url)
             .build()
