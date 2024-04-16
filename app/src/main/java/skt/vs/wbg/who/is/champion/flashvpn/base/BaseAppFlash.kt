@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import cat.ereza.customactivityoncrash.config.CaocConfig
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustConfig
 import com.android.installreferrer.api.InstallReferrerClient
@@ -20,6 +21,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import skt.vs.wbg.who.`is`.champion.flashvpn.R
+import skt.vs.wbg.who.`is`.champion.flashvpn.page.HomeActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.ProgressActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.SPUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
@@ -28,8 +31,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadBooleanData
-import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringData
-import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
+
 
 class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
 
@@ -60,6 +62,7 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
     override fun onCreate() {
         super.onCreate()
         application = this
+        onCreateCao()
         MMKV.initialize(application)
         BaseAppUtils.initApp(this)
         registerActivityLifecycleCallbacks(this)
@@ -216,5 +219,21 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
             }
         }
         Adjust.onCreate(config)
+    }
+     fun onCreateCao() {
+        CaocConfig.Builder.create()
+            .backgroundMode(CaocConfig.BACKGROUND_MODE_SILENT) //default: CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM
+            .enabled(false) //default: true
+            .showErrorDetails(true) //default: true
+            .showRestartButton(true) //default: true
+            .logErrorOnRestart(true) //default: true
+            .trackActivities(true) //default: false
+            .minTimeBetweenCrashesMs(2000) //default: 3000
+            .errorDrawable(R.mipmap.ic_launcher) //default: bug image
+            .restartActivity(HomeActivity::class.java) //default: null (your app's launch activity)
+            .errorActivity(HomeActivity::class.java) //default: null (default error activity)
+            .apply()
+
+        //If you use Firebase Crashlytics or ACRA, please initialize them here as explained above.
     }
 }
