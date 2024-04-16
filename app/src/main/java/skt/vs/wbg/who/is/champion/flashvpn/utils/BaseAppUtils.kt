@@ -27,6 +27,7 @@ object BaseAppUtils {
     const val ip_tab_flash = "ip_tab_flash"
     const val refer_tab = "refer_tab"
     const val refer_state = "refer_state"
+    const val adjust_data = "adjust_data"
 
     const val logTagFlash = "FlashVPN"
     const val vpn_ip = "vpn_ip"

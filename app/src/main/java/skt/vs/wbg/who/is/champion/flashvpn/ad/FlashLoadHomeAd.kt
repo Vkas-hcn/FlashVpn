@@ -70,6 +70,12 @@ object FlashLoadHomeAd {
 
             override fun onAdOpened() {
                 super.onAdOpened()
+                Log.e("TAG", "onAdOpened: ", )
+            }
+
+            override fun onAdClicked() {
+                super.onAdClicked()
+                Log.e("TAG", "onAdClicked: ", )
             }
         }).build().loadAd(AdRequest.Builder().build())
     }

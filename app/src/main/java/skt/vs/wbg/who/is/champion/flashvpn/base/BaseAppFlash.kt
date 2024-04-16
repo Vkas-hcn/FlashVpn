@@ -1,11 +1,15 @@
 package skt.vs.wbg.who.`is`.champion.flashvpn.base
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
+import com.adjust.sdk.Adjust
+import com.adjust.sdk.AdjustConfig
 import com.android.installreferrer.api.InstallReferrerClient
 import com.android.installreferrer.api.InstallReferrerStateListener
 import com.google.android.gms.ads.AdActivity
@@ -24,6 +28,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadBooleanData
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringData
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 
 class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
@@ -60,7 +65,7 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
         registerActivityLifecycleCallbacks(this)
         getReferInformation(this)
         "o16".putPointYep(this)
-        Log.e(TAG, "onCreate: Application")
+        initAdJust(this)
     }
 
 
@@ -101,11 +106,12 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityResumed(activity: Activity) {
+        Adjust.onResume()
 
     }
 
     override fun onActivityPaused(activity: Activity) {
-
+        Adjust.onPause()
     }
 
     override fun onActivityStopped(activity: Activity) {
@@ -186,5 +192,26 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
         }.onFailure { e ->
             // 处理异常
         }
+    }
+
+    @SuppressLint("HardwareIds")
+    private fun initAdJust(application: Application) {
+        Adjust.addSessionCallbackParameter("customer_user_id", Settings.Secure.getString(application.contentResolver, Settings.Secure.ANDROID_ID))
+        val appToken = "ih2pm2dr3k74"
+        val environment: String = AdjustConfig.ENVIRONMENT_PRODUCTION
+        val config = AdjustConfig(application, appToken, environment)
+        config.needsCost = true
+        config.setOnAttributionChangedListener { attribution ->
+            Log.e("TAG","adjust =${attribution}")
+            val data = BaseAppUtils.adjust_data.getLoadStringData()
+            if (data.isEmpty() && attribution.network.isNotEmpty() && attribution.network.contains(
+                    "organic",
+                    true
+                ).not()
+            ) {
+                BaseAppUtils.setLoadData(BaseAppUtils.adjust_data, attribution.network)
+            }
+        }
+        Adjust.onCreate(config)
     }
 }

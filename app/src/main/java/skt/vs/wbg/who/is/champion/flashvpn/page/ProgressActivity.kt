@@ -227,6 +227,7 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
         val debugSettings =
             ConsentDebugSettings.Builder(this)
                 .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
+                .addTestDeviceHashedId("AC2561437987A1BF036B1ADB0A89BDB4")
                 .build()
         val params = ConsentRequestParameters
             .Builder()
@@ -238,12 +239,12 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
             params, {
                 UserMessagingPlatform.loadAndShowConsentFormIfRequired(this) { loadAndShowError ->
                     if (consentInformation.canRequestAds()) {
-                        BaseAppUtils.setLoadData(BaseAppUtils.ad_user_state, true)
+//                        BaseAppUtils.setLoadData(BaseAppUtils.ad_user_state, true)
                     }
                 }
             },
             {
-                BaseAppUtils.setLoadData(BaseAppUtils.ad_user_state, true)
+//                BaseAppUtils.setLoadData(BaseAppUtils.ad_user_state, true)
             }
         )
     }

@@ -3,9 +3,14 @@ package skt.vs.wbg.who.`is`.champion.flashvpn.tab
 import android.content.Context
 import android.util.Base64
 import android.util.Log
+import com.adjust.sdk.Adjust
+import com.adjust.sdk.AdjustAdRevenue
+import com.adjust.sdk.AdjustConfig
 import com.android.installreferrer.api.ReferrerDetails
 import com.google.android.gms.ads.AdValue
 import com.google.android.gms.ads.ResponseInfo
+import com.google.android.gms.ads.appopen.AppOpenAd
+import com.google.android.gms.ads.interstitial.InterstitialAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
@@ -74,7 +79,7 @@ class FlashOkHttpUtils {
         adValue: AdValue,
         responseInfo: ResponseInfo,
         type: String,
-        flashAdBean: FlashAdBean
+        flashAdBean: FlashAdBean,
     ) {
         val json = DataHelp.getAdJson(context, adValue, responseInfo, type, flashAdBean)
         Log.d(TAG, "ad---${type}--request data-->${json}")
@@ -91,6 +96,14 @@ class FlashOkHttpUtils {
         } catch (e: Exception) {
 
         }
+        val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
+        adRevenue.setRevenue(
+            adValue.valueMicros / 1000000.0,
+            adValue.currencyCode
+        )
+        adRevenue.setAdRevenueNetwork(responseInfo.mediationAdapterClassName)
+        Adjust.trackAdRevenue(adRevenue)
+
         DataHelp.putPointAdJiaZhiOnline(adValue.valueMicros)
     }
 
