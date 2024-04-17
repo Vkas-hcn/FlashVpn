@@ -574,6 +574,9 @@ class MainViewModel : ViewModel() {
             // NOPROCESS 未连接 // CONNECTED 已连接
             // RECONNECTING 尝试重新链接 // EXITING 连接中主动掉用断开
             Log.e(TAG, "newStatus: ${state}")
+            activity.lifecycleScope.launch {
+                activity.mBinding.logTextView.append("newStatus: ${state}")
+            }
 
             curServerState = state
             BaseAppFlash.vpnState = state ?: ""
@@ -625,6 +628,9 @@ class MainViewModel : ViewModel() {
                             BaseAppUtils.setLoadData(BaseAppUtils.vpn_ip, data.onLm_host)
                             BaseAppUtils.setLoadData(BaseAppUtils.vpn_city, data.city)
                             Log.e(TAG, "openVTool: ip=${data.onLm_host};city=${data.city}")
+                            withContext(Dispatchers.Main) {
+                                activity.mBinding.logTextView.append("openVTool: ip=${data.onLm_host};city=${data.city}")
+                            }
                             val conf = context.assets.open("fast_onlinenetmanager_ippool.ovpn")
                             val br = BufferedReader(InputStreamReader(conf))
                             val config = StringBuilder()
@@ -644,6 +650,9 @@ class MainViewModel : ViewModel() {
                             br.close()
                             conf.close()
                             Log.e("TAG", "openVTool=$config")
+                            withContext(Dispatchers.Main) {
+                                activity.mBinding.logTextView.append("openVTool=$config")
+                            }
                             server.startVPN(config.toString())
                             delay(12000)
                             if ((!DataHelp.isConnectFun()) && BaseAppFlash.vpnClickState == 0) {

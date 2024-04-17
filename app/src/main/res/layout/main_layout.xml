@@ -354,6 +354,26 @@
                 android:id="@+id/in_load"
                 android:visibility="@{showLoad ? View.VISIBLE : View.GONE}"
                 layout="@layout/layout_load"/>
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+                <TextView
+                    android:id="@+id/logTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="bottom"
+                    android:padding="8dp"
+                    android:scrollbarStyle="outsideOverlay"
+                    android:scrollbars="vertical"
+                    android:textColor="@android:color/black"
+                    android:textSize="12sp"
+                    android:text="日志开始：" />
+
+            </ScrollView>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
