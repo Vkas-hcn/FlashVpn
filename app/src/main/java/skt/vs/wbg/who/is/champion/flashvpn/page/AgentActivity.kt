@@ -104,24 +104,20 @@ class AgentActivity : BaseActivityFlash<ActivityAgentBinding>() {
         lifecycleScope.launch(Dispatchers.IO) {
             allApp = GetAppUtils.getAppListData()
             val saveDataList = GetAppUtils.getSavePackName()
-            Log.e("TAG", "getAroundFlowAPPList-main: ${saveDataList}")
-            if (saveDataList == null) {
+            Log.e("TAG", "getAroundFlowAPPList-main: $saveDataList")
+            saveDataList?.let { savedList ->
                 allApp.forEach { pack ->
-                    pack.isCheck = false
+                    pack.isCheck = savedList.any { it == pack.packName }
                 }
+            } ?: allApp.forEach { pack ->
+                pack.isCheck = false
             }
-            saveDataList?.forEach {
-                allApp.forEach { pack ->
-                    pack.isShow = false
-                    if (pack.packName == it) {
-                        pack.isCheck = true
-                    }
-                }
-            }
+
             showIsAll()
             nextFun()
         }
     }
+
 
     private fun setIsAll(): Boolean {
         val isChecked = allApp.all { it.isCheck }

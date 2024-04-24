@@ -129,6 +129,13 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
                         mBinding.uploadText.text.toString(),
                         mBinding.downloadText.text.toString()
                     )
+                }else{
+                    ChatUtils.simulateDataUpdate(
+                        time,
+                        mBinding.chart,
+                        "0bit/s",
+                        "0bit/s"
+                    )
                 }
                 delay(500)
             }
@@ -144,8 +151,6 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
         super.onResume()
         mainViewModel.activityResume()
         mainViewModel.showBannerAd(this)
-        "o1frontview".putPointYep(this)
-
     }
 
     override fun onDestroy() {

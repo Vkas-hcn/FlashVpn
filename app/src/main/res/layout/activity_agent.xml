@@ -60,7 +60,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="After reconnecting, the proxy will take effect"
-            android:visibility="@{showCustom ? View.GONE : View.VISIBLE}"
             android:textColor="#FF999999"
             android:textSize="14sp"
             android:layout_marginStart="20dp"

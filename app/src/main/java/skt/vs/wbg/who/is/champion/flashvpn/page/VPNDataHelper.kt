@@ -43,8 +43,8 @@ object VPNDataHelper {
         val list = OnlineVpnHelp.getDataFromTheServer()
         val data = Gson().toJson(list)
         list?.add(0, getFastVpnOnLine(0))
-        list?.add(1, getFastVpnOnLine(1))
-        list?.add(2, getFastVpnOnLine(2))
+//        list?.add(1, getFastVpnOnLine(1))
+//        list?.add(2, getFastVpnOnLine(2))
         Log.e(TAG, "getAllVpnData: ${data}")
         Log.e(TAG, "getAllVpnListData: ${list}")
         return list ?: local

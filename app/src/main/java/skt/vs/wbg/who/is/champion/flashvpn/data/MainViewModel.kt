@@ -325,6 +325,7 @@ class MainViewModel : ViewModel() {
                         } else if (ac.mBinding.drawer.isOpen) {
                             ac.mBinding.drawer.close()
                         } else if (openServerState.value == OpenServiceState.CONNECTING) {
+                        } else if (ac.mBinding.showLoad == true) {
                         } else if (openServerState.value == OpenServiceState.DISCONNECTING) {
                             stopToConnectOrDisConnect()
                         } else {
@@ -610,7 +611,6 @@ class MainViewModel : ViewModel() {
 
                 "RECONNECTING" -> {
                     Toast.makeText(activity, "Reconnecting", Toast.LENGTH_LONG).show()
-
                 }
 
                 "NOPROCESS" -> {
@@ -644,7 +644,7 @@ class MainViewModel : ViewModel() {
                         } else {
                             "f"
                         }
-                        DataHelp.putPointTimeYep("o1vpn", type,"proxy", context)
+                        DataHelp.putPointTimeYep("o1vpn", type, "proxy", context)
                         val data = VPNDataHelper.getAllLocaleProfile()[VPNDataHelper.nodeIndex]
                         runCatching {
                             BaseAppUtils.setLoadData(BaseAppUtils.vpn_ip, data.onLm_host)
@@ -658,7 +658,7 @@ class MainViewModel : ViewModel() {
                             while (true) {
                                 line = br.readLine()
                                 if (line == null) break
-                                if (line.contains("remote 195", true)) {
+                                if (line.contains("remote 192", true)) {
                                     line = "remote ${data.onLm_host} ${data.onLo_Port}"
                                 } else if (line.contains("wrongpassword", true)) {
                                     line = data.onLu_password
@@ -681,11 +681,11 @@ class MainViewModel : ViewModel() {
                                     "re",
                                     activity
                                 )
-//                                stopToConnectOrDisConnect()
-                                Looper.prepare()
-                                Toast.makeText(activity, "Connect Failed!", Toast.LENGTH_LONG)
-                                    .show()
-                                Looper.loop()
+                                mService?.disconnect()
+                                withContext(Dispatchers.Main) {
+                                    Toast.makeText(activity, "Connect Failed!", Toast.LENGTH_LONG)
+                                        .show()
+                                }
                                 cancel()
                             }
                         }.onFailure {
@@ -735,6 +735,7 @@ class MainViewModel : ViewModel() {
             if (activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
                 return@launch
             }
+            "o1frontview".putPointYep(activity)
             val state = FlashLoadBannerAd.getAdISLoadSuccess()
             if (!state) {
                 BaseAd.getBannerInstance().advertisementLoadingFlash(activity)
