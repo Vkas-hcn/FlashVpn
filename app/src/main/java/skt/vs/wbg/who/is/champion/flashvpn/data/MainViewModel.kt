@@ -163,8 +163,9 @@ class MainViewModel : ViewModel() {
     }
 
     private fun initOb() {
-        activity.mBinding?.lifecycleOwner?.let {
-            openServerState.observe(it) { state ->
+        activity.mBinding?.lifecycleOwner?.let { owner ->
+            openServerState.observe(owner) { state ->
+                val isResumed = owner.lifecycle.currentState == Lifecycle.State.RESUMED
                 when (state) {
                     OpenServiceState.CONNECTING -> {
                         setViewEnabled(false)
@@ -173,15 +174,14 @@ class MainViewModel : ViewModel() {
                     OpenServiceState.CONNECTED -> {
                         BaseAppUtils.o12Fun(activity)
                         getConnectTime(activity)
-                        if (isClickConnect && it.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                        if (isClickConnect && isResumed) {
                             showConnectLive.postValue(true)
                             isClickConnect = false
                             BaseAd.getBackInstance().advertisementLoadingFlash(activity)
-                        } else {
-                            setViewEnabled(true)
-                            stopConnectAnimation()
-                            setChromometer()
                         }
+                        stopConnectAnimation()
+                        setChromometer()
+                        setViewEnabled(true)
                     }
 
                     OpenServiceState.DISCONNECTING -> {
@@ -189,15 +189,13 @@ class MainViewModel : ViewModel() {
                     }
 
                     OpenServiceState.DISCONNECTED -> {
-
-                        if (isClickConnect && !isFailConnect && it.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                        if (isClickConnect && !isFailConnect && isResumed) {
                             showConnectLive.postValue(false)
                             isClickConnect = false
-                        } else {
-                            setViewEnabled(true)
-                            stopConnectAnimation()
-                            setChromometer()
                         }
+                        stopConnectAnimation()
+                        setChromometer()
+                        setViewEnabled(true)
                     }
 
                     else -> {}
@@ -205,6 +203,7 @@ class MainViewModel : ViewModel() {
             }
         }
     }
+
 
     private fun stopConnectAnimation() {
         connectAnimate.clearAnimation()
@@ -578,7 +577,7 @@ class MainViewModel : ViewModel() {
             activity.let { it1 ->
                 setViewEnabled(true)
                 stopConnectAnimation()
-                setChromometer()
+//                setChromometer()
                 if (isConnect) {
                     toEndAc()
                 } else {

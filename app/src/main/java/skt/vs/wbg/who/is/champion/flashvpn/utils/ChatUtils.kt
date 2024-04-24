@@ -36,6 +36,7 @@ object ChatUtils {
         yAxis.setDrawAxisLine(false)
         yAxis.setDrawZeroLine(false)
         yAxis.axisMinimum = 0f
+//        yAxis.axisMaximum = 1000f
         chart.axisRight.isEnabled = false
         chart.axisLeft.isEnabled = false
         chart.xAxis.isEnabled = false
@@ -43,11 +44,7 @@ object ChatUtils {
         chart.setNoDataText("")
     }
 
-    private fun CharSequence.extractNumberFromString(): Float? {
-        val regex = Regex("""(\d+(\.\d+)?)""")
-        val matchResult = regex.find(this)
-        return matchResult?.value?.toFloatOrNull()
-    }
+
     fun CharSequence.convertToKbps(): Float? {
         val rateRegex = """(\d+(\.\d+)?)\s*([kMG]?bit/s)""".toRegex()
         val matchResult = rateRegex.find(this)
@@ -67,6 +64,7 @@ object ChatUtils {
 
         return null // No match found
     }
+
     fun simulateDataUpdate(
         time: Float,
         chart: LineChart,
@@ -79,7 +77,17 @@ object ChatUtils {
         val downloadSpeed =
             if (DataHelp.isConnectFun()) downloadText.convertToKbps()
                 ?: 0f else 0f
-        updateChart(chart, time, uploadSpeed, downloadSpeed)
+        val upSpeedData = if (uploadSpeed < 1) {
+            0f
+        } else {
+            uploadSpeed
+        }
+        val dowSpeedData = if (downloadSpeed < 1) {
+            0f
+        } else {
+            downloadSpeed
+        }
+        updateChart(chart, time, upSpeedData, dowSpeedData)
     }
 
     fun updateChart(

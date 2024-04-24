@@ -159,8 +159,8 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
         val date = System.currentTimeMillis()
 
 //        installReferrer = "gclid"
-//        installReferrer = "fb4a"
-//        SPUtils.getInstance().put(BaseAppUtils.refer_data,installReferrer)
+        installReferrer = "fb4a"
+        SPUtils.getInstance().put(BaseAppUtils.refer_data,installReferrer)
 
         runCatching {
             val referrerClient = InstallReferrerClient.newBuilder(context).build()
@@ -170,7 +170,7 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
                         InstallReferrerClient.InstallReferrerResponse.OK -> {
                             val installReferrer =
                                 referrerClient.installReferrer.installReferrer ?: ""
-                            SPUtils.getInstance().put(BaseAppUtils.refer_data, installReferrer)
+//                            SPUtils.getInstance().put(BaseAppUtils.refer_data, installReferrer)
                             Log.e(TAG, "onInstallReferrerSetupFinished: ${installReferrer}")
                             val loadDate = (System.currentTimeMillis() - date) / 1000
                             DataHelp.putPointTimeYep(

@@ -129,7 +129,7 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
                         mBinding.uploadText.text.toString(),
                         mBinding.downloadText.text.toString()
                     )
-                }else{
+                } else {
                     ChatUtils.simulateDataUpdate(
                         time,
                         mBinding.chart,
