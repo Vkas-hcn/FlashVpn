@@ -613,6 +613,7 @@ class MainViewModel : ViewModel() {
                 "WAIT" -> {
                     toAction = true
                     playConnectAnimation()
+                    openServerState.postValue(OpenServiceState.CONNECTING)
                 }
 
                 "AUTH_FAILED", "EXITING" -> {
