@@ -14,7 +14,9 @@ import com.adjust.sdk.AdjustConfig
 import com.android.installreferrer.api.InstallReferrerClient
 import com.android.installreferrer.api.InstallReferrerStateListener
 import com.google.android.gms.ads.AdActivity
+import com.google.gson.Gson
 import com.tencent.mmkv.MMKV
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -69,6 +71,7 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
         getReferInformation(this)
         "o16".putPointYep(this)
         initAdJust(this)
+        FlashOkHttpUtils().reRequestDotData(this)
     }
 
 
@@ -94,6 +97,7 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
 
     private fun toSplash(activity: Activity) {
         "o15".putPointYep(activity)
+        FlashOkHttpUtils().reRequestDotData(this)
         if (activity is ProgressActivity) {
             activity.finish()
         }

@@ -9,12 +9,17 @@ import com.adjust.sdk.AdjustConfig
 import com.android.installreferrer.api.ReferrerDetails
 import com.google.android.gms.ads.AdValue
 import com.google.android.gms.ads.ResponseInfo
-import com.google.android.gms.ads.appopen.AppOpenAd
-import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import skt.vs.wbg.who.`is`.champion.flashvpn.data.DodgingInfo
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringData
 
 class FlashOkHttpUtils {
     val client = NetClientHelp()
@@ -23,7 +28,7 @@ class FlashOkHttpUtils {
         try {
             client.get(context, "https://ifconfig.me/ip", object : NetClientHelp.Callback {
                 override fun onSuccess(response: String) {
-                    BaseAppUtils.setLoadData(BaseAppUtils.ip_tab_flash,response)
+                    BaseAppUtils.setLoadData(BaseAppUtils.ip_tab_flash, response)
                 }
 
                 override fun onFailure(error: String) {
@@ -113,9 +118,9 @@ class FlashOkHttpUtils {
         eventName: String,
         parameterName: String = "",
         tbaValue: Any = 0,
-        wTime: Int = 0,
+        successFun: () -> Unit,
     ) {
-        val json = if (wTime == 0) {
+        val json = if (parameterName == "") {
             DataHelp.getTbaDataJson(context, eventName)
         } else {
             DataHelp.getTbaTimeDataJson(context, tbaValue, eventName, parameterName)
@@ -125,10 +130,16 @@ class FlashOkHttpUtils {
             client.post(BaseAppUtils.tab_url, json, object : NetClientHelp.Callback {
                 override fun onSuccess(response: String) {
                     Log.d(TAG, "${eventName}--TBA事件上报-成功->")
+                    successFun()
                 }
 
                 override fun onFailure(error: String) {
                     Log.d(TAG, "${eventName}--TBA事件上报-失败-->${error}")
+                    val bean = DodgingInfo()
+                    bean.name = eventName
+                    bean.parameterName = parameterName
+                    bean.parameterValue = tbaValue
+                    addAnErrorMessage(bean)
                 }
             })
         } catch (e: Exception) {
@@ -137,8 +148,8 @@ class FlashOkHttpUtils {
     }
 
 
-    fun getVpnData(context: Context) {
-        "oon".putPointYep( context)
+    fun getVpnData(context: Context, successFun: () -> Unit) {
+        "oon".putPointYep(context)
         val date = System.currentTimeMillis()
         try {
             client.get(context, BaseAppUtils.vpn_url, object : NetClientHelp.Callback {
@@ -147,8 +158,9 @@ class FlashOkHttpUtils {
                     BaseAppUtils.setLoadData(BaseAppUtils.vpn_online, responseData)
                     Log.d(TAG, "获取下发服务器数据-成功->$responseData")
                     "oonna".putPointYep(context)
-                    val date2 = (System.currentTimeMillis()-date)/1000
-                    DataHelp.putPointTimeYep("oontt", date2,"time",context)
+                    val date2 = (System.currentTimeMillis() - date) / 1000
+                    DataHelp.putPointTimeYep("oontt", date2, "time", context)
+                    successFun()
                 }
 
                 override fun onFailure(error: String) {
@@ -158,6 +170,7 @@ class FlashOkHttpUtils {
         } catch (e: Exception) {
         }
     }
+
     fun processString(input: String): String {
         // 截取字符串，去掉尾部16个字符
         val truncated = if (input.length > 16) input.substring(0, input.length - 16) else ""
@@ -171,4 +184,53 @@ class FlashOkHttpUtils {
         return String(decodedBytes, Charsets.UTF_8)
     }
 
+
+    //获取失败打点数据
+    fun getFailedDotData(): MutableList<DodgingInfo>? {
+        val errorData = BaseAppUtils.app_point_error.getLoadStringData()
+        return runCatching {
+            val typeToken = object : TypeToken<MutableList<DodgingInfo>>() {}.type
+            Gson().fromJson<MutableList<DodgingInfo>>(errorData, typeToken)
+        }.getOrNull()
+    }
+
+    //添加报错打点
+    fun addAnErrorMessage(bean: DodgingInfo) {
+        val errorDataList = getFailedDotData() ?: mutableListOf()
+        errorDataList.add(bean)
+        BaseAppUtils.setLoadData(BaseAppUtils.app_point_error, Gson().toJson(errorDataList))
+    }
+
+    //删除报错打点
+    fun deleteAnErrorMessage(bean: DodgingInfo) {
+        val errorDataList = getFailedDotData()
+        if (errorDataList != null && errorDataList.size > 0) {
+            errorDataList.remove(bean)
+        }
+        BaseAppUtils.setLoadData(BaseAppUtils.app_point_error, Gson().toJson(errorDataList))
+    }
+
+    //重新请求打点数据
+    fun reRequestDotData(context: Context) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val netState = BaseAppUtils.isNetworkReachable()
+            if (netState) {
+                val data = FlashOkHttpUtils().getFailedDotData()
+                Log.e(TAG, "onCreate: ${Gson().toJson(data)}")
+                if (data != null && data.size > 0) {
+                    data.forEach {
+                        getTbaList(
+                            context,
+                            it.name ?: "",
+                            it.parameterName ?: "",
+                            it.parameterValue ?: ""
+                        ) {
+                            deleteAnErrorMessage(it)
+                        }
+                    }
+                }
+            }
+        }
+
+    }
 }

@@ -3,25 +3,26 @@ package skt.vs.wbg.who.`is`.champion.flashvpn.page
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
-import android.util.DisplayMetrics
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
-import androidx.lifecycle.Lifecycle
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
-import com.google.android.ump.ConsentDebugSettings
-import com.google.android.ump.ConsentForm
-import com.google.android.ump.ConsentInformation
-import com.google.android.ump.ConsentRequestParameters
-import com.google.android.ump.UserMessagingPlatform
+import androidx.lifecycle.lifecycleScope
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
 import skt.vs.wbg.who.`is`.champion.flashvpn.R
-import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadConnectAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseActivityFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.MainViewModel
@@ -29,13 +30,20 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.databinding.MainLayoutBinding
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
-import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadBooleanData
+import com.github.mikephil.charting.data.Entry;
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash.Companion.mmkvFlash
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.ChatUtils
+
 
 class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
-
     private val mainViewModel: MainViewModel by viewModels()
-
+    var time: Float = 1f
+    private var speedJob: Job? = null
     override var conetcntLayoutId: Int
         get() = R.layout.main_layout
         set(value) {}
@@ -82,6 +90,8 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
             mBinding.showAd = 0
         }
         storeSpoilerData()
+
+        ChatUtils.initChart(mBinding.chart)
     }
 
     var isShowGuide = true
@@ -97,10 +107,31 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
     fun storeSpoilerData() {
         val data = BaseAppUtils.spoilerOrNot()
         val raoLiuTba = BaseAppUtils.raoLiuTba.getLoadBooleanData()
-        BaseAppFlash.mmkvFlash.putBoolean("raoliu", data)
-        if(!raoLiuTba && !data){
+        mmkvFlash.putBoolean("raoliu", data)
+        if (!raoLiuTba && !data) {
             "o34".putPointYep(this)
             BaseAppUtils.setLoadData(BaseAppUtils.raoLiuTba, true)
+        }
+    }
+
+    fun getSpeedData() {
+        speedJob?.cancel()
+        speedJob = null
+        speedJob = lifecycleScope.launch {
+            while (isActive) {
+                mBinding.downloadText.text = mmkvFlash.decodeString("speed_dow_online", "0 B")
+                mBinding.uploadText.text = mmkvFlash.decodeString("speed_up_online", "0 B")
+                time++
+                if (DataHelp.isConnectFun()) {
+                    ChatUtils.simulateDataUpdate(
+                        time,
+                        mBinding.chart,
+                        mBinding.uploadText.text.toString(),
+                        mBinding.downloadText.text.toString()
+                    )
+                }
+                delay(500)
+            }
         }
     }
 
@@ -114,6 +145,7 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
         mainViewModel.activityResume()
         mainViewModel.showBannerAd(this)
         "o1frontview".putPointYep(this)
+
     }
 
     override fun onDestroy() {

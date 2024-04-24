@@ -1066,9 +1066,6 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         if (profileUsesOrBot)
             VpnStatus.logDebug("VPN Profile uses at least one server entry with Orbot. Setting up VPN so that OrBot is not redirected over VPN.");
 
-
-        boolean atLeastOneAllowedApp = false;
-
         if (mProfile.mAllowedAppsVpnAreDisallowed && profileUsesOrBot) {
             try {
                 builder.addDisallowedApplication(ORBOT_PACKAGE_NAME);
@@ -1076,31 +1073,6 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
                 VpnStatus.logDebug("Orbot not installed?");
             }
         }
-
-//        for (String pkg : mProfile.mAllowedAppsVpn) {
-//            try {
-//                if (mProfile.mAllowedAppsVpnAreDisallowed) {
-//                    builder.addDisallowedApplication(pkg);
-//                } else {
-//                    if (!(profileUsesOrBot && pkg.equals(ORBOT_PACKAGE_NAME))) {
-//                        builder.addAllowedApplication(pkg);
-//                        atLeastOneAllowedApp = true;
-//                    }
-//                }
-//            } catch (PackageManager.NameNotFoundException e) {
-//                mProfile.mAllowedAppsVpn.remove(pkg);
-//                VpnStatus.logInfo(R.string.app_no_longer_exists, pkg);
-//            }
-//        }
-//
-//        if (!mProfile.mAllowedAppsVpnAreDisallowed && !atLeastOneAllowedApp) {
-//            VpnStatus.logDebug(R.string.no_allowed_app, getPackageName());
-//            try {
-//                builder.addAllowedApplication(getPackageName());
-//            } catch (PackageManager.NameNotFoundException e) {
-//                VpnStatus.logError("This should not happen: " + e.getLocalizedMessage());
-//            }
-//        }
         Raoliu.INSTANCE.brand(builder, getPackageName());
         if (mProfile.mAllowedAppsVpnAreDisallowed) {
             VpnStatus.logDebug(R.string.disallowed_vpn_apps_info, TextUtils.join(", ", mProfile.mAllowedAppsVpn));
@@ -1114,36 +1086,6 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         }
     }
 
-//    private static MMKV mmkv;
-//    public static MMKV getMmkv() {
-//        if (mmkv == null) {
-//            mmkv = MMKV.mmkvWithID("FlashVpn", MMKV.MULTI_PROCESS_MODE);
-//        }
-//        return mmkv;
-//    }
-//    /**
-//     * @return 解析aroundFlow json文件
-//     */
-//    private static boolean getAroundFlowJsonData() {
-//        boolean data = getMmkv().decodeBool("raoliu", true);
-//        Log.e("TAG", "getAroundFlowJsonData: " + data);
-//        return data;
-//    }
-//
-//    public static void brand(VpnService.Builder builder, String myPackageName) {
-//        if (getAroundFlowJsonData()) {
-//            // 黑名单绕流
-//            List<String> packages = listGmsPackages();
-//            packages.add(myPackageName);
-//            for (String pkg : packages) {
-//                try {
-//                    builder.addDisallowedApplication(pkg);
-//                } catch (Exception e) {
-//                    // Handle exception
-//                }
-//            }
-//        }
-//    }
 
     /**
      * 默认黑名单
@@ -1352,9 +1294,10 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
                     humanReadableByteCount(diffIn / OpenVPNManagement.mBytecountInterval, true, getResources()),
                     humanReadableByteCount(out, false, getResources()),
                     humanReadableByteCount(diffOut / OpenVPNManagement.mBytecountInterval, true, getResources()));
-
-
             showNotification(netstat, null, NOTIFICATION_CHANNEL_BG_ID, mConnecttime, LEVEL_CONNECTED, null);
+            String upData  = humanReadableByteCount(diffOut / OpenVPNManagement.mBytecountInterval, true, getResources());
+            String dowData = humanReadableByteCount(diffIn / OpenVPNManagement.mBytecountInterval, true, getResources());
+            Raoliu.INSTANCE.getSpeedData(upData,dowData);
         }
 
     }

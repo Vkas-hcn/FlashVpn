@@ -39,12 +39,14 @@ object VPNDataHelper {
     }
 
 
-
-     fun getAllLocaleProfile(): MutableList<LocaleProfile> {
+    fun getAllLocaleProfile(): MutableList<LocaleProfile> {
         val list = OnlineVpnHelp.getDataFromTheServer()
         val data = Gson().toJson(list)
-        Log.e(TAG, "getAllVpnListData: ${data}")
-        list?.add(0, getFastVpnOnLine())
+        list?.add(0, getFastVpnOnLine(0))
+        list?.add(1, getFastVpnOnLine(1))
+        list?.add(2, getFastVpnOnLine(2))
+        Log.e(TAG, "getAllVpnData: ${data}")
+        Log.e(TAG, "getAllVpnListData: ${list}")
         return list ?: local
     }
 
@@ -59,7 +61,7 @@ object VPNDataHelper {
         )
     ).toMutableList()
 
-    private fun getFastVpnOnLine(): LocaleProfile {
+    private fun getFastVpnOnLine(type: Int = 0): LocaleProfile {//0:Fast Server;1:Game;2:Video
         val ufVpnBean: MutableList<LocaleProfile>? = OnlineVpnHelp.getDataFastServerData()
         return if (ufVpnBean == null) {
             val data = OnlineVpnHelp.getDataFromTheServer()?.getOrNull(0)
@@ -67,7 +69,20 @@ object VPNDataHelper {
             BaseAppUtils.setLoadData(BaseAppUtils.vpn_city, data?.city.toString())
             LocaleProfile(
                 city = data?.city.toString(),
-                name = data?.name.toString(),
+                name = when (type) {
+                    0 -> {
+                        "Fast Server"
+                    }
+                    1 -> {
+                        "Game"
+                    }
+                    2 -> {
+                        "Video"
+                    }
+                    else -> {
+                        "Fast Server"
+                    }
+                },
                 onLu_password = data?.onLu_password.toString(),
                 onLo_Port = data?.onLo_Port ?: 0,
                 onLm_host = data?.onLm_host.toString(),
@@ -75,7 +90,20 @@ object VPNDataHelper {
             )
         } else {
             ufVpnBean.shuffled().first().apply {
-                name = "Fast Server"
+                name = when (type) {
+                    0 -> {
+                        "Fast Server"
+                    }
+                    1 -> {
+                        "Game"
+                    }
+                    2 -> {
+                        "Video"
+                    }
+                    else -> {
+                        "Fast Server"
+                    }
+                }
             }
         }
     }
@@ -83,6 +111,8 @@ object VPNDataHelper {
     fun getImage(name: String): Int {
         val a = name.trim().replace(" ", "").lowercase()
         when (a) {
+            "game" -> return R.drawable.icon_game
+            "video" -> return R.drawable.icon_video
             "italy" -> return R.mipmap.flash_image_italy
             "japan" -> return R.mipmap.flash_image_japan
             "koreasouth" -> return R.mipmap.flash_image_koreasouth
@@ -117,7 +147,6 @@ object VPNDataHelper {
 
     private var remoteAllList: ArrayList<LocaleProfile>? = null
     private var remoteSmartStringList: ArrayList<String>? = null
-
 
     private fun appInitGetVPNFB() {
         remoteConfig = Firebase.remoteConfig

@@ -90,5 +90,5 @@ dependencies {
     implementation("com.google.android.ump:user-messaging-platform:2.2.0")
     implementation 'com.adjust.sdk:adjust-android:4.33.5'
     implementation 'cat.ereza:customactivityoncrash:2.4.0'
-
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }

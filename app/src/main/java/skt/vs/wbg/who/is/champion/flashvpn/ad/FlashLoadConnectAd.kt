@@ -110,14 +110,14 @@ object FlashLoadConnectAd {
         activity: HomeActivity,
         closeWindowFun: () -> Unit
     ): Int {
-        val userData = BaseAppUtils.blockAdUsers()
+//        val userData = BaseAppUtils.blockAdUsers()
         val blacklistState = BaseAppUtils.blockAdBlacklist()
         if (!blacklistState) {
             return 0
         }
-        if (!userData) {
-            return 0
-        }
+//        if (!userData) {
+//            return 0
+//        }
 
         if (adBase.appAdDataFlash == null) {
             return 1

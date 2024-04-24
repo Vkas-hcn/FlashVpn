@@ -11,18 +11,29 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
 import com.google.gson.Gson
-import com.tencent.mmkv.MMKV
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashLogicBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashUserBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.net.FlashCloak
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.SPUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.VPNDataHelper.initVpnFb
-import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringData
+import java.net.HttpURLConnection
+import java.net.URL
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.InetAddress
 
 object BaseAppUtils {
     const val TAG = "FlashVPN"
-    const val vpn_url = "https://api.onlinenetwork.link/tKyBVzPf/kmFHD/RMA/"
+    const val vpn_url = "https://test.onlinenetwork.link/tKyBVzPf/kmFHD/RMA/"
     const val tab_url = "https://test-baste.onlinenetwork.link/summon/wound"
     const val vpn_online = "vpn_online"
     const val ip_tab_flash = "ip_tab_flash"
@@ -34,10 +45,15 @@ object BaseAppUtils {
     const val vpn_ip = "vpn_ip"
     const val vpn_city = "vpn_city"
     const val ad_user_state = "ad_user_state"
+
     //refer_data
     const val refer_data = "refer_data"
     var isStartYep: Boolean = true
     var raoLiuTba = "raoLiuTba"
+    var app_pack_name = "a_p_n"
+    var app_is_custom = "app_is_custom"
+    var app_point_error = "app_point_error"
+
     //ad
     const val onLguai = "onLguai"
 
@@ -75,9 +91,9 @@ object BaseAppUtils {
     //本地广告逻辑
     const val local_ad_logic = """
 {
-    "onLmatt": "1",
-    "onLprob": "2",
-    "onLfeli": "2"
+    "onLmatt": "2",
+    "onLprob": "1",
+    "onLfeli": "1"
 }    """
 
     fun initApp(application: Application) {
@@ -90,7 +106,7 @@ object BaseAppUtils {
             if (info!!.pid == myPid && packageName == info.processName) {
                 MobileAds.initialize(application) {}
                 Firebase.initialize(application)
-//                FirebaseApp.initializeApp(application)
+                FirebaseApp.initializeApp(application)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     if (application.packageName != Application.getProcessName()) {
                         WebView.setDataDirectorySuffix(Application.getProcessName())
@@ -98,6 +114,9 @@ object BaseAppUtils {
                 }
                 initVpnFb()
                 FlashCloak().checkIsLimitCloak()
+                GlobalScope.launch(Dispatchers.IO) {
+                    GetAppUtils.getAllLauncherIconPackages(application)
+                }
             }
         }
     }
@@ -295,10 +314,86 @@ object BaseAppUtils {
     }
 
     fun String.getLoadBooleanData(): Boolean {
-        return SPUtils.getInstance().getBoolean(this,false)
+        return SPUtils.getInstance().getBoolean(this, false)
     }
 
     fun String.getLoadIntData(): Int {
         return SPUtils.getInstance().getInt(this)
     }
+
+    fun isNetworkReachable2(): Boolean {
+        return try {
+            val url = URL("https://www.baidu.com")
+            val conn = url.openConnection() as HttpURLConnection
+            conn.connectTimeout = 3000 // 设置连接超时时间为3秒
+            conn.readTimeout = 3000 // 设置读取超时时间为3秒
+            conn.requestMethod = "GET" // 设置请求方法为GET
+            conn.connect() // 发起连接
+
+            val responseCode = conn.responseCode
+            // 如果响应码是200，表示连接成功
+            Log.e(TAG, "表示连接成功")
+            responseCode == HttpURLConnection.HTTP_OK
+        } catch (e: Exception) {
+            // 发生异常，连接失败
+            Log.e(TAG, "表示连接失败", )
+            false
+        }
+    }
+
+    fun isNetworkReachable(): Boolean {
+        return try {
+            val process = Runtime.getRuntime().exec("/system/bin/ping -c 1 8.8.8.8") // 执行ping命令
+            val reader = BufferedReader(InputStreamReader(process.inputStream))
+            val output = StringBuilder()
+            var line: String?
+            while (reader.readLine().also { line = it } != null) {
+                output.append(line).append("\n")
+            }
+            process.waitFor() // 等待ping命令执行完成
+            process.destroy() // 销毁进程
+
+            // 解析输出，判断是否连接成功
+            val result = output.toString()
+           val state =  result.contains("1 packets transmitted, 1 received") // 如果输出中包含这行内容，表示ping成功
+            Log.e(TAG, "isNetworkReachable: ${state}", )
+            return state
+        } catch (e: Exception) {
+            Log.e(TAG, "isNetworkReachable: ----fasle", )
+
+            false // 发生异常，连接失败
+        }
+    }
+
+
+    fun isVpnConnected(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networks = connectivityManager.allNetworks
+        for (network in networks) {
+            val capabilities = connectivityManager.getNetworkCapabilities(network)
+            if (capabilities != null && capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
+                // 发现了一个 VPN 连接
+                return true
+            }
+        }
+        // 未发现 VPN 连接
+        return false
+    }
+
+    fun o12Fun(context: Context) {
+        GlobalScope.launch(Dispatchers.IO) {
+            Log.e(TAG, "o12Fun: 开始检测")
+            val netState = isNetworkReachable()
+            if (netState) {
+                Log.e(TAG, "o12Fun: 开始检测-1", )
+                DataHelp.putPointTimeYep("o12", "1", "net", context)
+            } else {
+                Log.e(TAG, "o12Fun: 开始检测-2", )
+                DataHelp.putPointTimeYep("o12", "2", "net", context)
+
+            }
+        }
+    }
+
 }

@@ -139,14 +139,17 @@ object FlashLoadBackAd {
         backScreenAdCallback(closeWindowFun)
         activity.lifecycleScope.launch(Dispatchers.Main) {
             if (activity.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+
                 if (type == 1) {
                     activity as EndActivity
+                    activity.mBinding.inLoad.tvLoading.text = "Ad about to play!"
                     activity.mBinding.showLoad = true
                     delay(1500)
                     activity.mBinding.showLoad = false
                 }
                 if (type == 2) {
                     activity as ConfigActivity
+                    activity.mBinding.inLoad.tvLoading.text = "Ad about to play!"
                     activity.mBinding.showLoad = true
                     delay(1500)
                     activity.mBinding.showLoad = false

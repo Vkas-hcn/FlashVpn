@@ -6,20 +6,27 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import skt.vs.wbg.who.`is`.champion.flashvpn.R
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseActivityFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.databinding.ListLayoutBinding
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.VPNDataHelper.getImage
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.ConnectListViewModel
 
 class ConfigActivity : BaseActivityFlash<ListLayoutBinding>() {
@@ -30,7 +37,7 @@ class ConfigActivity : BaseActivityFlash<ListLayoutBinding>() {
     private val listViewModel: ConnectListViewModel by viewModels()
     private var isConnect = false
     var dataList = mutableListOf<LocaleProfile>()
-
+    private lateinit var adapter: LocationsAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         BaseAd.getBackInstance().advertisementLoadingFlash(this)
@@ -38,14 +45,38 @@ class ConfigActivity : BaseActivityFlash<ListLayoutBinding>() {
         listViewModel.init(this, isConnect)
         dataList = VPNDataHelper.allLocaleProfiles
         val lm = LinearLayoutManager(this)
-        val adapter = LocationsAdapter(dataList, listViewModel)
+        adapter = LocationsAdapter(dataList, listViewModel)
         mBinding.locationList.layoutManager = lm
         mBinding.locationList.adapter = adapter
         mBinding.back.setOnClickListener {
             listViewModel.showEndScAd(this)
         }
-        onBackPressedDispatcher.addCallback(this){
+        mBinding.imgRefsh.setOnClickListener {
+            refServiceData()
+        }
+        mBinding.atvRegion.setOnClickListener {
+
+        }
+
+        onBackPressedDispatcher.addCallback(this) {
             listViewModel.showEndScAd(this@ConfigActivity)
+        }
+    }
+
+    private fun refServiceData() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            mBinding.inLoad.tvLoading.text = "Update server"
+            mBinding.showLoad = true
+            FlashOkHttpUtils().getVpnData(this@ConfigActivity) {
+                lifecycleScope.launch(Dispatchers.Main) {
+                    dataList = VPNDataHelper.getAllLocaleProfile()
+                    adapter.setListData(dataList)
+                    mBinding.showLoad = false
+                    Toast.makeText(this@ConfigActivity,"Refresh successful",Toast.LENGTH_SHORT).show()
+                }
+            }
+            delay(3000)
+            mBinding.showLoad = false
         }
     }
 
@@ -77,14 +108,25 @@ class LocationsAdapter(
         val name = holder.itemView.findViewById<AppCompatTextView>(R.id.itemLocationName)
         val image = holder.itemView.findViewById<AppCompatImageView>(R.id.itemLocationImage)
         val check = holder.itemView.findViewById<AppCompatImageView>(R.id.itemLocationCheckImage)
-        if (position == 0) {
-            name.text = "Fast Server"
-            image.setImageResource(R.mipmap.flash_list_icon)
-        } else {
-            name.text = dataList[position].name + "-" + dataList[position].city
-            Glide.with(holder.itemView.context)
-                .load(getImage(dataList[position].name)).into(image)
+        when (position) {
+            0 -> {
+                name.text = "Fast Server"
+            }
+
+            1 -> {
+                name.text = "Game"
+            }
+
+            2 -> {
+                name.text = "Video"
+            }
+
+            else -> {
+                name.text = dataList[position].name + "-" + dataList[position].city
+            }
         }
+        Glide.with(holder.itemView.context)
+            .load(getImage(dataList[position].name)).into(image)
         if (listViewModel.isConnected && VPNDataHelper.nodeIndex == position) {
             holder.itemView.setBackgroundResource(R.drawable.orange_2)
             check.setImageResource(R.mipmap.flash_checked)
@@ -98,7 +140,11 @@ class LocationsAdapter(
             listViewModel.onItemClick(position)
         }
     }
-
+    fun setListData(datas: MutableList<LocaleProfile>){
+        dataList.removeAll(dataList)
+        dataList.addAll(datas)
+        notifyDataSetChanged()
+    }
 
 }
 

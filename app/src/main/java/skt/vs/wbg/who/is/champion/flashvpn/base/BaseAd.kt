@@ -95,7 +95,7 @@ class BaseAd private constructor() {
         if (!blacklistState && (instanceName == "connect" || instanceName == "back")) {
             return
         }
-        if (!userData && (instanceName == "connect" || instanceName == "back" || instanceName == "banner")) {
+        if (!userData && (instanceName == "back" || instanceName == "banner")) {
             return
         }
         when (appAdDataFlash) {

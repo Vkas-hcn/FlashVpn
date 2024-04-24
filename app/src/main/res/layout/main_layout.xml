@@ -10,10 +10,11 @@
             name="showAd"
             type="Integer"
             android:value="0" />
+
         <variable
             name="showLoad"
             type="Boolean"
-            android:value="false"/>
+            android:value="false" />
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
@@ -163,16 +164,24 @@
 
             </RadioGroup>
 
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chart"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintBottom_toTopOf="@+id/connectCl"
+                app:layout_constraintTop_toBottomOf="@+id/connectImg" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/connectCl"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="72dp"
-                android:background="@color/white"
-                android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/connectImg">
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/gray_20"
+                app:layout_constraintBottom_toTopOf="@+id/ad_view_container"
+                app:layout_constraintTop_toBottomOf="@id/chart">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="0dp"
@@ -279,8 +288,8 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="32dp"
-                android:padding="1dp"
                 android:background="@drawable/gray_8"
+                android:padding="1dp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -303,13 +312,14 @@
 
             </FrameLayout>
 
+
             <FrameLayout
                 android:id="@+id/ad_view_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerInParent="true"
+                android:layout_marginBottom="32dp"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
             <View
@@ -352,28 +362,10 @@
 
             <include
                 android:id="@+id/in_load"
-                android:visibility="@{showLoad ? View.VISIBLE : View.GONE}"
-                layout="@layout/layout_load"/>
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-                <TextView
-                    android:id="@+id/logTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="bottom"
-                    android:padding="8dp"
-                    android:scrollbarStyle="outsideOverlay"
-                    android:scrollbars="vertical"
-                    android:textColor="@android:color/black"
-                    android:textSize="12sp"
-                    android:text="日志开始：" />
+                layout="@layout/layout_load"
+                android:visibility="@{showLoad ? View.VISIBLE : View.GONE}" />
 
-            </ScrollView>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -393,6 +385,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/atv_tip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -403,16 +396,49 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/slideIcon" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_proxy"
+                android:layout_width="200dp"
+                android:layout_height="44dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/gray_12"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/atv_tip">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:text="App proxy"
+                    android:textColor="#091026"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="16dp"
+                    android:src="@mipmap/bdaibwiawe"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/pppppppp"
                 android:layout_width="200dp"
                 android:layout_height="44dp"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="76dp"
+                android:layout_marginTop="12dp"
                 android:background="@drawable/gray_12"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/slideIcon">
+                app:layout_constraintTop_toBottomOf="@id/cl_proxy">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
@@ -436,7 +462,6 @@
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/update"

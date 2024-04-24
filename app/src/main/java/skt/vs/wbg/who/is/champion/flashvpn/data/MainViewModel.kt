@@ -58,6 +58,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadHomeAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash.Companion.isUserMainBack
+import skt.vs.wbg.who.`is`.champion.flashvpn.page.AgentActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.ConfigActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.EndActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.HomeActivity
@@ -170,7 +171,7 @@ class MainViewModel : ViewModel() {
                     }
 
                     OpenServiceState.CONNECTED -> {
-                        "o12".putPointYep(activity)
+                        BaseAppUtils.o12Fun(activity)
                         getConnectTime(activity)
                         if (isClickConnect && it.lifecycle.currentState == Lifecycle.State.RESUMED) {
                             showConnectLive.postValue(true)
@@ -239,6 +240,20 @@ class MainViewModel : ViewModel() {
 
     private fun initViewAndListener() {
         activity?.let { ac ->
+            val stopVpnResultLauncher =
+                activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                    if (result.resultCode == Activity.RESULT_OK) {
+                        val data: Intent? = result.data
+                        ac.mBinding.drawer.close()
+                        ac.lifecycleScope.launch {
+                            toAction = true
+                            isFailConnect = true
+                            mService?.disconnect()
+                            delay(300)
+                            clickToAction(ac)
+                        }
+                    }
+                }
             chronometer.onChronometerTickListener = Chronometer.OnChronometerTickListener { cArg ->
                 val time = System.currentTimeMillis() - cArg.base
                 val d = Date(time)
@@ -265,6 +280,10 @@ class MainViewModel : ViewModel() {
                     )
                     mainToListResultIntent.launch(intent)
                 }
+            }
+            ac.mBinding.clProxy.setOnClickListener {
+                val intent = Intent(ac, AgentActivity::class.java)
+                stopVpnResultLauncher.launch(intent)
             }
             ac.mBinding.pppppppp.setOnClickListener {
                 ac.startActivity(Intent(ac, WebFlashActivity::class.java))
@@ -322,11 +341,9 @@ class MainViewModel : ViewModel() {
 
     private fun connectPut(activity: HomeActivity) {
         val currentTime = System.currentTimeMillis()
-
         if (currentTime - lastExecutionTime < 1000) {
             return
         }
-        Log.e(TAG, "connectPut: ")
         lastExecutionTime = currentTime
         if (DataHelp.isConnectFun()) {
             BaseAd.getBackInstance().advertisementLoadingFlash(activity)
@@ -486,12 +503,14 @@ class MainViewModel : ViewModel() {
         connectAnimate.startAnimation(rotateAnimation)
     }
 
-    private fun disconnectShadowsocks(): Job {
+    private fun disconnectShadowsocks(isAuto: Boolean = false): Job {
         val job = MainScope().launch(Dispatchers.IO) {
             activity.let { ac ->
                 if (ac != null) {
                     openServerState.postValue(OpenServiceState.DISCONNECTING)
-                    delay(2000)
+                    if (!isAuto) {
+                        delay(2000)
+                    }
                 }
                 if (ac?.mBinding?.drawer?.isOpen == true) {
                     userInterrupt = true
@@ -574,9 +593,6 @@ class MainViewModel : ViewModel() {
             // NOPROCESS 未连接 // CONNECTED 已连接
             // RECONNECTING 尝试重新链接 // EXITING 连接中主动掉用断开
             Log.e(TAG, "newStatus: ${state}")
-            activity.lifecycleScope.launch {
-                activity.mBinding.logTextView.append("newStatus: ${state}")
-            }
 
             curServerState = state
             BaseAppFlash.vpnState = state ?: ""
@@ -588,6 +604,7 @@ class MainViewModel : ViewModel() {
                         isClickConnect = true
                         isFailConnect = false
                         openServerState.postValue(OpenServiceState.CONNECTED)
+                        activity.getSpeedData()
                     }
                 }
 
@@ -622,16 +639,19 @@ class MainViewModel : ViewModel() {
                     openServerState.postValue(OpenServiceState.CONNECTING)
                     if (isAppOnline(ac)) {
                         connectTime = System.currentTimeMillis()
-                        "o1vpn".putPointYep(context)
+                        val type = if (BaseAppUtils.isVpnConnected(context)) {
+                            "s"
+                        } else {
+                            "f"
+                        }
+                        DataHelp.putPointTimeYep("o1vpn", type,"proxy", context)
                         val data = VPNDataHelper.getAllLocaleProfile()[VPNDataHelper.nodeIndex]
                         runCatching {
                             BaseAppUtils.setLoadData(BaseAppUtils.vpn_ip, data.onLm_host)
                             BaseAppUtils.setLoadData(BaseAppUtils.vpn_city, data.city)
                             Log.e(TAG, "openVTool: ip=${data.onLm_host};city=${data.city}")
-                            withContext(Dispatchers.Main) {
-                                activity.mBinding.logTextView.append("openVTool: ip=${data.onLm_host};city=${data.city}")
-                            }
-                            val conf = context.assets.open("fast_onlinenetmanager_ippool.ovpn")
+
+                            val conf = context.assets.open("fast_ippooltest.ovpn")
                             val br = BufferedReader(InputStreamReader(conf))
                             val config = StringBuilder()
                             var line: String?
@@ -650,9 +670,6 @@ class MainViewModel : ViewModel() {
                             br.close()
                             conf.close()
                             Log.e("TAG", "openVTool=$config")
-                            withContext(Dispatchers.Main) {
-                                activity.mBinding.logTextView.append("openVTool=$config")
-                            }
                             server.startVPN(config.toString())
                             delay(12000)
                             if ((!DataHelp.isConnectFun()) && BaseAppFlash.vpnClickState == 0) {

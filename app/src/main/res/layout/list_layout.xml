@@ -40,6 +40,33 @@
             app:layout_constraintStart_toEndOf="@id/back"
             app:layout_constraintTop_toTopOf="@id/back" />
 
+        <ImageView
+            android:id="@+id/img_refsh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_refsh"
+            android:layout_marginStart="6dp"
+            app:layout_constraintBottom_toBottomOf="@+id/resultTitle"
+            app:layout_constraintStart_toEndOf="@+id/resultTitle"
+            app:layout_constraintTop_toTopOf="@+id/resultTitle" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/atv_region"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_item_app_check"
+            android:drawableStart="@drawable/ic_region"
+            android:drawablePadding="8dp"
+            android:padding="8dp"
+            android:text="Region Selection"
+            android:textColor="#FFF55501"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintBottom_toBottomOf="@+id/img_refsh"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/img_refsh" />
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/locationList"
             android:layout_width="match_parent"

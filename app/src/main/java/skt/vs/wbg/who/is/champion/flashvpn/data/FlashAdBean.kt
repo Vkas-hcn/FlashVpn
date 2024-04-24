@@ -1,5 +1,6 @@
 package skt.vs.wbg.who.`is`.champion.flashvpn.data
 
+import android.graphics.drawable.Drawable
 import androidx.annotation.Keep
 @Keep
 data class FlashAdBean(
@@ -21,5 +22,19 @@ data class AdType(
     val where: String,
     val name:String,
     val type: String,
+)
+@Keep
+data class AppInfo(
+    var name: String? = null,
+    var icon: Drawable? = null,
+    var packName: String? = null,
+    var isShow: Boolean = false,
+    var isCheck: Boolean = false
+)
+@Keep
+data class DodgingInfo(
+    var name: String? = null,
+    var parameterName: String? = null,
+    var parameterValue: Any? = null,
 )
 

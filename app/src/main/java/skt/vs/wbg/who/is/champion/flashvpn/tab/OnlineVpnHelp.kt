@@ -15,7 +15,7 @@ object OnlineVpnHelp {
     fun checkServerData(context: Context): Boolean {
         val data = getDataFromTheServer()
         return if (data == null) {
-            FlashOkHttpUtils().getVpnData(context)
+            FlashOkHttpUtils().getVpnData(context){}
             false
         } else {
             true

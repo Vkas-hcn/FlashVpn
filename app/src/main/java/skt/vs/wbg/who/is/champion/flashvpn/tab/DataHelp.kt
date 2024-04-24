@@ -347,11 +347,11 @@ object DataHelp {
     }
 
     fun String.putPointYep(context: Context) {
-        FlashOkHttpUtils().getTbaList(context, this)
+        FlashOkHttpUtils().getTbaList(context, this){}
     }
 
     fun putPointTimeYep(name: String, time: Any, parameterName: String, context: Context) {
-        FlashOkHttpUtils().getTbaList(context, name, parameterName, time, 1)
+        FlashOkHttpUtils().getTbaList(context, name, parameterName, time){}
     }
 
     fun putPointAdJiaZhiOnline(adValue: Long) {

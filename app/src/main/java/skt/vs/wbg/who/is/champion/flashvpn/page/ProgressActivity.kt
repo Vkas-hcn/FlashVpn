@@ -59,7 +59,7 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
                 FlashOkHttpUtils().getTbaIp(this@ProgressActivity)
             }
             FlashOkHttpUtils().getSessionList(this@ProgressActivity)
-            FlashOkHttpUtils().getVpnData(this@ProgressActivity)
+            FlashOkHttpUtils().getVpnData(this@ProgressActivity){}
         }
         MainScope().launch {
             for (i in 1..100) {

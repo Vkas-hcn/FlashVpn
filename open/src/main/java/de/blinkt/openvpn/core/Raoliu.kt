@@ -10,20 +10,41 @@ object Raoliu {
         MMKV.mmkvWithID("FlashVpn", MMKV.MULTI_PROCESS_MODE)
     }
 
+    private fun getFlowAppList(): List<String>? {
+        val data = mmkv.decodeString("a_p_n", "") ?: return null
+        if (data.isEmpty()) {
+            return null
+        }
+        return data.split(",").toMutableList()
+    }
+
     private fun getFlowData(): Boolean {
         val data = mmkv.decodeBool("raoliu", true)
         Log.e("TAG", "getAroundFlowJsonData: ${data}")
         return data
     }
+    private fun getFlowCustomAll(): Boolean {
+        val data = mmkv.decodeBool("app_is_custom", true)
+        Log.e("TAG", "getAroundFlowCustomData: ${data}")
+        return data
+    }
 
-    fun brand(builder:VpnService.Builder, myPackageName: String) {
-        if(getFlowData()){
+    fun brand(builder: VpnService.Builder, myPackageName: String) {
+        if (getFlowData()) {
             //黑名单绕流
             (listOf(myPackageName) + listGmsPackages())
                 .iterator()
                 .forEachRemaining {
                     runCatching { builder.addDisallowedApplication(it) }
                 }
+        }
+
+        if(getFlowCustomAll()){
+            val dataList = getFlowAppList()
+            Log.e("TAG", "getAroundFlowAPPList: ${dataList}")
+            (dataList)?.iterator()?.forEachRemaining {
+                runCatching { builder.addDisallowedApplication(it) }
+            }
         }
     }
 
@@ -38,5 +59,10 @@ object Raoliu {
             "com.google.android.packageinstaller",
             "com.google.android.gms.location.history",
         )
+    }
+
+    fun getSpeedData(upData: String, downData: String) {
+        mmkv.encode("speed_dow_online", downData)
+        mmkv.encode("speed_up_online", upData)
     }
 }
