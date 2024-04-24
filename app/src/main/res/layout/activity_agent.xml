@@ -164,7 +164,7 @@
             android:id="@+id/tv_tip2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
+            android:paddingHorizontal="20dp"
             android:layout_marginTop="12dp"
             android:visibility="@{showCustom ? View.VISIBLE : View.GONE}"
             android:text="After selection, the app won't use the VPN network anymore."

@@ -609,6 +609,9 @@ class MainViewModel : ViewModel() {
                 "RECONNECTING" -> {
                     Toast.makeText(activity, "Reconnecting", Toast.LENGTH_LONG).show()
                 }
+                "AUTH_FAILED","EXITING" ->{
+                    toAction = false
+                }
 
                 "NOPROCESS" -> {
                     if (toAction) {
@@ -655,7 +658,7 @@ class MainViewModel : ViewModel() {
                             while (true) {
                                 line = br.readLine()
                                 if (line == null) break
-                                if (line.contains("remote 192", true)) {
+                                if (line.contains("remote 195", true)) {
                                     line = "remote ${data.onLm_host} ${data.onLo_Port}"
                                 } else if (line.contains("wrongpassword", true)) {
                                     line = data.onLu_password
@@ -678,7 +681,7 @@ class MainViewModel : ViewModel() {
                                     "re",
                                     activity
                                 )
-                                mService?.disconnect()
+                                openServerState.postValue(OpenServiceState.DISCONNECTED)
                                 withContext(Dispatchers.Main) {
                                     Toast.makeText(activity, "Connect Failed!", Toast.LENGTH_LONG)
                                         .show()
