@@ -112,15 +112,6 @@ class LocationsAdapter(
             0 -> {
                 name.text = "Fast Server"
             }
-
-            1 -> {
-                name.text = "Game"
-            }
-
-            2 -> {
-                name.text = "Video"
-            }
-
             else -> {
                 name.text = dataList[position].name + "-" + dataList[position].city
             }
