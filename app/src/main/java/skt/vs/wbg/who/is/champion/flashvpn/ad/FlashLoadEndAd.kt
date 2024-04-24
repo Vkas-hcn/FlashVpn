@@ -71,7 +71,7 @@ object FlashLoadEndAd {
                     """
            domain: ${loadAdError.domain}, code: ${loadAdError.code}, message: ${loadAdError.message}
           """"
-                Log.d(BaseAppUtils.TAG, "end广告加载失败$error ")
+                Log.d(BaseAppUtils.TAG, "end-The ad failed to load$error ")
                 DataHelp.putPointTimeYep(
                     "o32",
                     error,
@@ -84,7 +84,7 @@ object FlashLoadEndAd {
                 super.onAdLoaded()
                 adBase.loadTimeFlash = Date().time
                 adBase.isLoadingFlash = false
-                Log.d(BaseAppUtils.TAG, "end广告加载成功")
+                Log.d(BaseAppUtils.TAG, "end-The ad loads successfully")
                 DataHelp.putPointTimeYep(
                     "o31",
                     "end+${adData.onLconcer}",

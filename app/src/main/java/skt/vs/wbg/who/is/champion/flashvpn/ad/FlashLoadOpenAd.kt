@@ -86,20 +86,17 @@ object FlashLoadOpenAd {
         }
         (adBase.appAdDataFlash as AppOpenAd).fullScreenContentCallback =
             object : FullScreenContentCallback() {
-                //取消全屏内容
                 override fun onAdDismissedFullScreenContent() {
                     adBase.whetherToShowFlash = false
                     adBase.appAdDataFlash = null
                     fullScreenFun()
                 }
 
-                //全屏内容无法显示时调用
                 override fun onAdFailedToShowFullScreenContent(adError: AdError) {
                     adBase.whetherToShowFlash = false
                     adBase.appAdDataFlash = null
                 }
 
-                //显示全屏内容时调用
                 override fun onAdShowedFullScreenContent() {
                     adBase.appAdDataFlash = null
                     adBase.whetherToShowFlash = true

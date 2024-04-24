@@ -591,8 +591,6 @@ class MainViewModel : ViewModel() {
 
     private val mCallback = object : IOpenVPNStatusCallback.Stub() {
         override fun newStatus(uuid: String?, state: String?, message: String?, level: String?) {
-            // NOPROCESS 未连接 // CONNECTED 已连接
-            // RECONNECTING 尝试重新链接 // EXITING 连接中主动掉用断开
             Log.e(TAG, "newStatus: ${state}")
 
             curServerState = state

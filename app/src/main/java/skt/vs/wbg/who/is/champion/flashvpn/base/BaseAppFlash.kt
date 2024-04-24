@@ -52,7 +52,6 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
         var exitAppTime = 0L
         val xkamkaxmak by lazy { MMKV.defaultMMKV() }
         val mmkvFlash by lazy {
-            //启用mmkv的多进程功能
             MMKV.mmkvWithID("FlashVpn", MMKV.MULTI_PROCESS_MODE)
         }
         var vpnState = ""
@@ -64,7 +63,6 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
     override fun onCreate() {
         super.onCreate()
         application = this
-        onCreateCao()
         MMKV.initialize(application)
         BaseAppUtils.initApp(this)
         registerActivityLifecycleCallbacks(this)
@@ -223,21 +221,5 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
             }
         }
         Adjust.onCreate(config)
-    }
-     fun onCreateCao() {
-        CaocConfig.Builder.create()
-            .backgroundMode(CaocConfig.BACKGROUND_MODE_SILENT) //default: CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM
-            .enabled(false) //default: true
-            .showErrorDetails(true) //default: true
-            .showRestartButton(true) //default: true
-            .logErrorOnRestart(true) //default: true
-            .trackActivities(true) //default: false
-            .minTimeBetweenCrashesMs(2000) //default: 3000
-            .errorDrawable(R.mipmap.ic_launcher) //default: bug image
-            .restartActivity(HomeActivity::class.java) //default: null (your app's launch activity)
-            .errorActivity(HomeActivity::class.java) //default: null (default error activity)
-            .apply()
-
-        //If you use Firebase Crashlytics or ACRA, please initialize them here as explained above.
     }
 }

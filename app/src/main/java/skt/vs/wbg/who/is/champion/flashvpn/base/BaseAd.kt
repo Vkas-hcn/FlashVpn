@@ -87,7 +87,7 @@ class BaseAd private constructor() {
     fun advertisementLoadingFlash(context: Context) {
 
         if (isLoadingFlash) {
-            Log.d(TAG, "${getInstanceName()}-广告加载中，不能再次加载")
+            Log.d(TAG, "${getInstanceName()}-The ad is loading and cannot be loaded again")
             return
         }
         val userData = BaseAppUtils.blockAdUsers()
@@ -117,7 +117,7 @@ class BaseAd private constructor() {
         if (DataHelp.isConnectFun() && !raolui) {
             DataHelp.putPointTimeYep("o33", getID(adData), "yn", context)
         }
-        Log.d(TAG, "${getInstanceName()}-广告-开始加载")
+        Log.d(TAG, "${getInstanceName()}-Ads - start loading")
         adLoaders[id]?.invoke(context, adData)
     }
 

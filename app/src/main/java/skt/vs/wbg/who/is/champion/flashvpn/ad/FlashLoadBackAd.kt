@@ -47,7 +47,7 @@ object FlashLoadBackAd {
                         """
            domain: ${adError.domain}, code: ${adError.code}, message: ${adError.message}
           """"
-                    Log.d(TAG, "back广告加载失败:$error ")
+                    Log.d(TAG, "back-The ad failed to load:$error ")
 
                     DataHelp.putPointTimeYep(
                         "o32",
@@ -61,7 +61,7 @@ object FlashLoadBackAd {
                     adBase.loadTimeFlash = Date().time
                     adBase.isLoadingFlash = false
                     adBase.appAdDataFlash = interstitialAd
-                    Log.d(TAG, "back广告加载成功: ")
+                    Log.d(TAG, "back-The ad loads successfully: ")
                     interstitialAd.setOnPaidEventListener { adValue ->
                         FlashOkHttpUtils().getAdList(
                             context,
