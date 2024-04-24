@@ -609,7 +609,12 @@ class MainViewModel : ViewModel() {
                 "RECONNECTING" -> {
                     Toast.makeText(activity, "Reconnecting", Toast.LENGTH_LONG).show()
                 }
-                "AUTH_FAILED","EXITING" ->{
+
+                "WAIT" -> {
+                    toAction = true
+                }
+
+                "AUTH_FAILED", "EXITING" -> {
                     toAction = false
                 }
 
