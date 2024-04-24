@@ -43,7 +43,7 @@ class ConfigActivity : BaseActivityFlash<ListLayoutBinding>() {
         BaseAd.getBackInstance().advertisementLoadingFlash(this)
         isConnect = intent.getBooleanExtra("IS_CONNECT", false)
         listViewModel.init(this, isConnect)
-        dataList = VPNDataHelper.allLocaleProfiles
+        dataList = VPNDataHelper.getAllLocaleProfile()
         val lm = LinearLayoutManager(this)
         adapter = LocationsAdapter(dataList, listViewModel)
         mBinding.locationList.layoutManager = lm

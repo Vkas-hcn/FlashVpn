@@ -25,7 +25,7 @@ object VPNDataHelper {
     var nodeIndex: Int
         get() {
             var node = BaseAppFlash.xkamkaxmak.decodeInt("nodeIndex", 0)
-            if (allLocaleProfiles.size <= node) node = 0
+            if (getAllLocaleProfile().size <= node) node = 0
             return node
         }
         set(value) {
@@ -33,11 +33,6 @@ object VPNDataHelper {
         }
 
     var cachePosition = -1
-
-    val allLocaleProfiles: MutableList<LocaleProfile> by lazy {
-        getAllLocaleProfile()
-    }
-
 
     fun getAllLocaleProfile(): MutableList<LocaleProfile> {
         val list = OnlineVpnHelp.getDataFromTheServer()

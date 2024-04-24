@@ -40,12 +40,12 @@ class EndActivity : BaseActivityFlash<ConnectedLayoutBinding>() {
         ChatUtils.initChart(mBinding.chart)
         val data: LocaleProfile
         if (VPNDataHelper.cachePosition != -1) {
-            data = VPNDataHelper.allLocaleProfiles[VPNDataHelper.cachePosition]
+            data = VPNDataHelper.getAllLocaleProfile()[VPNDataHelper.cachePosition]
             if (data.city.isNotBlank()) {
                 mBinding.connectCountry.text = data.name + " " + data.city
             } else mBinding.connectCountry.text = data.name
         } else {
-            data = VPNDataHelper.allLocaleProfiles[VPNDataHelper.nodeIndex]
+            data = VPNDataHelper.getAllLocaleProfile()[VPNDataHelper.nodeIndex]
             if (data.city.isNotBlank()) {
                 mBinding.connectCountry.text = data.name + " " + data.city
             } else mBinding.connectCountry.text = data.name

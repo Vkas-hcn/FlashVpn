@@ -395,12 +395,12 @@ class MainViewModel : ViewModel() {
 
     fun activityResume() {
         if (VPNDataHelper.cachePosition != -1) {
-            val node: LocaleProfile = VPNDataHelper.allLocaleProfiles[VPNDataHelper.cachePosition]
+            val node: LocaleProfile = VPNDataHelper.getAllLocaleProfile()[VPNDataHelper.cachePosition]
             flashListIcon.setImageResource(VPNDataHelper.getImage(node.name))
             flashListName.text =
                 if (node.city.isNotBlank()) node.name + "-" + node.city else node.name
         } else {
-            val node: LocaleProfile = VPNDataHelper.allLocaleProfiles[VPNDataHelper.nodeIndex]
+            val node: LocaleProfile = VPNDataHelper.getAllLocaleProfile()[VPNDataHelper.nodeIndex]
             flashListIcon.setImageResource(VPNDataHelper.getImage(node.name))
             flashListName.text =
                 if (node.city.isNotBlank()) node.name + "-" + node.city else node.name
