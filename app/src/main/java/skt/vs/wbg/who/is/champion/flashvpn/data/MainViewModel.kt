@@ -612,6 +612,7 @@ class MainViewModel : ViewModel() {
 
                 "WAIT" -> {
                     toAction = true
+                    playConnectAnimation()
                 }
 
                 "AUTH_FAILED", "EXITING" -> {
