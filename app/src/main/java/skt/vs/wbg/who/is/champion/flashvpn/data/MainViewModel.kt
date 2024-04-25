@@ -172,8 +172,6 @@ class MainViewModel : ViewModel() {
                     }
 
                     OpenServiceState.CONNECTED -> {
-                        BaseAppUtils.o12Fun(activity)
-                        getConnectTime(activity)
                         if (isClickConnect && isResumed) {
                             showConnectLive.postValue(true)
                             isClickConnect = false
@@ -182,6 +180,8 @@ class MainViewModel : ViewModel() {
                         stopConnectAnimation()
                         setChromometer()
                         setViewEnabled(true)
+                        getConnectTime(activity)
+                        BaseAppUtils.o12Fun(activity)
                     }
 
                     OpenServiceState.DISCONNECTING -> {
@@ -689,11 +689,11 @@ class MainViewModel : ViewModel() {
                                     "re",
                                     activity
                                 )
-                                stopToConnectOrDisConnect()
                                 withContext(Dispatchers.Main) {
                                     Toast.makeText(activity, "Connect Failed!", Toast.LENGTH_LONG)
                                         .show()
                                 }
+                                stopToConnectOrDisConnect()
                                 cancel()
                             }
                         }.onFailure {

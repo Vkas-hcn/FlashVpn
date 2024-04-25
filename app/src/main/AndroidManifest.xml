@@ -26,6 +26,7 @@
         <activity
             android:name=".page.ProgressActivity"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
