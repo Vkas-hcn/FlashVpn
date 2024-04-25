@@ -135,7 +135,7 @@ class BaseAd private constructor() {
         }
 
         adLoadersMap[3] = { context, adData ->
-            FlashLoadEndAd.loadEndAdvertisementFlash(context, adData)
+//            FlashLoadEndAd.loadEndAdvertisementFlash(context, adData)
         }
 
         adLoadersMap[4] = { context, adData ->

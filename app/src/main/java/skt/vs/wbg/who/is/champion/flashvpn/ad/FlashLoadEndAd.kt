@@ -119,10 +119,10 @@ object FlashLoadEndAd {
                     ) as NativeAdView
                     // 对应原生组件
                     setCorrespondingNativeComponentFlash(adData, adView)
-                    binding.adFrame.apply {
-                        removeAllViews()
-                        addView(adView)
-                    }
+//                    binding.adFrame.apply {
+//                        removeAllViews()
+//                        addView(adView)
+//                    }
                     binding.showAd =1
                     adBase.whetherToShowFlash = true
                     adBase.appAdDataFlash = null

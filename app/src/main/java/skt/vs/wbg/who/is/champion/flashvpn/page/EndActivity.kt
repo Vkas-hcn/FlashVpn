@@ -94,7 +94,7 @@ class EndActivity : BaseActivityFlash<ConnectedLayoutBinding>() {
 
     override fun onResume() {
         super.onResume()
-        endViewModel.showEndAd(this)
+//        endViewModel.showEndAd(this)
         "o22".putPointYep(this)
     }
 
