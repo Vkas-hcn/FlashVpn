@@ -247,7 +247,7 @@ class MainViewModel : ViewModel() {
                         ac.lifecycleScope.launch {
                             toAction = true
                             isFailConnect = true
-                            mService?.disconnect()
+//                            mService?.disconnect()
                             delay(300)
                             clickToAction(ac)
                         }
@@ -413,7 +413,7 @@ class MainViewModel : ViewModel() {
             when (openServerState.value) {
                 OpenServiceState.CONNECTING -> {
                     openServerState.postValue(OpenServiceState.DISCONNECTED)
-                    mService?.disconnect()
+//                    mService?.disconnect()
                     cancelConnect = true
                     "o10".putPointYep(activity)
                 }
@@ -519,7 +519,7 @@ class MainViewModel : ViewModel() {
                 } else if (ac?.canJump == false) {
                     return@launch
                 } else if (isActive) {
-                    mService?.disconnect()
+//                    mService?.disconnect()
                     "o11".putPointYep(activity)
                 }
             }
@@ -612,8 +612,7 @@ class MainViewModel : ViewModel() {
 
                 "WAIT" -> {
                     toAction = true
-                    playConnectAnimation()
-                    openServerState.postValue(OpenServiceState.CONNECTING)
+
                 }
 
                 "AUTH_FAILED", "EXITING" -> {
@@ -678,6 +677,8 @@ class MainViewModel : ViewModel() {
                             conf.close()
                             Log.e("TAG", "openVTool=$config")
                             server.startVPN(config.toString())
+                            playConnectAnimation()
+                            openServerState.postValue(OpenServiceState.CONNECTING)
                             delay(12000)
                             if ((!DataHelp.isConnectFun()) && BaseAppFlash.vpnClickState == 0) {
                                 isFailConnect = true

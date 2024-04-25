@@ -142,11 +142,10 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         mainViewModel.stopToConnectOrDisConnect()
     }
-
     override fun onResume() {
         super.onResume()
         mainViewModel.activityResume()
