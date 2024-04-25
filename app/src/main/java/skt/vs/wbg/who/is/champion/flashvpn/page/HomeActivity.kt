@@ -51,6 +51,7 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.e("TAG", "main ----- onCreate: ", )
         mainViewModel.init(
             this,
             mBinding.set,
@@ -63,18 +64,10 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
         )
 
 
-        if (!DataHelp.isConnectFun()) {
-            mBinding.lottieGuide.visibility = View.VISIBLE
-            mBinding.lottieGuide.setAnimation("hahaha.json")
-            mBinding.lottieGuide.repeatCount = ValueAnimator.INFINITE
-            mBinding.lottieGuide.playAnimation()
-            "o1guideexposure".putPointYep(this)
-        } else {
-            cancelGuideLottie()
-        }
+
         mBinding.lottieGuide.setOnClickListener {
             "o1guidecc".putPointYep(this)
-            cancelGuideLottie()
+            mainViewModel.cancelGuideLottie()
             mainViewModel.toConnectVerifyNet()
         }
         mBinding.guideMask.setOnClickListener { }
@@ -94,16 +87,9 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
         ChatUtils.initChart(mBinding.chart)
     }
 
-    var isShowGuide = true
 
-    fun cancelGuideLottie() {
-        mBinding.lottieGuide.cancelAnimation()
-        mBinding.lottieGuide.isVisible = false
-        isShowGuide = false
-        mBinding.guideMask.isVisible = false
-    }
 
-    //存储扰流数据
+
     fun storeSpoilerData() {
         val data = BaseAppUtils.spoilerOrNot()
         val raoLiuTba = BaseAppUtils.raoLiuTba.getLoadBooleanData()
@@ -154,6 +140,7 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
 
     override fun onDestroy() {
         super.onDestroy()
+        Log.e("TAG", "main ----- onDestroy: ", )
         mainViewModel.mService?.disconnect()
     }
 }

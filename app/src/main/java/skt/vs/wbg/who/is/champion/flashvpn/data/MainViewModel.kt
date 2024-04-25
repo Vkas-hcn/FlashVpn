@@ -1,5 +1,6 @@
 package skt.vs.wbg.who.`is`.champion.flashvpn.data
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
@@ -17,6 +18,7 @@ import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
 import android.view.Gravity
+import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Chronometer
@@ -29,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -102,6 +105,7 @@ class MainViewModel : ViewModel() {
     var showConnectLive = MutableLiveData<Boolean>()
     private var showConnectJob: Job? = null
     private var isClickConnect = false
+    var isShowGuide = true
 
     enum class OpenServiceState { CONNECTING, CONNECTED, DISCONNECTING, DISCONNECTED }
 
@@ -143,7 +147,7 @@ class MainViewModel : ViewModel() {
                     toConnectVerifyNet()
                 }
             }
-
+        Log.e(TAG, "main -----init: ")
     }
 
 
@@ -229,8 +233,8 @@ class MainViewModel : ViewModel() {
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastClickTime >= delayMillis) {
             connectPut(activity)
-            if (activity.isShowGuide) {
-                activity.cancelGuideLottie()
+            if (isShowGuide) {
+                cancelGuideLottie()
             }
             toConnectVerifyNet()
             lastClickTime = currentTime
@@ -319,8 +323,8 @@ class MainViewModel : ViewModel() {
             ac.mBinding.lifecycleOwner?.let {
                 ac.onBackPressedDispatcher.addCallback(it, object : OnBackPressedCallback(true) {
                     override fun handleOnBackPressed() {
-                        if (ac.isShowGuide) {
-                            ac.cancelGuideLottie()
+                        if (isShowGuide) {
+                            cancelGuideLottie()
                         } else if (ac.mBinding.drawer.isOpen) {
                             ac.mBinding.drawer.close()
                         } else if (openServerState.value == OpenServiceState.CONNECTING) {
@@ -395,7 +399,8 @@ class MainViewModel : ViewModel() {
 
     fun activityResume() {
         if (VPNDataHelper.cachePosition != -1) {
-            val node: LocaleProfile = VPNDataHelper.getAllLocaleProfile()[VPNDataHelper.cachePosition]
+            val node: LocaleProfile =
+                VPNDataHelper.getAllLocaleProfile()[VPNDataHelper.cachePosition]
             flashListIcon.setImageResource(VPNDataHelper.getImage(node.name))
             flashListName.text =
                 if (node.city.isNotBlank()) node.name + "-" + node.city else node.name
@@ -549,6 +554,20 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun setLottieGuide() {
+        activity.mBinding.lottieGuide.visibility = View.VISIBLE
+        activity.mBinding.lottieGuide.setAnimation("hahaha.json")
+        activity.mBinding.lottieGuide.repeatCount = ValueAnimator.INFINITE
+        activity.mBinding.lottieGuide.playAnimation()
+        "o1guideexposure".putPointYep(activity)
+    }
+
+    fun cancelGuideLottie() {
+        activity.mBinding.lottieGuide.cancelAnimation()
+        activity.mBinding.lottieGuide.isVisible = false
+        isShowGuide = false
+        activity.mBinding.guideMask.isVisible = false
+    }
 
     var mService: IOpenVPNAPIService? = null
 
@@ -560,14 +579,16 @@ class MainViewModel : ViewModel() {
             mService = IOpenVPNAPIService.Stub.asInterface(service)
             try {
                 mService?.registerStatusCallback(mCallback)
-//                Log.e("open vpn mService ", "mService onServiceConnected")
+                Log.e("TAG", "mService onServiceConnected")
+                mService?.disconnect()
+                setLottieGuide()
             } catch (e: Exception) {
-//                Log.e("open vpn error", e.message.toString())
+                Log.e("TAG", "open vpn error=${e.message.toString()}")
             }
         }
 
         override fun onServiceDisconnected(className: ComponentName?) {
-//            Log.e("open vpn mService ", "mService onServiceDisconnected")
+            Log.e("TAG", "mService onServiceDisconnected")
             mService = null
         }
     }
