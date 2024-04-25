@@ -247,7 +247,7 @@ class MainViewModel : ViewModel() {
                         ac.lifecycleScope.launch {
                             toAction = true
                             isFailConnect = true
-//                            mService?.disconnect()
+                            mService?.disconnect()
                             delay(300)
                             clickToAction(ac)
                         }
@@ -413,7 +413,7 @@ class MainViewModel : ViewModel() {
             when (openServerState.value) {
                 OpenServiceState.CONNECTING -> {
                     openServerState.postValue(OpenServiceState.DISCONNECTED)
-//                    mService?.disconnect()
+                    mService?.disconnect()
                     cancelConnect = true
                     "o10".putPointYep(activity)
                 }
@@ -519,7 +519,7 @@ class MainViewModel : ViewModel() {
                 } else if (ac?.canJump == false) {
                     return@launch
                 } else if (isActive) {
-//                    mService?.disconnect()
+                    mService?.disconnect()
                     "o11".putPointYep(activity)
                 }
             }
@@ -610,14 +610,14 @@ class MainViewModel : ViewModel() {
                     Toast.makeText(activity, "Reconnecting", Toast.LENGTH_LONG).show()
                 }
 
-                "WAIT" -> {
-                    toAction = true
-
-                }
-
-                "AUTH_FAILED", "EXITING" -> {
-                    toAction = false
-                }
+//                "WAIT" -> {
+//                    toAction = true
+//
+//                }
+//
+//                "AUTH_FAILED", "EXITING" -> {
+//                    toAction = false
+//                }
 
                 "NOPROCESS" -> {
                     if (toAction) {
@@ -689,7 +689,7 @@ class MainViewModel : ViewModel() {
                                     "re",
                                     activity
                                 )
-                                openServerState.postValue(OpenServiceState.DISCONNECTED)
+                                stopToConnectOrDisConnect()
                                 withContext(Dispatchers.Main) {
                                     Toast.makeText(activity, "Connect Failed!", Toast.LENGTH_LONG)
                                         .show()
