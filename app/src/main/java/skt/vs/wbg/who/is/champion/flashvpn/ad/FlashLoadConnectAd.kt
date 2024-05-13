@@ -21,6 +21,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.page.HomeActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadIntData
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 import java.util.Date
 
@@ -110,14 +111,15 @@ object FlashLoadConnectAd {
         activity: HomeActivity,
         closeWindowFun: () -> Unit
     ): Int {
-//        val userData = BaseAppUtils.blockAdUsers()
         val blacklistState = BaseAppUtils.blockAdBlacklist()
-        if (!blacklistState) {
+        if (BaseAppUtils.isOrganic()) {
+            Log.d(BaseAppUtils.TAG, "The ad is Organic not show")
             return 0
         }
-//        if (!userData) {
-//            return 0
-//        }
+
+        if (blacklistState) {
+            return 0
+        }
 
         if (adBase.appAdDataFlash == null) {
             return 1

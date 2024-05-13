@@ -2,20 +2,22 @@ package skt.vs.wbg.who.`is`.champion.flashvpn.base
 
 import android.content.Context
 import android.util.Log
+import com.adjust.sdk.Adjust
+import com.adjust.sdk.AdjustEvent
 import com.google.android.gms.ads.AdView
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadBackAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadBannerAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadConnectAd
-import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadEndAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadHomeAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadOpenAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadIntData
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringData
-import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 import java.util.Date
+
 
 class BaseAd private constructor() {
     companion object {
@@ -60,6 +62,7 @@ class BaseAd private constructor() {
             else -> ""
         }
     }
+
     fun getID(adBean: FlashAdBean): String {
         return when (id) {
             1 -> "open+${adBean.onLnugit}"
@@ -71,6 +74,7 @@ class BaseAd private constructor() {
             else -> ""
         }
     }
+
     var appAdDataFlash: Any? = null
     var adView: AdView? = null
 
@@ -85,7 +89,10 @@ class BaseAd private constructor() {
         Date().time - loadTime < 60 * 60 * 1000
 
     fun advertisementLoadingFlash(context: Context) {
-
+        if (BaseAppUtils.isOrganic()) {
+            Log.d(TAG, "The ad is Organic not show")
+            return
+        }
         if (isLoadingFlash) {
             Log.d(TAG, "${getInstanceName()}-The ad is loading and cannot be loaded again")
             return
@@ -150,6 +157,7 @@ class BaseAd private constructor() {
         }
         return adLoadersMap
     }
+
     fun beforeLoadLink(yepAdBean: FlashAdBean): FlashAdBean {
         val ipAfterVpnLink = BaseAppUtils.vpn_ip.getLoadStringData()
         val ipAfterVpnCity = BaseAppUtils.vpn_city.getLoadStringData()
@@ -175,7 +183,54 @@ class BaseAd private constructor() {
             yepAdBean.showIp = BaseAppUtils.ip_tab_flash.getLoadStringData()
             yepAdBean.showTheCity = "null"
         }
+        getAdTotalCount()
         return yepAdBean
+    }
+
+    //    //查看广告的总次数
+//    fun getAdTotalCount2() {
+//        BaseAppUtils.setLoadData(BaseAppUtils.adShowNum, BaseAppUtils.adShowNum.getLoadIntData()+1)
+//        when(BaseAppUtils.adShowNum.getLoadIntData()){
+//            2->{
+//                val adjustEvent = AdjustEvent("8g7h34")
+//                Adjust.trackEvent(adjustEvent)
+//            }
+//            3->{
+//                val adjustEvent = AdjustEvent("96a9zc")
+//                Adjust.trackEvent(adjustEvent)
+//            }
+//            4->{
+//                val adjustEvent = AdjustEvent("vg5dwn")
+//                Adjust.trackEvent(adjustEvent)
+//            }
+//            5->{
+//                val adjustEvent = AdjustEvent("6lio80")
+//                Adjust.trackEvent(adjustEvent)
+//            }
+//            else ->{
+//            }
+//        }
+//    }
+    private fun getAdTotalCount() {
+        if (!BaseAppFlash.is24H) {
+            return
+        }
+        BaseAppUtils.setLoadData(
+            BaseAppUtils.adShowNum,
+            BaseAppUtils.adShowNum.getLoadIntData() + 1
+        )
+        val eventTokens = mapOf(
+            2 to "8g7h34",
+            3 to "96a9zc",
+            4 to "vg5dwn",
+            5 to "6lio80"
+        )
+        val eventToken = eventTokens[BaseAppUtils.adShowNum.getLoadIntData()]
+        if (eventToken != null) {
+            Log.e(TAG, "adjust-show-ad-num-code: ${eventToken}")
+            val adjustEvent = AdjustEvent(eventToken)
+            Adjust.trackEvent(adjustEvent)
+        }
     }
 }
 

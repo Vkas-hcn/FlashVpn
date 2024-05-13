@@ -25,6 +25,7 @@ import java.net.URL
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
 import java.io.BufferedReader
@@ -53,6 +54,8 @@ object BaseAppUtils {
     var app_pack_name = "a_p_n"
     var app_is_custom = "app_is_custom"
     var app_point_error = "app_point_error"
+
+    var adShowNum = "adShowNum"
 
     //ad
     const val onLguai = "onLguai"
@@ -219,7 +222,15 @@ object BaseAppUtils {
                 || adjust_data.getLoadBooleanData()
     }
 
-    //屏蔽广告用户
+    //refer识别为organic
+    fun isOrganic(): Boolean {
+        val referrer = SPUtils.getInstance().getString(refer_data)
+        if(referrer.isBlank()){
+            return true
+        }
+        return referrer.contains("organic", true)
+    }
+
     fun blockAdUsers(): Boolean {
         val data = getLogicJson().onLmatt
         when (data) {

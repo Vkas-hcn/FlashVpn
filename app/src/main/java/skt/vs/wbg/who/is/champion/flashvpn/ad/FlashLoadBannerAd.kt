@@ -33,6 +33,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadIntData
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 import java.util.Date
 
@@ -121,6 +122,10 @@ object FlashLoadBannerAd {
     }
 
     fun showBannerAdFlash(activity: HomeActivity) {
+        if (BaseAppUtils.isOrganic()) {
+            Log.d(TAG, "The ad is Organic not show")
+            return return
+        }
         val userData = BaseAppUtils.blockAdUsers()
         if (!userData) {
             return

@@ -234,10 +234,8 @@ object DataHelp {
         val telephonyManager =
             context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
-        // 获取网络供应商名称
         val carrierName = telephonyManager.networkOperatorName
 
-        // 获取 MCC 和 MNC
         val networkOperator = telephonyManager.networkOperator
         val mcc = if (networkOperator.length >= 3) networkOperator.substring(0, 3) else ""
         val mnc = if (networkOperator.length >= 5) networkOperator.substring(3) else ""

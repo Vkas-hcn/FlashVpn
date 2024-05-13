@@ -2,6 +2,7 @@ package skt.vs.wbg.who.`is`.champion.flashvpn.page
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -146,7 +147,13 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
         }
     }
     private fun loadOpenAd() {
-
+        if (BaseAppUtils.isOrganic()) {
+            Log.d(BaseAppUtils.TAG, "The ad is Organic not show")
+            progressInt = 100
+            mBinding.flashProgressBar.progress = progressInt
+            startToMain()
+            return
+        }
         jobOpenAdsFlash?.cancel()
         jobOpenAdsFlash = null
         jobOpenAdsFlash = lifecycleScope.launch {

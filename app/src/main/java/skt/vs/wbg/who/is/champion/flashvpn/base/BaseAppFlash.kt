@@ -33,10 +33,12 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadBooleanData
+import java.util.concurrent.TimeUnit
 
 
 class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
-
+    private val PREFS_KEY_INSTALL_TIME = "install_time"
+    private val PREFS_NAME = "app_prefs"
     companion object {
         var application: BaseAppFlash? = null
         fun getInstance(): BaseAppFlash {
@@ -56,6 +58,8 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
         }
         var vpnState = ""
         var vpnClickState = -1
+
+        var is24H = false
     }
 
     var adActivity: Activity? = null
@@ -70,6 +74,11 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
         "o16".putPointYep(this)
         initAdJust(this)
         FlashOkHttpUtils().reRequestDotData(this)
+        if (isFirstTimeOpen()) {
+            recordInstallTime()
+        } else {
+            checkLastOpenTime()
+        }
     }
 
 
@@ -94,6 +103,10 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     private fun toSplash(activity: Activity) {
+        if (BaseAppUtils.isOrganic()) {
+            Log.d(TAG, "The ad is Organic not hot Splash")
+            return
+        }
         "o15".putPointYep(activity)
         FlashOkHttpUtils().reRequestDotData(this)
         if (activity is ProgressActivity) {
@@ -158,7 +171,7 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
         }
         val date = System.currentTimeMillis()
 
-//        installReferrer = "gclid"
+//        installReferrer = "-dasdadasd-organic---dqqd--asdasda"
         installReferrer = "fb4a"
         SPUtils.getInstance().put(BaseAppUtils.refer_data,installReferrer)
 
@@ -221,5 +234,32 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
             }
         }
         Adjust.onCreate(config)
+    }
+
+    private fun isFirstTimeOpen(): Boolean {
+        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getLong(PREFS_KEY_INSTALL_TIME, 0L) == 0L
+    }
+
+    private fun recordInstallTime() {
+        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putLong(PREFS_KEY_INSTALL_TIME, System.currentTimeMillis()).apply()
+        is24H = true
+    }
+
+    private fun checkLastOpenTime() {
+        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val installTime = prefs.getLong(PREFS_KEY_INSTALL_TIME, 0L)
+        val currentTime = System.currentTimeMillis()
+
+        if (currentTime - installTime <= TimeUnit.HOURS.toMillis(24)) {
+            is24H = true
+            // 在24小时内打开过应用
+            Log.e(TAG, "checkLastOpenTime: 在24小时内打开过应用", )
+        } else {
+            // 超过24小时未打开过应用
+            is24H = false
+            Log.e(TAG, "checkLastOpenTime: 超过24小时未打开过应用", )
+        }
     }
 }
