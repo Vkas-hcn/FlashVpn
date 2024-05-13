@@ -12,6 +12,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadHomeAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadOpenAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadIntData
@@ -186,31 +187,6 @@ class BaseAd private constructor() {
         getAdTotalCount()
         return yepAdBean
     }
-
-    //    //查看广告的总次数
-//    fun getAdTotalCount2() {
-//        BaseAppUtils.setLoadData(BaseAppUtils.adShowNum, BaseAppUtils.adShowNum.getLoadIntData()+1)
-//        when(BaseAppUtils.adShowNum.getLoadIntData()){
-//            2->{
-//                val adjustEvent = AdjustEvent("8g7h34")
-//                Adjust.trackEvent(adjustEvent)
-//            }
-//            3->{
-//                val adjustEvent = AdjustEvent("96a9zc")
-//                Adjust.trackEvent(adjustEvent)
-//            }
-//            4->{
-//                val adjustEvent = AdjustEvent("vg5dwn")
-//                Adjust.trackEvent(adjustEvent)
-//            }
-//            5->{
-//                val adjustEvent = AdjustEvent("6lio80")
-//                Adjust.trackEvent(adjustEvent)
-//            }
-//            else ->{
-//            }
-//        }
-//    }
     private fun getAdTotalCount() {
         if (!BaseAppFlash.is24H) {
             return
@@ -219,16 +195,26 @@ class BaseAd private constructor() {
             BaseAppUtils.adShowNum,
             BaseAppUtils.adShowNum.getLoadIntData() + 1
         )
+        Log.e(TAG, "getAdTotalCount: ${BaseAppUtils.adShowNum.getLoadIntData()}", )
         val eventTokens = mapOf(
             2 to "8g7h34",
             3 to "96a9zc",
             4 to "vg5dwn",
             5 to "6lio80"
         )
+        val eventTokensTbaList = mapOf(
+            2 to "onm2",
+            3 to "onm3",
+            4 to "onm4",
+            5 to "onm5"
+        )
         val eventToken = eventTokens[BaseAppUtils.adShowNum.getLoadIntData()]
+        val eventTokenTba = eventTokensTbaList[BaseAppUtils.adShowNum.getLoadIntData()]
+
         if (eventToken != null) {
             Log.e(TAG, "adjust-show-ad-num-code: ${eventToken}")
             val adjustEvent = AdjustEvent(eventToken)
+            eventTokenTba?.putPointYep(BaseAppFlash.getInstance())
             Adjust.trackEvent(adjustEvent)
         }
     }

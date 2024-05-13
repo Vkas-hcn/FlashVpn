@@ -329,7 +329,7 @@ object BaseAppUtils {
     }
 
     fun String.getLoadIntData(): Int {
-        return SPUtils.getInstance().getInt(this)
+        return SPUtils.getInstance().getInt(this,0)
     }
 
     fun isNetworkReachable2(): Boolean {
