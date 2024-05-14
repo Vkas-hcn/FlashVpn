@@ -118,10 +118,10 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
         waitForTheOpenAdToAppear()
         // 首页banner
         BaseAd.getBannerInstance().advertisementLoadingFlash(this)
-        // 结果页原生
-        BaseAd.getEndInstance().advertisementLoadingFlash(this)
         // 连接插屏
         BaseAd.getConnectInstance().advertisementLoadingFlash(this)
+        // 结果页原生
+        BaseAd.getEndInstance().advertisementLoadingFlash(this)
         identificationOfBuyingVolume()
     }
     private fun identificationOfBuyingVolume() {
@@ -147,10 +147,11 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
         }
     }
     private fun loadOpenAd() {
-        if (BaseAppUtils.isOrganic()) {
+        if (BaseAppUtils.isOrganic() &&  !BaseAppUtils.openFirst.getLoadBooleanData()) {
             Log.d(BaseAppUtils.TAG, "The ad is Organic not show")
             progressInt = 100
             mBinding.flashProgressBar.progress = progressInt
+            BaseAppUtils.setLoadData(BaseAppUtils.openFirst,true)
             startToMain()
             return
         }

@@ -90,17 +90,13 @@ class BaseAd private constructor() {
         Date().time - loadTime < 60 * 60 * 1000
 
     fun advertisementLoadingFlash(context: Context) {
-        if (BaseAppUtils.isOrganic()) {
-            Log.d(TAG, "The ad is Organic not show")
-            return
-        }
         if (isLoadingFlash) {
             Log.d(TAG, "${getInstanceName()}-The ad is loading and cannot be loaded again")
             return
         }
         val userData = BaseAppUtils.blockAdUsers()
         val blacklistState = BaseAppUtils.blockAdBlacklist()
-        if (!blacklistState && (instanceName == "connect" || instanceName == "back")) {
+        if (blacklistState && (instanceName == "connect" || instanceName == "back")) {
             return
         }
         if (!userData && (instanceName == "back" || instanceName == "banner")) {

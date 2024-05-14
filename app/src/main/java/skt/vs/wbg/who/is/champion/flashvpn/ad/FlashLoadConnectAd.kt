@@ -112,11 +112,6 @@ object FlashLoadConnectAd {
         closeWindowFun: () -> Unit
     ): Int {
         val blacklistState = BaseAppUtils.blockAdBlacklist()
-        if (BaseAppUtils.isOrganic()) {
-            Log.d(BaseAppUtils.TAG, "The ad is Organic not show")
-            return 0
-        }
-
         if (blacklistState) {
             return 0
         }

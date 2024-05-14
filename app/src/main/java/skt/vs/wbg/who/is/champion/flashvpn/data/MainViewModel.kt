@@ -787,7 +787,7 @@ class MainViewModel : ViewModel() {
                 BaseAd.getConnectInstance().advertisementLoadingFlash(activity)
             }
             try {
-                withTimeout(8000) {
+                withTimeout(10000) {
                     while (isActive) {
                         when (FlashLoadConnectAd.displayConnectAdvertisementFlash(
                             activity,

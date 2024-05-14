@@ -56,6 +56,7 @@ object BaseAppUtils {
     var app_point_error = "app_point_error"
 
     var adShowNum = "adShowNum"
+    var openFirst = "openFirst"
 
     //ad
     const val onLguai = "onLguai"
@@ -226,7 +227,7 @@ object BaseAppUtils {
     fun isOrganic(): Boolean {
         val referrer = SPUtils.getInstance().getString(refer_data)
         if(referrer.isBlank()){
-            return true
+            return false
         }
         return referrer.contains("organic", true)
     }
@@ -257,11 +258,11 @@ object BaseAppUtils {
         val blackData = SPUtils.getInstance().getBoolean(FlashCloak.IS_BLACK, true)
         when (getLogicJson().onLprob) {
             "1" -> {
-                return !blackData
+                return blackData
             }
 
             "2" -> {
-                return true
+                return false
             }
 
             else -> {

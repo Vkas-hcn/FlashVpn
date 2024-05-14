@@ -122,10 +122,6 @@ object FlashLoadBackAd {
     ): Int {
         val userData = BaseAppUtils.blockAdUsers()
         val blacklistState = BaseAppUtils.blockAdBlacklist()
-        if (BaseAppUtils.isOrganic()) {
-            Log.d(TAG, "The ad is Organic not show")
-            return 0
-        }
         if (blacklistState) {
             return 0
         }

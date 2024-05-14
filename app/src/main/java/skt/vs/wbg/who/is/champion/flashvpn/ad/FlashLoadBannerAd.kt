@@ -122,10 +122,6 @@ object FlashLoadBannerAd {
     }
 
     fun showBannerAdFlash(activity: HomeActivity) {
-        if (BaseAppUtils.isOrganic()) {
-            Log.d(TAG, "The ad is Organic not show")
-            return return
-        }
         val userData = BaseAppUtils.blockAdUsers()
         if (!userData) {
             return

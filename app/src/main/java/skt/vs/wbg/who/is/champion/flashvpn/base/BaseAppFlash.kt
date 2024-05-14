@@ -103,10 +103,6 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     private fun toSplash(activity: Activity) {
-        if (BaseAppUtils.isOrganic()) {
-            Log.d(TAG, "The ad is Organic not hot Splash")
-            return
-        }
         "o15".putPointYep(activity)
         FlashOkHttpUtils().reRequestDotData(this)
         if (activity is ProgressActivity) {
@@ -171,9 +167,9 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
         }
         val date = System.currentTimeMillis()
 
-//        installReferrer = "-dasdadasd-organic---dqqd--asdasda"
-        installReferrer = "fb4a"
-        SPUtils.getInstance().put(BaseAppUtils.refer_data,installReferrer)
+//        installReferrer = "not%20set"
+//        installReferrer = "fb4a"
+//        SPUtils.getInstance().put(BaseAppUtils.refer_data,installReferrer)
 
         runCatching {
             val referrerClient = InstallReferrerClient.newBuilder(context).build()
@@ -183,7 +179,7 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
                         InstallReferrerClient.InstallReferrerResponse.OK -> {
                             val installReferrer =
                                 referrerClient.installReferrer.installReferrer ?: ""
-//                            SPUtils.getInstance().put(BaseAppUtils.refer_data, installReferrer)
+                            SPUtils.getInstance().put(BaseAppUtils.refer_data, installReferrer)
                             Log.e(TAG, "onInstallReferrerSetupFinished: ${installReferrer}")
                             val loadDate = (System.currentTimeMillis() - date) / 1000
                             DataHelp.putPointTimeYep(
