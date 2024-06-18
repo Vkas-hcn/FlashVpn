@@ -12,7 +12,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadHomeAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadOpenAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
-import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointFLash
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadIntData
@@ -116,10 +116,10 @@ class BaseAd private constructor() {
 
 
     private fun loadStartupPageAdvertisementFlash(context: Context, adData: FlashAdBean) {
-        DataHelp.putPointTimeYep("o30", getID(adData), "yn", context)
+        DataHelp.putPointTimeFLash("o30", getID(adData), "yn", context)
         val raolui = BaseAppFlash.mmkvFlash.getBoolean("raoliu", false)
         if (DataHelp.isConnectFun() && !raolui) {
-            DataHelp.putPointTimeYep("o33", getID(adData), "yn", context)
+            DataHelp.putPointTimeFLash("o33", getID(adData), "yn", context)
         }
         Log.d(TAG, "${getInstanceName()}-Ads - start loading")
         adLoaders[id]?.invoke(context, adData)
@@ -210,7 +210,7 @@ class BaseAd private constructor() {
         if (eventToken != null) {
             Log.e(TAG, "adjust-show-ad-num-code: ${eventToken}")
             val adjustEvent = AdjustEvent(eventToken)
-            eventTokenTba?.putPointYep(BaseAppFlash.getInstance())
+            eventTokenTba?.putPointFLash(BaseAppFlash.getInstance())
             Adjust.trackEvent(adjustEvent)
         }
     }

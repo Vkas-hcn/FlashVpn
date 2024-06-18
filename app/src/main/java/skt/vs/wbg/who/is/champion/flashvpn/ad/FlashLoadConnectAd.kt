@@ -43,7 +43,7 @@ object FlashLoadConnectAd {
                         """
            domain: ${adError.domain}, code: ${adError.code}, message: ${adError.message}
           """"
-                    DataHelp.putPointTimeYep(
+                    DataHelp.putPointTimeFLash(
                         "o32",
                         error,
                         "yn",
@@ -61,7 +61,7 @@ object FlashLoadConnectAd {
                             adBackData
                         )
                     }
-                    DataHelp.putPointTimeYep(
+                    DataHelp.putPointTimeFLash(
                         "o31",
                         "connect+${adData.onLnose}",
                         "yn",

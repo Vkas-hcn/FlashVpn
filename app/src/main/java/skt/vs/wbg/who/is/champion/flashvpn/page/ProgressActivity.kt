@@ -30,7 +30,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.databinding.ProgressLayoutBinding
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
-import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointFLash
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadBooleanData
@@ -129,7 +129,7 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
             return
         }
         if (BaseAppUtils.refer_data.getLoadStringData().isNotEmpty() && BaseAppUtils.isItABuyingUser()) {
-            "o1unusual".putPointYep(this)
+            "o1unusual".putPointFLash(this)
             BaseAppUtils.setLoadData(BaseAppUtils.refer_tab, true)
         }
     }
@@ -201,7 +201,7 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
         super.onStop()
         jobOpenAdsFlash?.cancel()
         jobOpenAdsFlash = null
-        BaseAppUtils.isStartYep = true
+        BaseAppUtils.isStartFLash = true
     }
 
     override fun onResume() {
@@ -213,9 +213,9 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
                     startToMain()
                 }
             }
-            if (BaseAppUtils.isStartYep) {
-                "o1startup".putPointYep(this@ProgressActivity)
-                BaseAppUtils.isStartYep = false
+            if (BaseAppUtils.isStartFLash) {
+                "o1startup".putPointFLash(this@ProgressActivity)
+                BaseAppUtils.isStartFLash = false
             }
         }
     }

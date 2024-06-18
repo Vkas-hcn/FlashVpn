@@ -25,7 +25,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseActivityFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.databinding.ListLayoutBinding
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.VPNDataHelper.getImage
-import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointFLash
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.ConnectListViewModel
 
@@ -82,7 +82,7 @@ class ConfigActivity : BaseActivityFlash<ListLayoutBinding>() {
 
     override fun onResume() {
         super.onResume()
-        "o24".putPointYep(this)
+        "o24".putPointFLash(this)
     }
 }
 

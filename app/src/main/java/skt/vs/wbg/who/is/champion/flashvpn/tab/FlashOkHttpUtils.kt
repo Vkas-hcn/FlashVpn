@@ -16,7 +16,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.DodgingInfo
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
-import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointFLash
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringData
@@ -149,7 +149,7 @@ class FlashOkHttpUtils {
 
 
     fun getVpnData(context: Context, successFun: () -> Unit) {
-        "oon".putPointYep(context)
+        "oon".putPointFLash(context)
         val date = System.currentTimeMillis()
         try {
             client.get(context, BaseAppUtils.vpn_url, object : NetClientHelp.Callback {
@@ -157,9 +157,9 @@ class FlashOkHttpUtils {
                     val responseData = processString(response)
                     BaseAppUtils.setLoadData(BaseAppUtils.vpn_online, responseData)
                     Log.d(TAG, "获取下发服务器数据-成功->$responseData")
-                    "oonna".putPointYep(context)
+                    "oonna".putPointFLash(context)
                     val date2 = (System.currentTimeMillis() - date) / 1000
-                    DataHelp.putPointTimeYep("oontt", date2, "time", context)
+                    DataHelp.putPointTimeFLash("oontt", date2, "time", context)
                     successFun()
                 }
 

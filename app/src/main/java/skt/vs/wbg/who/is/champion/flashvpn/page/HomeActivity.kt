@@ -28,7 +28,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.MainViewModel
 import skt.vs.wbg.who.`is`.champion.flashvpn.databinding.MainLayoutBinding
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
-import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointFLash
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadBooleanData
 import com.github.mikephil.charting.data.Entry;
@@ -66,7 +66,7 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
 
 
         mBinding.lottieGuide.setOnClickListener {
-            "o1guidecc".putPointYep(this)
+            "o1guidecc".putPointFLash(this)
             mainViewModel.cancelGuideLottie()
             mainViewModel.toConnectVerifyNet()
         }
@@ -95,7 +95,7 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
         val raoLiuTba = BaseAppUtils.raoLiuTba.getLoadBooleanData()
         mmkvFlash.putBoolean("raoliu", data)
         if (!raoLiuTba && !data) {
-            "o34".putPointYep(this)
+            "o34".putPointFLash(this)
             BaseAppUtils.setLoadData(BaseAppUtils.raoLiuTba, true)
         }
     }

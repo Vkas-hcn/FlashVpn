@@ -344,11 +344,11 @@ object DataHelp {
         }
     }
 
-    fun String.putPointYep(context: Context) {
+    fun String.putPointFLash(context: Context) {
         FlashOkHttpUtils().getTbaList(context, this){}
     }
 
-    fun putPointTimeYep(name: String, time: Any, parameterName: String, context: Context) {
+    fun putPointTimeFLash(name: String, time: Any, parameterName: String, context: Context) {
         FlashOkHttpUtils().getTbaList(context, name, parameterName, time){}
     }
 

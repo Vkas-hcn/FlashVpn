@@ -20,7 +20,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseActivityFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.ProgressActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
-import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointFLash
 import java.io.IOException
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -103,7 +103,7 @@ object IPUtils {
     private var isShowNum = false
     private fun showDialog(activity: BaseActivityFlash<*>) {
         if (!isShowNum) {
-            "o1IPview".putPointYep(activity)
+            "o1IPview".putPointFLash(activity)
             isShowNum = true
         }
         val customDialog = Dialog(activity, R.style.AppDialogStyle)

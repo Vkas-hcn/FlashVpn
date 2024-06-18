@@ -28,7 +28,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.page.HomeActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.ProgressActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.SPUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
-import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointFLash
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
@@ -71,7 +71,7 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
         BaseAppUtils.initApp(this)
         registerActivityLifecycleCallbacks(this)
         getReferInformation(this)
-        "o16".putPointYep(this)
+        "o16".putPointFLash(this)
         initAdJust(this)
         FlashOkHttpUtils().reRequestDotData(this)
         if (isFirstTimeOpen()) {
@@ -103,7 +103,7 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     private fun toSplash(activity: Activity) {
-        "o15".putPointYep(activity)
+        "o15".putPointFLash(activity)
         FlashOkHttpUtils().reRequestDotData(this)
         if (activity is ProgressActivity) {
             activity.finish()
@@ -182,7 +182,7 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
                             SPUtils.getInstance().put(BaseAppUtils.refer_data, installReferrer)
                             Log.e(TAG, "onInstallReferrerSetupFinished: ${installReferrer}")
                             val loadDate = (System.currentTimeMillis() - date) / 1000
-                            DataHelp.putPointTimeYep(
+                            DataHelp.putPointTimeFLash(
                                 "o1Obtain",
                                 loadDate.toInt(),
                                 "conntime",

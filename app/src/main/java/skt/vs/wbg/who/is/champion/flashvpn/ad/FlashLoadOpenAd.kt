@@ -51,7 +51,7 @@ object FlashLoadOpenAd {
                             )
                         }
                     }
-                    DataHelp.putPointTimeYep(
+                    DataHelp.putPointTimeFLash(
                         "o31",
                         "open+${adData.onLnugit}",
                         "yn",
@@ -70,7 +70,7 @@ object FlashLoadOpenAd {
                         """
            domain: ${loadAdError.domain}, code: ${loadAdError.code}, message: ${loadAdError.message}
           """"
-                    DataHelp.putPointTimeYep(
+                    DataHelp.putPointTimeFLash(
                         "o32",
                         error,
                         "yn",

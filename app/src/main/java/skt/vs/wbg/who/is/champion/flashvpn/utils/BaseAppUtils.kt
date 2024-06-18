@@ -27,7 +27,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
-import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointFLash
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.InetAddress
@@ -49,7 +49,7 @@ object BaseAppUtils {
 
     //refer_data
     const val refer_data = "refer_data"
-    var isStartYep: Boolean = true
+    var isStartFLash: Boolean = true
     var raoLiuTba = "raoLiuTba"
     var app_pack_name = "a_p_n"
     var app_is_custom = "app_is_custom"
@@ -399,10 +399,10 @@ object BaseAppUtils {
             val netState = isNetworkReachable()
             if (netState) {
                 Log.e(TAG, "o12Fun: 开始检测-1", )
-                DataHelp.putPointTimeYep("o12", "1", "net", context)
+                DataHelp.putPointTimeFLash("o12", "1", "net", context)
             } else {
                 Log.e(TAG, "o12Fun: 开始检测-2", )
-                DataHelp.putPointTimeYep("o12", "2", "net", context)
+                DataHelp.putPointTimeFLash("o12", "2", "net", context)
 
             }
         }

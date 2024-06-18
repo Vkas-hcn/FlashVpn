@@ -49,7 +49,7 @@ object FlashLoadBackAd {
           """"
                     Log.d(TAG, "back-The ad failed to load:$error ")
 
-                    DataHelp.putPointTimeYep(
+                    DataHelp.putPointTimeFLash(
                         "o32",
                         error,
                         "yn",
@@ -71,7 +71,7 @@ object FlashLoadBackAd {
                             adBackData
                         )
                     }
-                    DataHelp.putPointTimeYep(
+                    DataHelp.putPointTimeFLash(
                         "o31",
                         "back+${adData.onLmemor}",
                         "yn",

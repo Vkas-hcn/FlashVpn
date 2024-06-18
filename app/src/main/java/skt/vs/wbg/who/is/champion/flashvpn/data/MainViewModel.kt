@@ -69,7 +69,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.page.LocaleProfile
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.VPNDataHelper
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.WebFlashActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
-import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointYep
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointFLash
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.OnlineVpnHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
@@ -153,7 +153,7 @@ class MainViewModel : ViewModel() {
 
     private fun requestPermissionForResult(result: ActivityResult) {
         if (result.resultCode == AppCompatActivity.RESULT_OK) {
-            "o1Permis".putPointYep(this.activity)
+            "o1Permis".putPointFLash(this.activity)
             activity.let { mService?.let { it1 -> toConnectVerifyNet() } }
         } else {
             openServerState.postValue(OpenServiceState.DISCONNECTED)
@@ -162,7 +162,7 @@ class MainViewModel : ViewModel() {
 
     private fun getConnectTime(context: Context) {
         val time = (System.currentTimeMillis() - connectTime) / 1000
-        DataHelp.putPointTimeYep("o14", time, "conntime", context)
+        DataHelp.putPointTimeFLash("o14", time, "conntime", context)
         connectTime = 0
     }
 
@@ -266,7 +266,7 @@ class MainViewModel : ViewModel() {
             }
 
             setIcon.setOnClickListener {
-                "o27".putPointYep(ac)
+                "o27".putPointFLash(ac)
                 if (!ac.mBinding.drawer.isOpen) ac.mBinding.drawer.open()
             }
             connectAnimate.setOnClickListener {
@@ -351,9 +351,9 @@ class MainViewModel : ViewModel() {
         lastExecutionTime = currentTime
         if (DataHelp.isConnectFun()) {
             BaseAd.getBackInstance().advertisementLoadingFlash(activity)
-            "o29".putPointYep(activity)
+            "o29".putPointFLash(activity)
         } else {
-            "o28".putPointYep(activity)
+            "o28".putPointFLash(activity)
         }
     }
 
@@ -420,13 +420,13 @@ class MainViewModel : ViewModel() {
                     openServerState.postValue(OpenServiceState.DISCONNECTED)
                     mService?.disconnect()
                     cancelConnect = true
-                    "o10".putPointYep(activity)
+                    "o10".putPointFLash(activity)
                 }
 
                 OpenServiceState.DISCONNECTING -> {
                     userInterrupt = true
                     openServerState.postValue(OpenServiceState.CONNECTED)
-                    "o21".putPointYep(activity)
+                    "o21".putPointFLash(activity)
                 }
 
                 else -> {}
@@ -525,7 +525,7 @@ class MainViewModel : ViewModel() {
                     return@launch
                 } else if (isActive) {
                     mService?.disconnect()
-                    "o11".putPointYep(activity)
+                    "o11".putPointFLash(activity)
                 }
             }
         }
@@ -559,7 +559,7 @@ class MainViewModel : ViewModel() {
         activity.mBinding.lottieGuide.setAnimation("hahaha.json")
         activity.mBinding.lottieGuide.repeatCount = ValueAnimator.INFINITE
         activity.mBinding.lottieGuide.playAnimation()
-        "o1guideexposure".putPointYep(activity)
+        "o1guideexposure".putPointFLash(activity)
     }
 
     fun cancelGuideLottie() {
@@ -671,7 +671,7 @@ class MainViewModel : ViewModel() {
                         } else {
                             "f"
                         }
-                        DataHelp.putPointTimeYep("o1vpn", type, "proxy", context)
+                        DataHelp.putPointTimeFLash("o1vpn", type, "proxy", context)
                         val data = VPNDataHelper.getAllLocaleProfile()[VPNDataHelper.nodeIndex]
                         runCatching {
                             BaseAppUtils.setLoadData(BaseAppUtils.vpn_ip, data.onLm_host)
@@ -704,7 +704,7 @@ class MainViewModel : ViewModel() {
                             if ((!DataHelp.isConnectFun()) && BaseAppFlash.vpnClickState == 0) {
                                 isFailConnect = true
                                 cancelConnect = true
-                                DataHelp.putPointTimeYep(
+                                DataHelp.putPointTimeFLash(
                                     "o13",
                                     "Connect Failed!",
                                     "re",
@@ -764,7 +764,7 @@ class MainViewModel : ViewModel() {
             if (activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
                 return@launch
             }
-            "o1frontview".putPointYep(activity)
+            "o1frontview".putPointFLash(activity)
             val state = FlashLoadBannerAd.getAdISLoadSuccess()
             if (!state) {
                 BaseAd.getBannerInstance().advertisementLoadingFlash(activity)

@@ -76,7 +76,7 @@ object FlashLoadBannerAd {
                         }
                     }
                 }
-                DataHelp.putPointTimeYep(
+                DataHelp.putPointTimeFLash(
                     "o31",
                     "banner+${adData.onhhhh}",
                     "yn",
@@ -91,7 +91,7 @@ object FlashLoadBannerAd {
                     """
            domain: ${adError.domain}, code: ${adError.code}, message: ${adError.message}
           """"
-                DataHelp.putPointTimeYep(
+                DataHelp.putPointTimeFLash(
                     "o32",
                     error,
                     "yn",
