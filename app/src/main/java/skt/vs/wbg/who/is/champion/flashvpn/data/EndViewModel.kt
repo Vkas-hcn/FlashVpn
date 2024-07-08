@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -23,11 +24,11 @@ class EndViewModel : ViewModel() {
             if (activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
                 return@launch
             }
-            val adEndData = BaseAd.getEndInstance().appAdDataFlash
-            if (adEndData == null) {
-                BaseAd.getEndInstance().advertisementLoadingFlash(activity)
-            }
             while (isActive) {
+                val adEndData = BaseAd.getEndInstance().appAdDataFlash
+                if (adEndData == null) {
+                    BaseAd.getEndInstance().advertisementLoadingFlash(activity)
+                }
                 if (adEndData != null) {
                     FlashLoadEndAd.setDisplayEndNativeAdFlash(activity)
                     cancel()

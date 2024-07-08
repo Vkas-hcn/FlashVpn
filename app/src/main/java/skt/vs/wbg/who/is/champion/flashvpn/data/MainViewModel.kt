@@ -484,6 +484,7 @@ class MainViewModel : ViewModel() {
             toAction = true
             BaseAppFlash.isHotStart = false
             cancelConnect = false
+            BaseAd.getEndInstance().advertisementLoadingFlash(activity)
             when (openServerState.value) {
                 OpenServiceState.CONNECTED -> {
                     BaseAppFlash.vpnClickState = 1

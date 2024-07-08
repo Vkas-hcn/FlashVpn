@@ -58,7 +58,6 @@ object FlashLoadEndAd {
                 it.responseInfo?.let { nav ->
                     FlashOkHttpUtils().getAdList(context, advalue, nav, "end", adEndData)
                 }
-                //重新缓存
                 BaseAd.getEndInstance().advertisementLoadingFlash(context)
             }
         }
