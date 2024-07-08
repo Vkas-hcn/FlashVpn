@@ -8,6 +8,7 @@ import com.google.android.gms.ads.AdView
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadBackAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadBannerAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadConnectAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadEndAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadHomeAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadOpenAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
@@ -139,7 +140,7 @@ class BaseAd private constructor() {
         }
 
         adLoadersMap[3] = { context, adData ->
-//            FlashLoadEndAd.loadEndAdvertisementFlash(context, adData)
+            FlashLoadEndAd.loadEndAdvertisementFlash(context, adData)
         }
 
         adLoadersMap[4] = { context, adData ->

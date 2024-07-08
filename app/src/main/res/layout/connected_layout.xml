@@ -3,15 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="showAd"
             type="Integer"
             android:value="" />
+
         <variable
             name="showLoad"
             type="Boolean"
-            android:value="false"/>
+            android:value="false" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -100,12 +103,13 @@
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/chart"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:padding="6dp"
             android:layout_marginHorizontal="12dp"
+            android:padding="6dp"
             app:layout_constraintBottom_toTopOf="@+id/connectCl"
             app:layout_constraintTop_toBottomOf="@+id/cl_cou" />
 
@@ -117,7 +121,7 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/gray_20"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/ad_frame_layout"
             app:layout_constraintTop_toBottomOf="@id/chart">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -218,11 +222,42 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <FrameLayout
+            android:id="@+id/ad_frame_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/gray_8"
+            android:padding="1dp"
+            android:visibility="@{showAd != 2 ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/connectCl"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/img_op_ad_frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_occupy"
+                android:visibility="@{showAd == 0 ? View.VISIBLE : View.GONE}" />
+
+            <FrameLayout
+                android:id="@+id/ad_frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{showAd == 1 ? View.VISIBLE : View.GONE}" />
+
+        </FrameLayout>
 
         <include
             android:id="@+id/in_load"
-            android:visibility="@{showLoad ? View.VISIBLE : View.GONE}"
-            layout="@layout/layout_load"/>
+            layout="@layout/layout_load"
+            android:visibility="@{showLoad ? View.VISIBLE : View.GONE}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

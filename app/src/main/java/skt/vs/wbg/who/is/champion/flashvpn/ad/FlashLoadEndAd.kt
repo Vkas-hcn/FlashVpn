@@ -53,7 +53,7 @@ object FlashLoadEndAd {
         vpnNativeAds.withNativeAdOptions(adOptions)
         vpnNativeAds.forNativeAd {
             adBase.appAdDataFlash = it
-            it.setOnPaidEventListener {advalue->
+            it.setOnPaidEventListener { advalue ->
 
                 it.responseInfo?.let { nav ->
                     FlashOkHttpUtils().getAdList(context, advalue, nav, "end", adEndData)
@@ -120,11 +120,11 @@ object FlashLoadEndAd {
                     ) as NativeAdView
                     // 对应原生组件
                     setCorrespondingNativeComponentFlash(adData, adView)
-//                    binding.adFrame.apply {
-//                        removeAllViews()
-//                        addView(adView)
-//                    }
-                    binding.showAd =1
+                    binding.adFrame.apply {
+                        removeAllViews()
+                        addView(adView)
+                    }
+                    binding.showAd = 1
                     adBase.whetherToShowFlash = true
                     adBase.appAdDataFlash = null
                     adEndData = adBase.afterLoadLink(adEndData)
