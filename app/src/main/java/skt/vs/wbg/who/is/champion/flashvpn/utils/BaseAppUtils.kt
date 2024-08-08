@@ -95,6 +95,7 @@ object BaseAppUtils {
     //本地广告逻辑
     const val local_ad_logic = """
 {
+    "onLsads":"1447428382588795",
     "onLmatt": "2",
     "onLprob": "1",
     "onLfeli": "1"

@@ -6,6 +6,8 @@ import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import com.facebook.FacebookSdk
+import com.facebook.appevents.AppEventsLogger
 import com.google.android.ump.ConsentDebugSettings
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
@@ -35,6 +37,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadBooleanData
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringData
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLogicJson
 
 class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
     private var jobOpenAdsFlash: Job? = null
@@ -53,7 +56,7 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
                 FlashOkHttpUtils().getTbaIp(this@ProgressActivity)
             }
             FlashOkHttpUtils().getSessionList(this@ProgressActivity)
-            FlashOkHttpUtils().getVpnData(this@ProgressActivity){}
+            FlashOkHttpUtils().getVpnData(this@ProgressActivity) {}
         }
         MainScope().launch {
             for (i in 1..100) {
@@ -69,10 +72,13 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
             }
         })
     }
+
     override fun setRequestedOrientation(requestedOrientation: Int) {
         return
     }
+
     fun getFileBaseData() {
+        initFaceBook()
         startCateFlash = lifecycleScope.launch {
             var isCa = false
             if (!BuildConfig.DEBUG) {
@@ -88,6 +94,7 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
                         .put(BaseAppUtils.onLdlet, auth.getString(BaseAppUtils.onLdlet))
 
                     isCa = true
+                    initFaceBook()
                 }
             }
             try {
@@ -112,6 +119,16 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
         }
     }
 
+    private fun initFaceBook() {
+        val bean = getLogicJson()
+        if(bean.onLsads ==null){return}
+        Log.e("TAG", "initFaceBook: ${bean.onLsads}")
+        FacebookSdk.setApplicationId(bean.onLsads)
+        // 初始化Facebook SDK
+        FacebookSdk.sdkInitialize(BaseAppFlash.getInstance())
+        AppEventsLogger.activateApp(BaseAppFlash.getInstance())
+    }
+
     private fun loadAdFun() {
         // 开屏
         BaseAd.getOpenInstance().advertisementLoadingFlash(this)
@@ -124,19 +141,23 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
         BaseAd.getEndInstance().advertisementLoadingFlash(this)
         identificationOfBuyingVolume()
     }
+
     private fun identificationOfBuyingVolume() {
-        if(BaseAppUtils.refer_tab.getLoadBooleanData()){
+        if (BaseAppUtils.refer_tab.getLoadBooleanData()) {
             return
         }
-        if (BaseAppUtils.refer_data.getLoadStringData().isNotEmpty() && BaseAppUtils.isItABuyingUser()) {
+        if (BaseAppUtils.refer_data.getLoadStringData()
+                .isNotEmpty() && BaseAppUtils.isItABuyingUser()
+        ) {
             "o1unusual".putPointFLash(this)
             BaseAppUtils.setLoadData(BaseAppUtils.refer_tab, true)
         }
     }
+
     //等待展示open广告
-    private fun waitForTheOpenAdToAppear(){
+    private fun waitForTheOpenAdToAppear() {
         GlobalScope.launch {
-            while (isActive){
+            while (isActive) {
                 val data = BaseAppUtils.ad_user_state.getLoadBooleanData()
                 if (data) {
                     loadOpenAd()
@@ -146,12 +167,13 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
             }
         }
     }
+
     private fun loadOpenAd() {
-        if (BaseAppUtils.isOrganic() &&  !BaseAppUtils.openFirst.getLoadBooleanData()) {
+        if (BaseAppUtils.isOrganic() && !BaseAppUtils.openFirst.getLoadBooleanData()) {
             Log.d(BaseAppUtils.TAG, "The ad is Organic not show")
             progressInt = 100
             mBinding.flashProgressBar.progress = progressInt
-            BaseAppUtils.setLoadData(BaseAppUtils.openFirst,true)
+            BaseAppUtils.setLoadData(BaseAppUtils.openFirst, true)
             startToMain()
             return
         }
