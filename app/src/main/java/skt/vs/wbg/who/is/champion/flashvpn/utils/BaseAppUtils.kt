@@ -57,6 +57,7 @@ object BaseAppUtils {
 
     var adShowNum = "adShowNum"
     var openFirst = "openFirst"
+    const val dueIP = "dueIP"
 
     const val clockIp = "clockIp"
 

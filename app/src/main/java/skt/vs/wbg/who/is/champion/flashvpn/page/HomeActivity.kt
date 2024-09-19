@@ -39,6 +39,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash.Companion.mmkvFlash
+import skt.vs.wbg.who.`is`.champion.flashvpn.net.IPUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.ChatUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.GetAppUtils
 
@@ -54,7 +55,7 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.e("TAG", "main ----- onCreate: ")
+        IPUtils.checkIp(this)
         mainViewModel.init(
             this,
             mBinding.tvLatency,
@@ -88,6 +89,7 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
         storeSpoilerData()
 
         ChatUtils.initChart(mBinding.chart)
+        IPUtils.setIsBanded(this)
     }
 
     fun storeSpoilerData() {

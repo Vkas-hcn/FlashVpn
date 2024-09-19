@@ -61,6 +61,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadHomeAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash.Companion.isUserMainBack
+import skt.vs.wbg.who.`is`.champion.flashvpn.net.IPUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.AgentActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.ConfigActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.EndActivity
@@ -235,6 +236,9 @@ class MainViewModel : ViewModel() {
     private var lastClickTime: Long = 0
     private val delayMillis: Long = 2000
     private fun clickToAction(activity: HomeActivity) {
+        if (IPUtils.setIsBanded(activity)) {
+            return
+        }
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastClickTime >= delayMillis) {
             connectPut(activity)
@@ -275,7 +279,9 @@ class MainViewModel : ViewModel() {
                 if (!ac.mBinding.drawer.isOpen) ac.mBinding.drawer.open()
             }
             tvLatency.setOnClickListener {
-                if(openServerState.value==OpenServiceState.DISCONNECTING){return@setOnClickListener}
+                if (openServerState.value == OpenServiceState.DISCONNECTING) {
+                    return@setOnClickListener
+                }
                 activity.lifecycleScope.launch(Dispatchers.Main) {
                     activity.mBinding.showLoad2 = true
                     delay(2000)
@@ -338,7 +344,9 @@ class MainViewModel : ViewModel() {
             ac.mBinding.lifecycleOwner?.let {
                 ac.onBackPressedDispatcher.addCallback(it, object : OnBackPressedCallback(true) {
                     override fun handleOnBackPressed() {
-                        if(activity.mBinding?.showLoad2==true){return}
+                        if (activity.mBinding?.showLoad2 == true) {
+                            return
+                        }
                         if (isShowGuide) {
                             cancelGuideLottie()
                         } else if (ac.mBinding.drawer.isOpen) {

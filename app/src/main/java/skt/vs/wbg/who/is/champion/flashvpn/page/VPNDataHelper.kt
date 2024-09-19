@@ -47,7 +47,6 @@ object VPNDataHelper {
             it.isClock = it.name != "Fast Server"
             if (fastServerData.isNullOrEmpty()) {
                 if (dataString.contains(it.onLm_host)) {
-                    Log.e("TAG", "onBindViewHolder: ", )
                     it.isClock = false
                 }
             }
