@@ -3,42 +3,48 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:layout_marginBottom="16dp"
-    >
+    android:layout_marginBottom="16dp">
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/itemLocationImage"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_marginStart="16dp"
         android:src="@mipmap/flash_list_icon"
-        android:id="@+id/itemLocationImage"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/itemLocationName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/itemLocationImage"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:text="super fast servers"
-        android:textSize="14sp"
-        android:id="@+id/itemLocationName"
         android:layout_marginStart="8dp"
-        android:textColor="@color/white"/>
-    
+        android:text="super fast servers"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/itemLocationImage"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/img_colck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"
+        android:src="@drawable/icon_lock"
+        app:layout_constraintBottom_toBottomOf="@+id/itemLocationCheckImage"
+        app:layout_constraintEnd_toStartOf="@+id/itemLocationCheckImage"
+        app:layout_constraintTop_toTopOf="@+id/itemLocationCheckImage" />
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/itemLocationCheckImage"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:id="@+id/itemLocationCheckImage"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="16dp"
+        android:src="@mipmap/flash_unchecked"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@mipmap/flash_unchecked"
-        android:layout_marginEnd="16dp"/>
-
-
-
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

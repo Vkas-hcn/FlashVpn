@@ -15,6 +15,11 @@
             name="showLoad"
             type="Boolean"
             android:value="false" />
+
+        <variable
+            name="showLoad2"
+            type="Boolean"
+            android:value="false" />
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
@@ -27,22 +32,44 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white">
-
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img_bg_main"
+                app:layout_constraintTop_toTopOf="parent" />
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/set"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="12dp"
                 android:layout_marginTop="40dp"
                 android:src="@mipmap/set_icon"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_latency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="3dp"
+                android:background="@drawable/gray_14"
+                android:drawableStart="@drawable/icon_ping"
+                android:drawablePadding="4dp"
+                android:padding="4dp"
+                android:text="Latency Test"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/listCl"
+                app:layout_constraintEnd_toStartOf="@+id/listCl"
+                app:layout_constraintTop_toTopOf="@+id/listCl" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/listCl"
                 android:layout_width="wrap_content"
                 android:layout_height="28dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="12dp"
                 android:background="@drawable/gray_14"
                 app:layout_constraintBottom_toBottomOf="@id/set"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -82,12 +109,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:src="@mipmap/main_bgggg"
-                app:layout_constraintTop_toBottomOf="@id/set" />
+
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/connectedTimeText"
@@ -365,6 +387,11 @@
                 layout="@layout/layout_load"
                 android:visibility="@{showLoad ? View.VISIBLE : View.GONE}" />
 
+            <include
+                android:id="@+id/in_load2"
+                layout="@layout/layout_load_2"
+                android:visibility="@{showLoad2 ? View.VISIBLE : View.GONE}" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -379,7 +406,7 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_margin="80dp"
-                android:src="@mipmap/set_loggggg"
+                android:src="@mipmap/ic_launcher_round"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

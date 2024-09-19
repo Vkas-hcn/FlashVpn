@@ -49,7 +49,7 @@ open class FlashCloak {
 
     private val retrofitCloak by lazy {
         Retrofit.Builder().client(createOkhttp())
-            .baseUrl("https://thrush.onlinenetwork.link/foxhound/")
+            .baseUrl("https://germane.flashlinkeasyfast.com/wilfred/accredit/boatmen/")
             .addConverterFactory(TreeAppStringConverter())
             .addConverterFactory(GsonConverterFactory.create()).build()
     }
@@ -112,7 +112,7 @@ open class FlashCloak {
             val androidId = getAndroidID()
             val clientTime = System.currentTimeMillis()
             val mobileModel = Build.MODEL
-            val appPackageName = "com.online.network.procy.manager"
+            val appPackageName = "com.flash.link.easyfast.tool.stealth"
             val mobileSDKVersion = BuildConfig.VERSION_CODE
 
             GlobalScope.launch {

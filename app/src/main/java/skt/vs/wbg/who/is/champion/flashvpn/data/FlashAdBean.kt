@@ -10,6 +10,8 @@ data class FlashAdBean(
     val onLnose: String,
     val onLmemor: String,
     val onhhhh:String,
+    val onLrad:String,
+
     var loadCity: String,
     var showTheCity: String,
 

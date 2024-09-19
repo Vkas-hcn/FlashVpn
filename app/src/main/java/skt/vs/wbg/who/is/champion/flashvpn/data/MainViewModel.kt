@@ -66,6 +66,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.page.ConfigActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.EndActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.HomeActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.LocaleProfile
+import skt.vs.wbg.who.`is`.champion.flashvpn.page.PingActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.VPNDataHelper
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.WebFlashActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
@@ -90,6 +91,7 @@ class MainViewModel : ViewModel() {
     var openServerState = MutableLiveData<OpenServiceState>()
     private var shadowsocksJob: Job? = null
 
+    private lateinit var tvLatency: AppCompatTextView
     private lateinit var setIcon: AppCompatImageView
     private lateinit var connectImg: AppCompatImageView
     private lateinit var flashListName: AppCompatTextView
@@ -111,6 +113,7 @@ class MainViewModel : ViewModel() {
 
     fun init(
         activity: HomeActivity,
+        tvLatency: AppCompatTextView,
         setIcon: AppCompatImageView,
         connectImg: AppCompatImageView,
         connectAnimate: AppCompatImageView,
@@ -125,6 +128,7 @@ class MainViewModel : ViewModel() {
             mConnection,
             AppCompatActivity.BIND_AUTO_CREATE
         )
+        this.tvLatency = tvLatency
         this.setIcon = setIcon
         this.connectImg = connectImg
         this.connectAnimate = connectAnimate
@@ -221,6 +225,7 @@ class MainViewModel : ViewModel() {
     }
 
     private fun setViewEnabled(b: Boolean) {
+        tvLatency.isEnabled = b
         setIcon.isEnabled = b
         connectAnimate.isEnabled = b
         listCl.isEnabled = b
@@ -268,6 +273,16 @@ class MainViewModel : ViewModel() {
             setIcon.setOnClickListener {
                 "o27".putPointFLash(ac)
                 if (!ac.mBinding.drawer.isOpen) ac.mBinding.drawer.open()
+            }
+            tvLatency.setOnClickListener {
+                if(openServerState.value==OpenServiceState.DISCONNECTING){return@setOnClickListener}
+                activity.lifecycleScope.launch(Dispatchers.Main) {
+                    activity.mBinding.showLoad2 = true
+                    delay(2000)
+                    val intent = Intent(activity, PingActivity::class.java)
+                    activity.startActivity(intent)
+                    activity.mBinding.showLoad2 = false
+                }
             }
             connectAnimate.setOnClickListener {
                 clickToAction(ac)
@@ -323,6 +338,7 @@ class MainViewModel : ViewModel() {
             ac.mBinding.lifecycleOwner?.let {
                 ac.onBackPressedDispatcher.addCallback(it, object : OnBackPressedCallback(true) {
                     override fun handleOnBackPressed() {
+                        if(activity.mBinding?.showLoad2==true){return}
                         if (isShowGuide) {
                             cancelGuideLottie()
                         } else if (ac.mBinding.drawer.isOpen) {

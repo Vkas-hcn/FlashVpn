@@ -35,7 +35,7 @@ import java.net.InetAddress
 object BaseAppUtils {
     const val TAG = "FlashVPN"
     const val vpn_url = "https://test.onlinenetwork.link/tKyBVzPf/kmFHD/RMA/"
-    const val tab_url = "https://test-baste.onlinenetwork.link/summon/wound"
+    const val tab_url = "https://test-idiotic.flashlinkeasyfast.com/sima/alumni/mitral"
     const val vpn_online = "vpn_online"
     const val ip_tab_flash = "ip_tab_flash"
     const val refer_tab = "refer_tab"
@@ -58,6 +58,8 @@ object BaseAppUtils {
     var adShowNum = "adShowNum"
     var openFirst = "openFirst"
 
+    const val clockIp = "clockIp"
+
     //ad
     const val onLguai = "onLguai"
 
@@ -75,7 +77,8 @@ object BaseAppUtils {
   "onLconcer":"ca-app-pub-3940256099942544/2247696110",
   "onLnose":"ca-app-pub-3940256099942544/8691691433",
   "onLmemor":"ca-app-pub-3940256099942544/8691691433",
-  "onhhhh":"ca-app-pub-3940256099942544/6300978111"
+  "onhhhh":"ca-app-pub-3940256099942544/6300978111",
+  "onLrad":"ca-app-pub-3940256099942544/5224354917"
 }
     """
 
@@ -227,7 +230,7 @@ object BaseAppUtils {
     //refer识别为organic
     fun isOrganic(): Boolean {
         val referrer = SPUtils.getInstance().getString(refer_data)
-        if(referrer.isBlank()){
+        if (referrer.isBlank()) {
             return false
         }
         return referrer.contains("organic", true)
@@ -331,7 +334,7 @@ object BaseAppUtils {
     }
 
     fun String.getLoadIntData(): Int {
-        return SPUtils.getInstance().getInt(this,0)
+        return SPUtils.getInstance().getInt(this, 0)
     }
 
     fun isNetworkReachable2(): Boolean {
@@ -349,7 +352,7 @@ object BaseAppUtils {
             responseCode == HttpURLConnection.HTTP_OK
         } catch (e: Exception) {
             // 发生异常，连接失败
-            Log.e(TAG, "表示连接失败", )
+            Log.e(TAG, "表示连接失败")
             false
         }
     }
@@ -368,11 +371,11 @@ object BaseAppUtils {
 
             // 解析输出，判断是否连接成功
             val result = output.toString()
-           val state =  result.contains("1 packets transmitted, 1 received") // 如果输出中包含这行内容，表示ping成功
-            Log.e(TAG, "isNetworkReachable: ${state}", )
+            val state = result.contains("1 packets transmitted, 1 received") // 如果输出中包含这行内容，表示ping成功
+            Log.e(TAG, "isNetworkReachable: ${state}")
             return state
         } catch (e: Exception) {
-            Log.e(TAG, "isNetworkReachable: ----fasle", )
+            Log.e(TAG, "isNetworkReachable: ----fasle")
 
             false // 发生异常，连接失败
         }
@@ -399,10 +402,10 @@ object BaseAppUtils {
             Log.e(TAG, "o12Fun: 开始检测")
             val netState = isNetworkReachable()
             if (netState) {
-                Log.e(TAG, "o12Fun: 开始检测-1", )
+                Log.e(TAG, "o12Fun: 开始检测-1")
                 DataHelp.putPointTimeFLash("o12", "1", "net", context)
             } else {
-                Log.e(TAG, "o12Fun: 开始检测-2", )
+                Log.e(TAG, "o12Fun: 开始检测-2")
                 DataHelp.putPointTimeFLash("o12", "2", "net", context)
 
             }

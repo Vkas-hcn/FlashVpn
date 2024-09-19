@@ -11,6 +11,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadConnectAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadEndAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadHomeAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadOpenAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadRewardedAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointFLash
@@ -32,6 +33,9 @@ class BaseAd private constructor() {
         fun getBackInstance() = instanceHelper.backLoadFlash
 
         fun getBannerInstance() = instanceHelper.bannerLoadFlash
+
+        fun getRewardedInstance() = instanceHelper.rewardedLoadFlash
+
         private var idCounter = 0
     }
 
@@ -42,6 +46,7 @@ class BaseAd private constructor() {
         val connectLoadFlash = BaseAd()
         val backLoadFlash = BaseAd()
         val bannerLoadFlash = BaseAd()
+        val rewardedLoadFlash = BaseAd()
     }
 
     private val id = generateId()
@@ -61,6 +66,7 @@ class BaseAd private constructor() {
             4 -> "connect"
             5 -> "back"
             6 -> "banner"
+            7 -> "rewarded"
             else -> ""
         }
     }
@@ -73,6 +79,7 @@ class BaseAd private constructor() {
             4 -> "connect+${adBean.onLnose}"
             5 -> "back+${adBean.onLmemor}"
             6 -> "banner+${adBean.onhhhh}"
+            7 -> "rewarded+${adBean.onLrad}"
             else -> ""
         }
     }
@@ -152,6 +159,9 @@ class BaseAd private constructor() {
         }
         adLoadersMap[6] = { context, adData ->
             FlashLoadBannerAd.loadBannerAdFlash(context, adData)
+        }
+        adLoadersMap[7] = { context, adData ->
+            FlashLoadRewardedAd.loadRewardedAdvertisementFlash(context, adData)
         }
         return adLoadersMap
     }

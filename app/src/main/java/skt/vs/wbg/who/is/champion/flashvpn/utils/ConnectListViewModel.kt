@@ -12,6 +12,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.ConfigActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.EndActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.HomeActivity
+import skt.vs.wbg.who.`is`.champion.flashvpn.page.LocaleProfile
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.VPNDataHelper
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointFLash
 import java.lang.ref.WeakReference
@@ -19,15 +20,15 @@ import java.lang.ref.WeakReference
 class ConnectListViewModel : ViewModel() {
     private lateinit var activity: WeakReference<ConfigActivity>
     var isConnected: Boolean = false
-    private var clickPosition: Int = 0
+    private var clickPosition: LocaleProfile? = null
 
     fun init(ac: ConfigActivity, isConnected: Boolean) {
         activity = WeakReference(ac)
         this.isConnected = isConnected
     }
 
-    fun onItemClick(position: Int, isChoosePosition: Boolean = false) {
-        clickPosition = position
+    fun onItemClick(localeProfile: LocaleProfile, isChoosePosition: Boolean = false) {
+        clickPosition = localeProfile
         if (isChoosePosition && !isConnected) {
             switchVpnConfig()
         } else if (isConnected) {
@@ -59,10 +60,17 @@ class ConnectListViewModel : ViewModel() {
         }
     }
 
-    private fun switchVpnConfig(position: Int = clickPosition, disconnect: Boolean = false) {
+    private fun switchVpnConfig(localeProfileData: LocaleProfile? = clickPosition, disconnect: Boolean = false) {
         activity.get().let {
+            val list =VPNDataHelper.getAllLocaleProfile()
+            var pos = 0
+            list.forEachIndexed { index, localeProfile ->
+                if(localeProfile.onLm_host == localeProfileData?.onLm_host && localeProfile.name == localeProfileData.name){
+                    pos = index
+                }
+            }
             if (disconnect) VPNDataHelper.cachePosition = VPNDataHelper.nodeIndex
-            VPNDataHelper.nodeIndex = position
+            VPNDataHelper.nodeIndex = pos
             BaseAppFlash.xkamkaxmak.encode("icConnect", true)
             val intent = Intent(it, HomeActivity::class.java)
             (it as ConfigActivity).setResult(100, intent)

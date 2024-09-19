@@ -316,6 +316,9 @@ object DataHelp {
             "banner" -> {
                 adType = AdType(adData.onhhhh, "back", "onhhhh", "banner")
             }
+            "reward" -> {
+                adType = AdType(adData.onLrad, "reward", "onLrad", "reward")
+            }
         }
         return adType
     }

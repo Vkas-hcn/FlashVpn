@@ -55,7 +55,10 @@
             android:name=".page.AgentActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name=".page.PingActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

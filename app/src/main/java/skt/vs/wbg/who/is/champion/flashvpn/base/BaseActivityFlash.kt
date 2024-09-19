@@ -8,9 +8,13 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import skt.vs.wbg.who.`is`.champion.flashvpn.net.IPUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.net.NetworkChangeListener
 import skt.vs.wbg.who.`is`.champion.flashvpn.net.NetworkChangeReceiver
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.GetAppUtils
 
 
 abstract class BaseActivityFlash<M : ViewDataBinding> : AppCompatActivity(), NetworkChangeListener {
@@ -30,6 +34,7 @@ abstract class BaseActivityFlash<M : ViewDataBinding> : AppCompatActivity(), Net
         registerReceiver(networkChangeReceiver, intentFilter)
         registerReceiver(networkChangeReceiver, intentFilter)
         IPUtils.checkIp(this)
+
     }
 
 

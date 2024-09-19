@@ -8,4 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="tc1">#091026</color>
+
+    <color name="ping1">#0AD120</color>
+    <color name="ping2">#EC9C00</color>
+    <color name="ping3">#E71414</color>
+
 </resources>

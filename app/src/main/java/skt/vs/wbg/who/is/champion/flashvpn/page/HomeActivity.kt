@@ -32,12 +32,15 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointFLash
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadBooleanData
 import com.github.mikephil.charting.data.Entry;
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash.Companion.mmkvFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.ChatUtils
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.GetAppUtils
 
 
 class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
@@ -51,9 +54,10 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.e("TAG", "main ----- onCreate: ", )
+        Log.e("TAG", "main ----- onCreate: ")
         mainViewModel.init(
             this,
+            mBinding.tvLatency,
             mBinding.set,
             mBinding.connectImg,
             mBinding.connectAnimate,
@@ -62,9 +66,7 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
             mBinding.flashListName,
             mBinding.chronometer
         )
-
-
-
+        mBinding.inLoad2.conDialog.setOnClickListener {  }
         mBinding.lottieGuide.setOnClickListener {
             "o1guidecc".putPointFLash(this)
             mainViewModel.cancelGuideLottie()
@@ -77,6 +79,7 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
         mainViewModel.showConnectLive.observe(this) {
             mainViewModel.showConnecetNextFun(this, it)
         }
+
         if (!BaseAppUtils.blockAdUsers()) {
             mBinding.showAd = 2
         } else {
@@ -86,9 +89,6 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
 
         ChatUtils.initChart(mBinding.chart)
     }
-
-
-
 
     fun storeSpoilerData() {
         val data = BaseAppUtils.spoilerOrNot()
@@ -132,6 +132,7 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
         super.onStop()
         mainViewModel.stopToConnectOrDisConnect()
     }
+
     override fun onResume() {
         super.onResume()
         mainViewModel.activityResume()
@@ -140,7 +141,7 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.e("TAG", "main ----- onDestroy: ", )
+        Log.e("TAG", "main ----- onDestroy: ")
         mainViewModel.mService?.disconnect()
     }
 }

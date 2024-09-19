@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.util.Base64
 import android.util.Log
 import androidx.annotation.Keep
+import androidx.core.view.isVisible
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfig
@@ -36,15 +37,56 @@ object VPNDataHelper {
 
     fun getAllLocaleProfile(): MutableList<LocaleProfile> {
         val list = OnlineVpnHelp.getDataFromTheServer()
-        val data = Gson().toJson(list)
         list?.add(0, getFastVpnOnLine(0))
-//        list?.add(1, getFastVpnOnLine(1))
-//        list?.add(2, getFastVpnOnLine(2))
-        Log.e(TAG, "getAllVpnData: ${data}")
-        Log.e(TAG, "getAllVpnListData: ${list}")
-        return list ?: local
-    }
+        Log.e(TAG, "getAllVpnListData: ${Gson().toJson(list)}")
+        val fastServerData: MutableList<LocaleProfile>? = OnlineVpnHelp.getDataFastServerData()
+        Log.e(TAG, "getFastServerData: ${Gson().toJson(fastServerData)}")
+        val dataString = SPUtils.getInstance().getString(BaseAppUtils.clockIp, "")
 
+        list?.forEach {
+            it.isClock = it.name != "Fast Server"
+            if (fastServerData.isNullOrEmpty()) {
+                if (dataString.contains(it.onLm_host)) {
+                    Log.e("TAG", "onBindViewHolder: ", )
+                    it.isClock = false
+                }
+            }
+            fastServerData?.forEach {fast->
+                Log.e("TAG", "是smart服务器: ${fast.onLm_host == it.onLm_host}")
+                if (dataString.contains(it.onLm_host) || fast.onLm_host == it.onLm_host) {
+                    it.isClock = false
+                }
+            }
+        }
+        // 对 list 进行排序：Fast Server 排第一个，isClock=false 排中间，isClock=true 排最后
+        val sortedList = list?.sortedWith(compareBy<LocaleProfile> {
+            // 首先将名称为 "Fast Server" 的排在最前面
+            it.name != "Fast Server"
+        }.thenBy {
+            // 其次根据 isClock 排序：isClock=false 排前面
+            it.isClock
+        })
+        return sortedList?.toMutableList() ?: local
+    }
+    private fun shouldShowClockIcon(profile: LocaleProfile): Boolean {
+        val fastServerData: MutableList<LocaleProfile>? = OnlineVpnHelp.getDataFastServerData()
+        val dataString = SPUtils.getInstance().getString(BaseAppUtils.clockIp, "")
+
+        if (fastServerData.isNullOrEmpty()) {
+            if (dataString.contains(profile.onLm_host)) {
+                return false // 如果符合条件，imgColck 不可见
+            }
+        }
+
+        // 检查是否应该显示 imgClock
+        fastServerData?.forEach {
+            if (it.onLm_host == profile.onLm_host || dataString.contains(profile.onLm_host)) {
+                return false // 如果符合条件，imgColck 不可见
+            }
+        }
+
+        return true // 否则 imgColck 可见
+    }
     private val local = listOf(
         LocaleProfile(
             city = "",
@@ -68,12 +110,15 @@ object VPNDataHelper {
                     0 -> {
                         "Fast Server"
                     }
+
                     1 -> {
                         "Game"
                     }
+
                     2 -> {
                         "Video"
                     }
+
                     else -> {
                         "Fast Server"
                     }
@@ -89,12 +134,15 @@ object VPNDataHelper {
                     0 -> {
                         "Fast Server"
                     }
+
                     1 -> {
                         "Game"
                     }
+
                     2 -> {
                         "Video"
                     }
+
                     else -> {
                         "Fast Server"
                     }
@@ -223,5 +271,6 @@ data class LocaleProfile(
     @SerializedName("onLl")
     var city: String = "",
     @SerializedName("onLm")
-    var onLm_host: String = ""
+    var onLm_host: String = "",
+    var isClock: Boolean = false
 )
