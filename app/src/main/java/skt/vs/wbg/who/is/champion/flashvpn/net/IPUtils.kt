@@ -201,6 +201,8 @@ object IPUtils {
             isShowNum = true
         }
         val customDialog = Dialog(activity, R.style.AppDialogStyle)
+        customDialog.setCancelable(false)
+        customDialog.setCanceledOnTouchOutside(false)
         val localLayoutParams = customDialog.window?.attributes
         localLayoutParams?.gravity = Gravity.CENTER
         customDialog.window?.attributes = localLayoutParams
