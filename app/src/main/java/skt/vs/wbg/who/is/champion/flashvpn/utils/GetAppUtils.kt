@@ -127,22 +127,16 @@ object GetAppUtils {
     @SuppressLint("SetTextI18n")
     fun setTextPing(textView: TextView, pingResult: String) {
         try {
-            // 检查 pingResult 是否为有效数字
             val num = pingResult.toInt()
-
-            // 设置文本颜色根据 ping 的数值
             val colorRes = when {
                 num <= 150 -> R.color.ping1
                 num in 151..250 -> R.color.ping2
                 num >= 251 -> R.color.ping3
                 else -> R.color.black
             }
-
-            // 设置文本颜色
             textView.setTextColor(ContextCompat.getColor(textView.context, colorRes))
             textView.text = "$pingResult ms"
         } catch (e: NumberFormatException) {
-            // 如果 pingResult 不是数字，直接显示原始文本
             textView.text = pingResult
             textView.setTextColor(ContextCompat.getColor(textView.context, R.color.black))
         }

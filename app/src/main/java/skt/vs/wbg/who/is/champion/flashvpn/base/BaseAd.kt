@@ -5,11 +5,12 @@ import android.util.Log
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustEvent
 import com.google.android.gms.ads.AdView
-import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadBackAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadEndBackAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadBannerAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadConnectAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadEndAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadHomeAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadListBackAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadOpenAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadRewardedAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
@@ -30,7 +31,8 @@ class BaseAd private constructor() {
         fun getHomeInstance() = instanceHelper.homeLoadFlash
         fun getEndInstance() = instanceHelper.resultLoadFlash
         fun getConnectInstance() = instanceHelper.connectLoadFlash
-        fun getBackInstance() = instanceHelper.backLoadFlash
+        fun getBackEndInstance() = instanceHelper.backEndLoadFlash
+        fun getBackListInstance() = instanceHelper.backListLoadFlash
 
         fun getBannerInstance() = instanceHelper.bannerLoadFlash
 
@@ -44,7 +46,9 @@ class BaseAd private constructor() {
         val homeLoadFlash = BaseAd()
         val resultLoadFlash = BaseAd()
         val connectLoadFlash = BaseAd()
-        val backLoadFlash = BaseAd()
+        val backEndLoadFlash = BaseAd()
+        val backListLoadFlash = BaseAd()
+
         val bannerLoadFlash = BaseAd()
         val rewardedLoadFlash = BaseAd()
     }
@@ -64,9 +68,10 @@ class BaseAd private constructor() {
             2 -> "home"
             3 -> "end"
             4 -> "connect"
-            5 -> "back"
-            6 -> "banner"
-            7 -> "rewarded"
+            5 -> "backEnd"
+            6 -> "backList"
+            7 -> "banner"
+            8 -> "rewarded"
             else -> ""
         }
     }
@@ -77,9 +82,10 @@ class BaseAd private constructor() {
             2 -> "home+${adBean.onLbibl}"
             3 -> "end+${adBean.onLconcer}"
             4 -> "connect+${adBean.onLnose}"
-            5 -> "back+${adBean.onLmemor}"
-            6 -> "banner+${adBean.onhhhh}"
-            7 -> "rewarded+${adBean.onLrad}"
+            5 -> "backEnd+${adBean.onLdres}"
+            6 -> "backList+${adBean.onLmemor}"
+            7 -> "banner+${adBean.onhhhh}"
+            8 -> "rewarded+${adBean.onLrad}"
             else -> ""
         }
     }
@@ -102,12 +108,8 @@ class BaseAd private constructor() {
             Log.d(TAG, "${getInstanceName()}-The ad is loading and cannot be loaded again")
             return
         }
-        val userData = BaseAppUtils.blockAdUsers()
         val blacklistState = BaseAppUtils.blockAdBlacklist()
-        if (blacklistState && (instanceName == "connect" || instanceName == "back")) {
-            return
-        }
-        if (!userData && (instanceName == "back" || instanceName == "banner")) {
+        if (blacklistState && (instanceName == "connect" || instanceName == "backEnd" || instanceName == "backList" || instanceName == "banner")) {
             return
         }
         when (appAdDataFlash) {
@@ -155,12 +157,15 @@ class BaseAd private constructor() {
         }
 
         adLoadersMap[5] = { context, adData ->
-            FlashLoadBackAd.loadBackAdvertisementFlash(context, adData)
+            FlashLoadEndBackAd.loadBackAdvertisementFlash(context, adData)
         }
         adLoadersMap[6] = { context, adData ->
-            FlashLoadBannerAd.loadBannerAdFlash(context, adData)
+            FlashLoadListBackAd.loadBackAdvertisementFlash(context, adData)
         }
         adLoadersMap[7] = { context, adData ->
+            FlashLoadBannerAd.loadBannerAdFlash(context, adData)
+        }
+        adLoadersMap[8] = { context, adData ->
             FlashLoadRewardedAd.loadRewardedAdvertisementFlash(context, adData)
         }
         return adLoadersMap

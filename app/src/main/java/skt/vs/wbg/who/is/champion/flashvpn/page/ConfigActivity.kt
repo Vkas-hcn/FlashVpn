@@ -63,7 +63,8 @@ class ConfigActivity : BaseActivityFlash<ListLayoutBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getClockState()
-        BaseAd.getBackInstance().advertisementLoadingFlash(this)
+        BaseAd.getBackListInstance().advertisementLoadingFlash(this)
+        BaseAd.getRewardedInstance().advertisementLoadingFlash(this)
         isConnect = intent.getBooleanExtra("IS_CONNECT", false)
         listViewModel.init(this, isConnect)
         dataList = VPNDataHelper.getAllLocaleProfile()
@@ -84,7 +85,6 @@ class ConfigActivity : BaseActivityFlash<ListLayoutBinding>() {
         onBackPressedDispatcher.addCallback(this) {
             listViewModel.showEndScAd(this@ConfigActivity)
         }
-        BaseAd.getRewardedInstance().advertisementLoadingFlash(this)
     }
 
     fun getClockState() {

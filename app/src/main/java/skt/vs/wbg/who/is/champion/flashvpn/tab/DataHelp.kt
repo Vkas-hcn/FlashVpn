@@ -309,12 +309,16 @@ object DataHelp {
                 adType = AdType(adData.onLnose, "connect", "onLnose", "interstitial")
             }
 
-            "back" -> {
-                adType = AdType(adData.onLmemor, "back", "onLmemor", "interstitial")
+            "backEnd" -> {
+                adType = AdType(adData.onLmemor, "backEnd", "onLdres", "interstitial")
+            }
+
+            "backList" -> {
+                adType = AdType(adData.onLmemor, "backList", "onLmemor", "interstitial")
             }
 
             "banner" -> {
-                adType = AdType(adData.onhhhh, "back", "onhhhh", "banner")
+                adType = AdType(adData.onhhhh, "backEnd", "onhhhh", "banner")
             }
             "reward" -> {
                 adType = AdType(adData.onLrad, "reward", "onLrad", "reward")

@@ -48,7 +48,6 @@ object BaseAppUtils {
     const val ad_user_state = "ad_user_state"
 
     //refer_data
-    const val refer_data = "refer_data"
     var isStartFLash: Boolean = true
     var raoLiuTba = "raoLiuTba"
     var app_pack_name = "a_p_n"
@@ -77,6 +76,7 @@ object BaseAppUtils {
   "onLbibl":"ca-app-pub-3940256099942544/2247696110",
   "onLconcer":"ca-app-pub-3940256099942544/2247696110",
   "onLnose":"ca-app-pub-3940256099942544/8691691433",
+  "onLdres":"",
   "onLmemor":"ca-app-pub-3940256099942544/8691691433",
   "onhhhh":"ca-app-pub-3940256099942544/6300978111",
   "onLrad":"ca-app-pub-3940256099942544/5224354917"
@@ -100,7 +100,6 @@ object BaseAppUtils {
     const val local_ad_logic = """
 {
     "onLsads":"1447428382588795",
-    "onLmatt": "2",
     "onLprob": "1",
     "onLfeli": "1"
 }    """
@@ -205,59 +204,6 @@ object BaseAppUtils {
         }.getOrNull() ?: fromLogicJson(local_ad_logic)
     }
 
-    private fun isFacebookUser(): Boolean {
-        val data = getUserJson()
-        val referrer = SPUtils.getInstance().getString(refer_data)
-        val pattern = "fb4a|facebook".toRegex(RegexOption.IGNORE_CASE)
-        return (pattern.containsMatchIn(referrer) && data.onLleav == "1")
-    }
-
-    fun isItABuyingUser(): Boolean {
-        val data = getUserJson()
-        val referrer = SPUtils.getInstance().getString(refer_data)
-        return isFacebookUser()
-                || (data.onLeate == "1" && referrer.contains("gclid", true))
-                || (data.onLmill == "1" && referrer.contains("not%20set", true))
-                || (data.onLage == "1" && referrer.contains(
-            "youtubeads",
-            true
-        ))
-                || (data.onLiden == "1" && referrer.contains("%7B%22", true))
-                || (data.onLclem == "1" && referrer.contains("adjust", true))
-                || (data.onLisp == "1" && referrer.contains("bytedance", true))
-                || adjust_data.getLoadBooleanData()
-    }
-
-    //refer识别为organic
-    fun isOrganic(): Boolean {
-        val referrer = SPUtils.getInstance().getString(refer_data)
-        if (referrer.isBlank()) {
-            return false
-        }
-        return referrer.contains("organic", true)
-    }
-
-    fun blockAdUsers(): Boolean {
-        val data = getLogicJson().onLmatt
-        when (data) {
-            "1" -> {
-                return true
-            }
-
-            "2" -> {
-                return isItABuyingUser()
-            }
-
-            "3" -> {
-                return false
-            }
-
-            else -> {
-                return true
-            }
-        }
-    }
-
     //黑名单
     fun blockAdBlacklist(): Boolean {
         val blackData = SPUtils.getInstance().getBoolean(FlashCloak.IS_BLACK, true)
@@ -278,21 +224,17 @@ object BaseAppUtils {
 
     //是否扰流
     fun spoilerOrNot(): Boolean {
-        when (getLogicJson().onLfeli) {
+        return when (getLogicJson().onLfeli) {
             "1" -> {
-                return true
+                true
             }
 
             "2" -> {
-                return false
-            }
-
-            "3" -> {
-                return !isItABuyingUser()
+                false
             }
 
             else -> {
-                return false
+                false
             }
         }
     }

@@ -89,11 +89,7 @@ object FlashLoadHomeAd {
                 val state = activity.lifecycle.currentState == Lifecycle.State.RESUMED
 
                 if (adData is NativeAd && !adBase.whetherToShowFlash && state) {
-                    val userData = BaseAppUtils.blockAdUsers()
-                    if (!userData) {
-                        binding.showAd = 2
-                        return@let
-                    }
+
                     binding.showAd = 0
 
                     if (activity.isDestroyed || activity.isFinishing || activity.isChangingConfigurations) {

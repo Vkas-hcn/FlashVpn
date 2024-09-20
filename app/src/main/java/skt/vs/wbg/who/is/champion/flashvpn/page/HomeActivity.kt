@@ -81,11 +81,6 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
             mainViewModel.showConnecetNextFun(this, it)
         }
 
-        if (!BaseAppUtils.blockAdUsers()) {
-            mBinding.showAd = 2
-        } else {
-            mBinding.showAd = 0
-        }
         storeSpoilerData()
 
         ChatUtils.initChart(mBinding.chart)

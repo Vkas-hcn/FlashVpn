@@ -184,7 +184,7 @@ class MainViewModel : ViewModel() {
                         if (isClickConnect && isResumed) {
                             showConnectLive.postValue(true)
                             isClickConnect = false
-                            BaseAd.getBackInstance().advertisementLoadingFlash(activity)
+                            BaseAd.getBackEndInstance().advertisementLoadingFlash(activity)
                         }
                         stopConnectAnimation()
                         setChromometer()
@@ -374,7 +374,7 @@ class MainViewModel : ViewModel() {
         }
         lastExecutionTime = currentTime
         if (DataHelp.isConnectFun()) {
-            BaseAd.getBackInstance().advertisementLoadingFlash(activity)
+            BaseAd.getBackEndInstance().advertisementLoadingFlash(activity)
             "o29".putPointFLash(activity)
         } else {
             "o28".putPointFLash(activity)

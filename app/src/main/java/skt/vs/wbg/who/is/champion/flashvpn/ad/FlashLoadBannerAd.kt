@@ -122,10 +122,6 @@ object FlashLoadBannerAd {
     }
 
     fun showBannerAdFlash(activity: HomeActivity) {
-        val userData = BaseAppUtils.blockAdUsers()
-        if (!userData) {
-            return
-        }
         val state = activity.lifecycle.currentState == Lifecycle.State.RESUMED
         if (state) {
             val parentView = adBase.adView?.parent as? ViewGroup

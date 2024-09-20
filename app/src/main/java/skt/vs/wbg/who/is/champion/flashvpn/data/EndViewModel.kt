@@ -1,21 +1,17 @@
 package skt.vs.wbg.who.`is`.champion.flashvpn.data
 
-import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadBackAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadEndBackAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadEndAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.EndActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointFLash
-import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
-import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 
 class EndViewModel : ViewModel() {
     fun showEndAd(activity: EndActivity) {
@@ -40,8 +36,9 @@ class EndViewModel : ViewModel() {
     }
 
     fun showEndScAd(activity: EndActivity) {
+        BaseAd.getBackEndInstance().advertisementLoadingFlash(activity)
         "o23".putPointFLash(activity)
-        if (FlashLoadBackAd.displayBackAdvertisementFlash(1,activity, closeWindowFun = {
+        if (FlashLoadEndBackAd.displayBackAdvertisementFlash(1,activity, closeWindowFun = {
                 activity.finish()
             }) != 2) {
             activity.finish()

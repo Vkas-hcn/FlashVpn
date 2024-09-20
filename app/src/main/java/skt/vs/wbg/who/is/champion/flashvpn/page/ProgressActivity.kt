@@ -139,19 +139,6 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
         BaseAd.getConnectInstance().advertisementLoadingFlash(this)
         // 结果页原生
         BaseAd.getEndInstance().advertisementLoadingFlash(this)
-        identificationOfBuyingVolume()
-    }
-
-    private fun identificationOfBuyingVolume() {
-        if (BaseAppUtils.refer_tab.getLoadBooleanData()) {
-            return
-        }
-        if (BaseAppUtils.refer_data.getLoadStringData()
-                .isNotEmpty() && BaseAppUtils.isItABuyingUser()
-        ) {
-            "o1unusual".putPointFLash(this)
-            BaseAppUtils.setLoadData(BaseAppUtils.refer_tab, true)
-        }
     }
 
     //等待展示open广告
@@ -169,14 +156,6 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
     }
 
     private fun loadOpenAd() {
-        if (BaseAppUtils.isOrganic() && !BaseAppUtils.openFirst.getLoadBooleanData()) {
-            Log.d(BaseAppUtils.TAG, "The ad is Organic not show")
-            progressInt = 100
-            mBinding.flashProgressBar.progress = progressInt
-            BaseAppUtils.setLoadData(BaseAppUtils.openFirst, true)
-            startToMain()
-            return
-        }
         jobOpenAdsFlash?.cancel()
         jobOpenAdsFlash = null
         jobOpenAdsFlash = lifecycleScope.launch {
