@@ -12,29 +12,27 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
-import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.ConfigActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.EndActivity
-import skt.vs.wbg.who.`is`.champion.flashvpn.page.HomeActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringData
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 import java.util.Date
 
-object FlashLoadBackAd {
-    private val adBase = BaseAd.getBackInstance()
+object FlashLoadBackListAd {
+    private val adBase = BaseAd.getBackListInstance()
     private lateinit var adBackData: FlashAdBean
     fun loadBackAdvertisementFlash(context: Context, adData: FlashAdBean) {
         val adRequest = AdRequest.Builder().build()
         adBackData = adBase.beforeLoadLink(adData)
-
+        BaseAppUtils.backListTypeIp = BaseAppUtils.vpn_ip.getLoadStringData()
         InterstitialAd.load(
             context,
             adData.onLmemor,
@@ -47,8 +45,7 @@ object FlashLoadBackAd {
                         """
            domain: ${adError.domain}, code: ${adError.code}, message: ${adError.message}
           """"
-                    Log.d(TAG, "back-The ad failed to load:$error ")
-
+                    Log.d(TAG, "backList-The ad failed to load:$error ")
                     DataHelp.putPointTimeFLash(
                         "o32",
                         error,
@@ -61,19 +58,19 @@ object FlashLoadBackAd {
                     adBase.loadTimeFlash = Date().time
                     adBase.isLoadingFlash = false
                     adBase.appAdDataFlash = interstitialAd
-                    Log.d(TAG, "back-The ad loads successfully: ")
+                    Log.d(TAG, "backList-The ad loads successfully: ")
                     interstitialAd.setOnPaidEventListener { adValue ->
                         FlashOkHttpUtils().getAdList(
                             context,
                             adValue,
                             interstitialAd.responseInfo,
-                            "back",
+                            "backList",
                             adBackData
                         )
                     }
                     DataHelp.putPointTimeFLash(
                         "o31",
-                        "back+${adData.onLmemor}",
+                        "backList+${adData.onLmemor}",
                         "yn",
                         context
                     )
@@ -108,24 +105,18 @@ object FlashLoadBackAd {
                     adBase.appAdDataFlash = null
                     // Called when ad is shown.
                     adBase.whetherToShowFlash = true
-                    Log.d(logTagFlash, "back----show")
+                    Log.d(logTagFlash, "backList----show")
                     adBackData = adBase.afterLoadLink(adBackData)
                 }
             }
     }
 
-
-    fun displayBackAdvertisementFlash(
-        type: Int,
+    fun canShowAd(
         activity: AppCompatActivity,
-        closeWindowFun: () -> Unit
     ): Int {
-        val userData = BaseAppUtils.blockAdUsers()
         val blacklistState = BaseAppUtils.blockAdBlacklist()
         if (blacklistState) {
-            return 0
-        }
-        if (!userData) {
+            Log.d(TAG, "黑名单屏蔽：backList广告，不显示")
             return 0
         }
 
@@ -136,27 +127,27 @@ object FlashLoadBackAd {
         if (adBase.whetherToShowFlash || activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
             return 1
         }
+        val vpnIp = BaseAppUtils.vpn_ip.getLoadStringData()
+        if ((BaseAppUtils.backListTypeIp.isNotEmpty()) && BaseAppUtils.backListTypeIp != vpnIp) {
+            Log.d(
+                TAG,
+                "backList-ip不一致-不能展示-load_ip=" + BaseAppUtils.backListTypeIp + "-now-ip=" + vpnIp
+            )
+            return 0
+        }
+        return 2
+    }
+
+    fun displayBackAdvertisementFlash(
+        activity: AppCompatActivity,
+        closeWindowFun: () -> Unit
+    ) {
+        Log.d(TAG, "backList-ip一致-展示-")
         backScreenAdCallback(closeWindowFun)
         activity.lifecycleScope.launch(Dispatchers.Main) {
             if (activity.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-
-                if (type == 1) {
-                    activity as EndActivity
-                    activity.mBinding.inLoad.tvLoading.text = "Ad about to play!"
-                    activity.mBinding.showLoad = true
-                    delay(1500)
-                    activity.mBinding.showLoad = false
-                }
-                if (type == 2) {
-                    activity as ConfigActivity
-                    activity.mBinding.inLoad.tvLoading.text = "Ad about to play!"
-                    activity.mBinding.showLoad = true
-                    delay(1500)
-                    activity.mBinding.showLoad = false
-                }
                 (adBase.appAdDataFlash as InterstitialAd).show(activity)
             }
         }
-        return 2
     }
 }

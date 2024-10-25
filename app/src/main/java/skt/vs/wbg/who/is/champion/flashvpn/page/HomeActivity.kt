@@ -68,39 +68,23 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
             mBinding.chronometer
         )
         mBinding.inLoad2.conDialog.setOnClickListener {  }
-        mBinding.lottieGuide.setOnClickListener {
-            "o1guidecc".putPointFLash(this)
-            mainViewModel.cancelGuideLottie()
-            mainViewModel.toConnectVerifyNet()
-        }
-        mBinding.guideMask.setOnClickListener { }
-        mBinding.guideMask.setOnTouchListener { _, _ ->
-            return@setOnTouchListener true
-        }
+//        mBinding.lottieGuide.setOnClickListener {
+//            "o1guidecc".putPointFLash(this)
+//            mainViewModel.cancelGuideLottie()
+//            mainViewModel.toConnectVerifyNet()
+//        }
+//        mBinding.guideMask.setOnClickListener { }
+//        mBinding.guideMask.setOnTouchListener { _, _ ->
+//            return@setOnTouchListener true
+//        }
         mainViewModel.showConnectLive.observe(this) {
             mainViewModel.showConnecetNextFun(this, it)
         }
-
-        if (!BaseAppUtils.blockAdUsers()) {
-            mBinding.showAd = 2
-        } else {
-            mBinding.showAd = 0
-        }
-        storeSpoilerData()
-
         ChatUtils.initChart(mBinding.chart)
         IPUtils.setIsBanded(this)
     }
 
-    fun storeSpoilerData() {
-        val data = BaseAppUtils.spoilerOrNot()
-        val raoLiuTba = BaseAppUtils.raoLiuTba.getLoadBooleanData()
-        mmkvFlash.putBoolean("raoliu", data)
-        if (!raoLiuTba && !data) {
-            "o34".putPointFLash(this)
-            BaseAppUtils.setLoadData(BaseAppUtils.raoLiuTba, true)
-        }
-    }
+
 
     fun getSpeedData() {
         speedJob?.cancel()

@@ -16,6 +16,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadIntData
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringData
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 import java.util.Date
 
@@ -28,6 +29,7 @@ object FlashLoadOpenAd {
 
     fun loadOpenAdFlash(context: Context, adData: FlashAdBean) {
         adOpenData = adBase.beforeLoadLink(adData)
+        BaseAppUtils.openTypeIp = BaseAppUtils.vpn_ip.getLoadStringData()
         val request = AdRequest.Builder().build()
         AppOpenAd.load(
             context,
@@ -36,11 +38,11 @@ object FlashLoadOpenAd {
             AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
             object : AppOpenAd.AppOpenAdLoadCallback() {
                 override fun onAdLoaded(ad: AppOpenAd) {
+                    Log.d(TAG, "open ads start loading success")
                     adBase.isLoadingFlash = false
                     adBase.appAdDataFlash = ad
                     adBase.loadTimeFlash = Date().time
                     ad.setOnPaidEventListener { adValue ->
-                        Log.e(TAG, "App open ads start reporting")
                         adValue.let {
                             FlashOkHttpUtils().getAdList(
                                 context,
@@ -60,6 +62,7 @@ object FlashLoadOpenAd {
                 }
 
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+
                     adBase.isLoadingFlash = false
                     adBase.appAdDataFlash = null
                     if (!isFirstLoad) {
@@ -70,6 +73,7 @@ object FlashLoadOpenAd {
                         """
            domain: ${loadAdError.domain}, code: ${loadAdError.code}, message: ${loadAdError.message}
           """"
+                    Log.d(TAG, "open ads start loading Failed=${error}")
                     DataHelp.putPointTimeFLash(
                         "o32",
                         error,
@@ -122,6 +126,12 @@ object FlashLoadOpenAd {
         if (adBase.whetherToShowFlash || activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
             return false
         }
+        val vpnIp = BaseAppUtils.vpn_ip.getLoadStringData()
+        if ((BaseAppUtils.openTypeIp.isNotEmpty()) && BaseAppUtils.openTypeIp != vpnIp) {
+            Log.d(TAG,  "open-ip不一致-不能展示-load_ip=" + BaseAppUtils.openTypeIp + "-now-ip=" + vpnIp)
+            return false
+        }
+        Log.d(TAG,  "open-ip一致-展示-load_ip=" + BaseAppUtils.openTypeIp + "-now-ip=" + vpnIp)
         advertisingOpenCallbackFlash(fullScreenFun)
         (adBase.appAdDataFlash as AppOpenAd).show(activity)
         return true

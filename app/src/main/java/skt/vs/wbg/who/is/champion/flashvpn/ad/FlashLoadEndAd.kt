@@ -25,7 +25,9 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.page.EndActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadIntData
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringData
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 import java.util.Date
 
@@ -35,7 +37,7 @@ object FlashLoadEndAd {
 
     fun loadEndAdvertisementFlash(context: Context, adData: FlashAdBean) {
         adEndData = adBase.beforeLoadLink(adData)
-
+        BaseAppUtils.endTypeIp = BaseAppUtils.vpn_ip.getLoadStringData()
         val vpnNativeAds = AdLoader.Builder(
             context.applicationContext,
             adData.onLconcer
@@ -102,6 +104,12 @@ object FlashLoadEndAd {
 
     @SuppressLint("InflateParams")
     fun setDisplayEndNativeAdFlash(activity: EndActivity) {
+        val vpnIp = BaseAppUtils.vpn_ip.getLoadStringData()
+        if ((BaseAppUtils.endTypeIp.isNotEmpty()) && BaseAppUtils.endTypeIp != vpnIp) {
+            Log.d(TAG,  "end-ip不一致-不能展示-load_ip=" + BaseAppUtils.endTypeIp + "-now-ip=" + vpnIp)
+            return
+        }
+        Log.d(TAG,  "end-ip一致-展示-load_ip=" + BaseAppUtils.contTypeIp + "-now-ip=" + vpnIp)
         activity.runOnUiThread {
             val binding = activity.mBinding
             adBase.appAdDataFlash?.let { adData ->

@@ -121,7 +121,9 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
 
     private fun initFaceBook() {
         val bean = getLogicJson()
-        if(bean.onLsads ==null){return}
+        if (bean.onLsads == null) {
+            return
+        }
         Log.e("TAG", "initFaceBook: ${bean.onLsads}")
         FacebookSdk.setApplicationId(bean.onLsads)
         // 初始化Facebook SDK
@@ -137,22 +139,9 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
         BaseAd.getBannerInstance().advertisementLoadingFlash(this)
         // 连接插屏
         BaseAd.getConnectInstance().advertisementLoadingFlash(this)
-        // 结果页原生
-        BaseAd.getEndInstance().advertisementLoadingFlash(this)
-        identificationOfBuyingVolume()
+
     }
 
-    private fun identificationOfBuyingVolume() {
-        if (BaseAppUtils.refer_tab.getLoadBooleanData()) {
-            return
-        }
-        if (BaseAppUtils.refer_data.getLoadStringData()
-                .isNotEmpty() && BaseAppUtils.isItABuyingUser()
-        ) {
-            "o1unusual".putPointFLash(this)
-            BaseAppUtils.setLoadData(BaseAppUtils.refer_tab, true)
-        }
-    }
 
     //等待展示open广告
     private fun waitForTheOpenAdToAppear() {
@@ -169,17 +158,14 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
     }
 
     private fun loadOpenAd() {
-        if (BaseAppUtils.isOrganic() && !BaseAppUtils.openFirst.getLoadBooleanData()) {
-            Log.d(BaseAppUtils.TAG, "The ad is Organic not show")
-            progressInt = 100
-            mBinding.flashProgressBar.progress = progressInt
-            BaseAppUtils.setLoadData(BaseAppUtils.openFirst, true)
-            startToMain()
-            return
-        }
+
         jobOpenAdsFlash?.cancel()
         jobOpenAdsFlash = null
         jobOpenAdsFlash = lifecycleScope.launch {
+            if (!DataHelp.isConnectFun()) {
+                finishOpenAd()
+                return@launch
+            }
             try {
                 withTimeout(10000L) {
                     while (isActive) {
@@ -197,14 +183,17 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
                     }
                 }
             } catch (e: TimeoutCancellationException) {
-                cancel()
-                jobOpenAdsFlash = null
-                progressInt = 100
-                mBinding.flashProgressBar.progress = progressInt
-
-                startToMain()
+                finishOpenAd()
             }
         }
+    }
+
+    private fun finishOpenAd() {
+        jobOpenAdsFlash?.cancel()
+        jobOpenAdsFlash = null
+        progressInt = 100
+        mBinding.flashProgressBar.progress = progressInt
+        startToMain()
     }
 
     //跳转到主页

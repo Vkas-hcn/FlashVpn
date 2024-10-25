@@ -9,6 +9,7 @@ data class FlashAdBean(
     val onLconcer: String,
     val onLnose: String,
     val onLmemor: String,
+    val onLdres: String,
     val onhhhh:String,
     val onLrad:String,
 

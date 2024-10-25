@@ -22,6 +22,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadIntData
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringData
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 import java.util.Date
 
@@ -31,6 +32,7 @@ object FlashLoadConnectAd {
     fun loadConnectAdvertisementFlash(context: Context, adData: FlashAdBean) {
         val adRequest = AdRequest.Builder().build()
         adBackData = adBase.beforeLoadLink(adData)
+        BaseAppUtils.contTypeIp = BaseAppUtils.vpn_ip.getLoadStringData()
         InterstitialAd.load(
             context,
             adData.onLnose,
@@ -42,7 +44,8 @@ object FlashLoadConnectAd {
                     val error =
                         """
            domain: ${adError.domain}, code: ${adError.code}, message: ${adError.message}
-          """"
+          """
+                    Log.d(BaseAppUtils.TAG, "connect-The ad failed to load:$error ")
                     DataHelp.putPointTimeFLash(
                         "o32",
                         error,
@@ -52,6 +55,7 @@ object FlashLoadConnectAd {
                 }
 
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                    Log.d(BaseAppUtils.TAG, "connect-The ad loads successfully: ")
                     adBase.loadTimeFlash = Date().time
                     adBase.isLoadingFlash = false
                     adBase.appAdDataFlash = interstitialAd
@@ -100,7 +104,6 @@ object FlashLoadConnectAd {
                     adBase.appAdDataFlash = null
                     // Called when ad is shown.
                     adBase.whetherToShowFlash = true
-                    Log.d(logTagFlash, "connect----show")
                     adBackData = adBase.afterLoadLink(adBackData)
                 }
             }
@@ -112,7 +115,9 @@ object FlashLoadConnectAd {
         closeWindowFun: () -> Unit
     ): Int {
         val blacklistState = BaseAppUtils.blockAdBlacklist()
+
         if (blacklistState) {
+            Log.d(BaseAppUtils.TAG, "黑名单屏蔽：connect广告，不显示")
             return 0
         }
 
@@ -123,12 +128,15 @@ object FlashLoadConnectAd {
         if (adBase.whetherToShowFlash || activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
             return 1
         }
+        val vpnIp = BaseAppUtils.vpn_ip.getLoadStringData()
+        if ((BaseAppUtils.contTypeIp.isNotEmpty()) && BaseAppUtils.contTypeIp != vpnIp) {
+            Log.d(logTagFlash,  "connect-ip不一致-不能展示-load_ip=" + BaseAppUtils.contTypeIp + "-now-ip=" + vpnIp)
+            return 0
+        }
+        Log.d(logTagFlash,  "connect-ip一致-展示-load_ip=" + BaseAppUtils.contTypeIp + "-now-ip=" + vpnIp)
         connectScreenAdCallback(closeWindowFun)
         activity.lifecycleScope.launch(Dispatchers.Main) {
             if (activity.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-                activity.mBinding.showLoad = true
-                delay(1500)
-                activity.mBinding.showLoad = false
                 (adBase.appAdDataFlash as InterstitialAd).show(activity)
             }
         }

@@ -38,9 +38,7 @@ object VPNDataHelper {
     fun getAllLocaleProfile(): MutableList<LocaleProfile> {
         val list = OnlineVpnHelp.getDataFromTheServer()
         list?.add(0, getFastVpnOnLine(0))
-        Log.e(TAG, "getAllVpnListData: ${Gson().toJson(list)}")
         val fastServerData: MutableList<LocaleProfile>? = OnlineVpnHelp.getDataFastServerData()
-        Log.e(TAG, "getFastServerData: ${Gson().toJson(fastServerData)}")
         val dataString = SPUtils.getInstance().getString(BaseAppUtils.clockIp, "")
 
         list?.forEach {
@@ -51,7 +49,6 @@ object VPNDataHelper {
                 }
             }
             fastServerData?.forEach {fast->
-                Log.e("TAG", "是smart服务器: ${fast.onLm_host == it.onLm_host}")
                 if (dataString.contains(it.onLm_host) || fast.onLm_host == it.onLm_host) {
                     it.isClock = false
                 }

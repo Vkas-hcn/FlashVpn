@@ -6,7 +6,6 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,6 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
@@ -24,7 +22,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.TimeoutCancellationException
@@ -32,10 +29,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import skt.vs.wbg.who.`is`.champion.flashvpn.R
-import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadConnectAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadRewardedAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseActivityFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
@@ -43,9 +38,8 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.databinding.ListLayoutBinding
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.VPNDataHelper.getImage
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointFLash
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
-import skt.vs.wbg.who.`is`.champion.flashvpn.tab.OnlineVpnHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
-import skt.vs.wbg.who.`is`.champion.flashvpn.utils.ConnectListViewModel
+import skt.vs.wbg.who.`is`.champion.flashvpn.data.ConnectListViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -63,7 +57,6 @@ class ConfigActivity : BaseActivityFlash<ListLayoutBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getClockState()
-        BaseAd.getBackInstance().advertisementLoadingFlash(this)
         isConnect = intent.getBooleanExtra("IS_CONNECT", false)
         listViewModel.init(this, isConnect)
         dataList = VPNDataHelper.getAllLocaleProfile()
@@ -82,6 +75,7 @@ class ConfigActivity : BaseActivityFlash<ListLayoutBinding>() {
         }
 
         onBackPressedDispatcher.addCallback(this) {
+            Log.e(BaseAppUtils.TAG, "showEndScAd: 0", )
             listViewModel.showEndScAd(this@ConfigActivity)
         }
         BaseAd.getRewardedInstance().advertisementLoadingFlash(this)

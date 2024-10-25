@@ -37,7 +37,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Ad about to play!"
+                    android:text="Loading..."
                     android:textColor="#F45802"
                     android:textSize="20sp"
                     android:textStyle="bold" />

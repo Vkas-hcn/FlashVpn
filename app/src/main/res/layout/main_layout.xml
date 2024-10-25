@@ -344,13 +344,7 @@
                 android:layout_marginBottom="32dp"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
-            <View
-                android:id="@+id/guideMask"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#80000000"
-                android:clickable="false"
-                android:focusable="false" />
+
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/connectImg"
@@ -372,15 +366,7 @@
                 app:layout_constraintStart_toStartOf="@id/connectImg"
                 app:layout_constraintTop_toTopOf="@id/connectImg" />
 
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/lottieGuide"
-                android:layout_width="131dp"
-                android:layout_height="126dp"
-                android:layout_marginStart="60dp"
-                android:layout_marginTop="60dp"
-                app:layout_constraintStart_toStartOf="@id/connectImg"
-                app:layout_constraintTop_toTopOf="@id/connectImg"
-                app:lottie_fileName="hahaha.json" />
+
 
             <include
                 android:id="@+id/in_load"

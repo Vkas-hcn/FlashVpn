@@ -76,6 +76,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-config-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.facebook.android:facebook-android-sdk:12.3.0'
+    implementation("com.google.ads.mediation:facebook:6.17.0.0")
     //vpn
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'

@@ -75,6 +75,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointFLash
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.OnlineVpnHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringData
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -184,7 +185,9 @@ class MainViewModel : ViewModel() {
                         if (isClickConnect && isResumed) {
                             showConnectLive.postValue(true)
                             isClickConnect = false
-                            BaseAd.getBackInstance().advertisementLoadingFlash(activity)
+                            BaseAd.getBackEndInstance().advertisementLoadingFlash(activity)
+                            BaseAd.getEndInstance().advertisementLoadingFlash(activity)
+                            BaseAd.getBannerInstance().advertisementLoadingFlash(activity)
                         }
                         stopConnectAnimation()
                         setChromometer()
@@ -298,6 +301,7 @@ class MainViewModel : ViewModel() {
             }
             listCl.setOnClickListener {
                 isNextConnect(ac) {
+                    BaseAd.getBackListInstance().advertisementLoadingFlash(ac)
                     val intent = Intent(ac, ConfigActivity::class.java)
                     intent.putExtra(
                         "IS_CONNECT", openServerState.value == OpenServiceState.CONNECTED
@@ -374,7 +378,7 @@ class MainViewModel : ViewModel() {
         }
         lastExecutionTime = currentTime
         if (DataHelp.isConnectFun()) {
-            BaseAd.getBackInstance().advertisementLoadingFlash(activity)
+            BaseAd.getBackEndInstance().advertisementLoadingFlash(activity)
             "o29".putPointFLash(activity)
         } else {
             "o28".putPointFLash(activity)
@@ -490,7 +494,6 @@ class MainViewModel : ViewModel() {
     private fun isNextConnect(activity: HomeActivity, nextFun: () -> Unit) {
         activity.lifecycleScope.launch {
             val data = OnlineVpnHelp.checkServerData(activity)
-            activity.mBinding.inLoad.tvLoading.text = "Loading..."
             activity.mBinding.showLoad = true
             if (data) {
                 nextFun()
@@ -499,7 +502,6 @@ class MainViewModel : ViewModel() {
                 delay(2000)
                 activity.mBinding.showLoad = false
             }
-            activity.mBinding.inLoad.tvLoading.text = "Ad about to play!"
         }
     }
 
@@ -580,18 +582,18 @@ class MainViewModel : ViewModel() {
     }
 
     fun setLottieGuide() {
-        activity.mBinding.lottieGuide.visibility = View.VISIBLE
-        activity.mBinding.lottieGuide.setAnimation("hahaha.json")
-        activity.mBinding.lottieGuide.repeatCount = ValueAnimator.INFINITE
-        activity.mBinding.lottieGuide.playAnimation()
+//        activity.mBinding.lottieGuide.visibility = View.VISIBLE
+//        activity.mBinding.lottieGuide.setAnimation("hahaha.json")
+//        activity.mBinding.lottieGuide.repeatCount = ValueAnimator.INFINITE
+//        activity.mBinding.lottieGuide.playAnimation()
         "o1guideexposure".putPointFLash(activity)
     }
 
     fun cancelGuideLottie() {
-        activity.mBinding.lottieGuide.cancelAnimation()
-        activity.mBinding.lottieGuide.isVisible = false
+//        activity.mBinding.lottieGuide.cancelAnimation()
+//        activity.mBinding.lottieGuide.isVisible = false
         isShowGuide = false
-        activity.mBinding.guideMask.isVisible = false
+//        activity.mBinding.guideMask.isVisible = false
     }
 
     var mService: IOpenVPNAPIService? = null
@@ -625,6 +627,7 @@ class MainViewModel : ViewModel() {
                 stopConnectAnimation()
 //                setChromometer()
                 if (isConnect) {
+                    BaseAd.getConnectInstance().advertisementLoadingFlash(activity)
                     toEndAc()
                 } else {
                     if (!cancelConnect) toEndAc()
@@ -789,13 +792,26 @@ class MainViewModel : ViewModel() {
             if (activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
                 return@launch
             }
+            if (!DataHelp.isConnectFun()) {
+                activity.mBinding.adViewContainer.isActivated = false
+                return@launch
+            }
             "o1frontview".putPointFLash(activity)
+            Log.e(TAG, "showBannerAd: showBannerAd", )
             val state = FlashLoadBannerAd.getAdISLoadSuccess()
             if (!state) {
                 BaseAd.getBannerInstance().advertisementLoadingFlash(activity)
             }
+            val vpnIp = BaseAppUtils.vpn_ip.getLoadStringData()
+            if ((BaseAppUtils.bannerTypeIp.isNotEmpty()) && BaseAppUtils.bannerTypeIp != vpnIp) {
+                Log.e(
+                    "TAG",
+                    "banner-ip不一致-不能展示-load_ip=" + BaseAppUtils.bannerTypeIp + "-now-ip=" + vpnIp
+                )
+                return@launch
+            }
             while (isActive) {
-                if (state) {
+                if (FlashLoadBannerAd.getAdISLoadSuccess()) {
                     FlashLoadBannerAd.showBannerAdFlash(activity)
                     cancel()
                     break
@@ -805,30 +821,32 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun showConnectAd(activity: HomeActivity, nextFun: () -> Unit) {
+    private fun showConnectAd(activity: HomeActivity, nextFun: () -> Unit) {
         showConnectJob = activity.lifecycleScope.launch() {
             val adConnectData = BaseAd.getConnectInstance().appAdDataFlash
             if (adConnectData == null) {
                 BaseAd.getConnectInstance().advertisementLoadingFlash(activity)
             }
+            activity.mBinding.showLoad = true
             try {
                 withTimeout(10000) {
                     while (isActive) {
                         when (FlashLoadConnectAd.displayConnectAdvertisementFlash(
                             activity,
                             closeWindowFun = {
-                                BaseAd.getConnectInstance().advertisementLoadingFlash(activity)
                                 nextFun()
                             })) {
                             2 -> {
                                 cancel()
                                 showConnectJob = null
+                                activity.mBinding.showLoad = false
                             }
 
                             0 -> {
                                 cancel()
                                 nextFun()
                                 showConnectJob = null
+                                activity.mBinding.showLoad = false
                             }
                         }
                         delay(500)
@@ -838,6 +856,7 @@ class MainViewModel : ViewModel() {
                 showConnectJob?.cancel()
                 nextFun()
                 showConnectJob = null
+                activity.mBinding.showLoad = false
             }
         }
     }

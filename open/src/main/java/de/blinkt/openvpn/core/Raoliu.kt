@@ -30,15 +30,6 @@ object Raoliu {
     }
 
     fun brand(builder: VpnService.Builder, myPackageName: String) {
-        if (getFlowData()) {
-            //黑名单绕流
-            (listOf(myPackageName) + listGmsPackages())
-                .iterator()
-                .forEachRemaining {
-                    runCatching { builder.addDisallowedApplication(it) }
-                }
-        }
-
         if(getFlowCustomAll()){
             val dataList = getFlowAppList()
             Log.e("TAG", "getAroundFlowAPPList: ${dataList}")

@@ -19,6 +19,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import skt.vs.wbg.who.`is`.champion.flashvpn.BuildConfig
 import skt.vs.wbg.who.`is`.champion.flashvpn.R
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseActivityFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
@@ -144,42 +145,11 @@ object IPUtils {
         activity.lifecycleScope.launch(Dispatchers.IO) {
             getIPInfo()
         }
-//        val apiService: ApiService = retrofitInstance!!.create(ApiService::class.java)
-//
-//        val call: Call<KKKKKK> = apiService.getIPAddress1()
-//
-//        call.enqueue(object : Callback<KKKKKK> {
-//            override fun onResponse(call: Call<KKKKKK>, response: Response<KKKKKK>) {
-//                if (response.isSuccessful) {
-//                    val data: KKKKKK? = response.body()
-//                    Log.e("okhttp", "sus ${data?.country_code}")
-//
-//                    isShowBandedDialog = checkIpIsBanded(data?.country_code?.lowercase())
-//                    if (isShowBandedDialog && activity !is ProgressActivity) {
-//                        showDialog(activity)
-//                    }
-//                    if (data?.country_code?.isNotBlank() == true)
-//                        BaseAppFlash.xkamkaxmak.encode(
-//                            "BaseActivityTree.country_code",
-//                            data.country_code.lowercase()
-//                        )
-//
-//                } else {
-//                    setIsBanded(activity)
-//                }
-//
-//            }
-//
-//            override fun onFailure(call: Call<KKKKKK>, t: Throwable) {
-//                setIsBanded(activity)
-//                Log.e("okhttp", t.message.toString())
-//
-//            }
-//
-//        })
     }
 
     fun setIsBanded(activity: BaseActivityFlash<*>): Boolean {
+        //开发测试用
+        if (BuildConfig.DEBUG) return false
         val countryCode = SPUtils.getInstance().getString(BaseAppUtils.dueIP)
 
         isShowBandedDialog = if (countryCode.isBlank()) {

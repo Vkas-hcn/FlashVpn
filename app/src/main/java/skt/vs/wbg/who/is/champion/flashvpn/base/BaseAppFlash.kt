@@ -8,23 +8,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import cat.ereza.customactivityoncrash.config.CaocConfig
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustConfig
 import com.android.installreferrer.api.InstallReferrerClient
 import com.android.installreferrer.api.InstallReferrerStateListener
 import com.google.android.gms.ads.AdActivity
-import com.google.gson.Gson
 import com.tencent.mmkv.MMKV
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import skt.vs.wbg.who.`is`.champion.flashvpn.R
-import skt.vs.wbg.who.`is`.champion.flashvpn.page.HomeActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.ProgressActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.SPUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
@@ -147,30 +142,12 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
     fun getReferInformation(context: Context) {
         referJobFlash?.cancel()
         referJobFlash = GlobalScope.launch {
-            while (isActive) {
-                if (SPUtils.getInstance().getString(BaseAppUtils.refer_data).isNullOrEmpty()) {
-                    getReferrerData(context)
-                } else {
-                    cancel()
-                    referJobFlash = null
-                }
-                delay(5000)
-            }
+            getReferrerData(context)
         }
     }
 
     private fun getReferrerData(context: Context) {
-        var installReferrer = ""
-        val referrer = SPUtils.getInstance().getString(BaseAppUtils.refer_data)
-        if (referrer.isNotBlank()) {
-            return
-        }
         val date = System.currentTimeMillis()
-
-//        installReferrer = "not%20set"
-//        installReferrer = "fb4a"
-//        SPUtils.getInstance().put(BaseAppUtils.refer_data,installReferrer)
-
         runCatching {
             val referrerClient = InstallReferrerClient.newBuilder(context).build()
             referrerClient.startConnection(object : InstallReferrerStateListener {
@@ -179,7 +156,6 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
                         InstallReferrerClient.InstallReferrerResponse.OK -> {
                             val installReferrer =
                                 referrerClient.installReferrer.installReferrer ?: ""
-                            SPUtils.getInstance().put(BaseAppUtils.refer_data, installReferrer)
                             Log.e(TAG, "onInstallReferrerSetupFinished: ${installReferrer}")
                             val loadDate = (System.currentTimeMillis() - date) / 1000
                             DataHelp.putPointTimeFLash(

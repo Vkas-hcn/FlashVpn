@@ -34,6 +34,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.TAG
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadIntData
+import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.getLoadStringData
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils.logTagFlash
 import java.util.Date
 
@@ -44,7 +45,7 @@ object FlashLoadBannerAd {
 
     fun loadBannerAdFlash(context: Context, adData: FlashAdBean) {
        adBackData = adBase.beforeLoadLink(adData)
-
+        BaseAppUtils.bannerTypeIp = BaseAppUtils.vpn_ip.getLoadStringData()
         isLoadSuccess = false
         val displayMetrics = context.resources.displayMetrics
         val screenWidth = displayMetrics.widthPixels
@@ -61,7 +62,8 @@ object FlashLoadBannerAd {
         }
         adBase.adView?.adListener = object : AdListener() {
             override fun onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
+                Log.d(TAG, "banner-The ad loads successfully: ")
+                adBase.isLoadingFlash = false
                 isLoadSuccess = true
                 adBase.adView?.setOnPaidEventListener {
                     adBase.adView?.responseInfo.let { res ->
@@ -85,12 +87,13 @@ object FlashLoadBannerAd {
             }
 
             override fun onAdFailedToLoad(adError: LoadAdError) {
-                // Code to be executed when an ad request fails.
+                adBase.isLoadingFlash = false
                 isLoadSuccess = false
                 val error =
                     """
            domain: ${adError.domain}, code: ${adError.code}, message: ${adError.message}
           """"
+                Log.d(TAG, "banner-The ad failed to load:$error ")
                 DataHelp.putPointTimeFLash(
                     "o32",
                     error,
@@ -100,8 +103,10 @@ object FlashLoadBannerAd {
             }
 
             override fun onAdOpened() {
-                // Code to be executed when an ad opens an overlay that
-                // covers the screen.
+                Log.e(
+                    "TAG",
+                    "banner-ip一致-展示-load_ip="
+                )
             }
 
             override fun onAdClicked() {
@@ -122,10 +127,11 @@ object FlashLoadBannerAd {
     }
 
     fun showBannerAdFlash(activity: HomeActivity) {
-        val userData = BaseAppUtils.blockAdUsers()
-        if (!userData) {
-            return
-        }
+        val vpnIp = BaseAppUtils.vpn_ip.getLoadStringData()
+        Log.e(
+            "TAG",
+            "banner-ip一致-展示-load_ip=" + BaseAppUtils.bannerTypeIp + "-now-ip=" + vpnIp
+        )
         val state = activity.lifecycle.currentState == Lifecycle.State.RESUMED
         if (state) {
             val parentView = adBase.adView?.parent as? ViewGroup

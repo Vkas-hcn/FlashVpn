@@ -5,7 +5,8 @@ import android.util.Log
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustEvent
 import com.google.android.gms.ads.AdView
-import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadBackAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadBackEndAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadBackListAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadBannerAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadConnectAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadEndAd
@@ -30,7 +31,8 @@ class BaseAd private constructor() {
         fun getHomeInstance() = instanceHelper.homeLoadFlash
         fun getEndInstance() = instanceHelper.resultLoadFlash
         fun getConnectInstance() = instanceHelper.connectLoadFlash
-        fun getBackInstance() = instanceHelper.backLoadFlash
+        fun getBackEndInstance() = instanceHelper.backEndLoadFlash
+        fun getBackListInstance() = instanceHelper.backListLoadFlash
 
         fun getBannerInstance() = instanceHelper.bannerLoadFlash
 
@@ -44,7 +46,8 @@ class BaseAd private constructor() {
         val homeLoadFlash = BaseAd()
         val resultLoadFlash = BaseAd()
         val connectLoadFlash = BaseAd()
-        val backLoadFlash = BaseAd()
+        val backEndLoadFlash = BaseAd()
+        val backListLoadFlash = BaseAd()
         val bannerLoadFlash = BaseAd()
         val rewardedLoadFlash = BaseAd()
     }
@@ -64,9 +67,10 @@ class BaseAd private constructor() {
             2 -> "home"
             3 -> "end"
             4 -> "connect"
-            5 -> "back"
-            6 -> "banner"
-            7 -> "rewarded"
+            5 -> "backEnd"
+            6 -> "backList"
+            7 -> "banner"
+            8 -> "rewarded"
             else -> ""
         }
     }
@@ -77,9 +81,10 @@ class BaseAd private constructor() {
             2 -> "home+${adBean.onLbibl}"
             3 -> "end+${adBean.onLconcer}"
             4 -> "connect+${adBean.onLnose}"
-            5 -> "back+${adBean.onLmemor}"
-            6 -> "banner+${adBean.onhhhh}"
-            7 -> "rewarded+${adBean.onLrad}"
+            5 -> "backEnd+${adBean.onLdres}"
+            6 -> "backList+${adBean.onLmemor}"
+            7 -> "banner+${adBean.onhhhh}"
+            8 -> "rewarded+${adBean.onLrad}"
             else -> ""
         }
     }
@@ -102,12 +107,25 @@ class BaseAd private constructor() {
             Log.d(TAG, "${getInstanceName()}-The ad is loading and cannot be loaded again")
             return
         }
-        val userData = BaseAppUtils.blockAdUsers()
-        val blacklistState = BaseAppUtils.blockAdBlacklist()
-        if (blacklistState && (instanceName == "connect" || instanceName == "back")) {
+        if (!DataHelp.isConnectFun()) {
+            Log.d(TAG, "${getInstanceName()}-The VPN is not connected, the ad cannot be loaded")
             return
         }
-        if (!userData && (instanceName == "back" || instanceName == "banner")) {
+        val blacklistState = BaseAppUtils.blockAdBlacklist()
+        if (blacklistState && (instanceName == "connect" || instanceName == "backEnd" || instanceName == "backList" || instanceName == "banner")) {
+            Log.d(TAG, "黑名单屏蔽：${instanceName}广告，不加载")
+            return
+        }
+        val vpn_ip = BaseAppUtils.vpn_ip.getLoadStringData()
+        if ((getLoadIp().isNotEmpty()) && getLoadIp() != vpn_ip) {
+            Log.d(
+                "TAG",
+                "${getInstanceName()}-ip不一致-重新加载-load_ip=" + getLoadIp() + "-now-ip=" + vpn_ip
+            )
+            whetherToShowFlash = false
+            appAdDataFlash = null
+            clearLoadIp()
+            advertisementLoadingFlash(context)
             return
         }
         when (appAdDataFlash) {
@@ -125,8 +143,7 @@ class BaseAd private constructor() {
 
     private fun loadStartupPageAdvertisementFlash(context: Context, adData: FlashAdBean) {
         DataHelp.putPointTimeFLash("o30", getID(adData), "yn", context)
-        val raolui = BaseAppFlash.mmkvFlash.getBoolean("raoliu", false)
-        if (DataHelp.isConnectFun() && !raolui) {
+        if (DataHelp.isConnectFun()) {
             DataHelp.putPointTimeFLash("o33", getID(adData), "yn", context)
         }
         Log.d(TAG, "${getInstanceName()}-Ads - start loading")
@@ -155,12 +172,18 @@ class BaseAd private constructor() {
         }
 
         adLoadersMap[5] = { context, adData ->
-            FlashLoadBackAd.loadBackAdvertisementFlash(context, adData)
+            FlashLoadBackEndAd.loadBackAdvertisementFlash(context, adData)
         }
+
         adLoadersMap[6] = { context, adData ->
+            FlashLoadBackListAd.loadBackAdvertisementFlash(context, adData)
+        }
+
+        adLoadersMap[7] = { context, adData ->
             FlashLoadBannerAd.loadBannerAdFlash(context, adData)
         }
-        adLoadersMap[7] = { context, adData ->
+
+        adLoadersMap[8] = { context, adData ->
             FlashLoadRewardedAd.loadRewardedAdvertisementFlash(context, adData)
         }
         return adLoadersMap
@@ -169,31 +192,20 @@ class BaseAd private constructor() {
     fun beforeLoadLink(yepAdBean: FlashAdBean): FlashAdBean {
         val ipAfterVpnLink = BaseAppUtils.vpn_ip.getLoadStringData()
         val ipAfterVpnCity = BaseAppUtils.vpn_city.getLoadStringData()
-        val raoliu = BaseAppFlash.mmkvFlash.getBoolean("raoliu", false)
-        if (DataHelp.isConnectFun() && !raoliu) {
-            yepAdBean.loadIp = ipAfterVpnLink ?: ""
-            yepAdBean.loadCity = ipAfterVpnCity ?: ""
-        } else {
-            yepAdBean.loadIp = BaseAppUtils.ip_tab_flash.getLoadStringData()
-            yepAdBean.loadCity = "null"
-        }
+        yepAdBean.loadIp = ipAfterVpnLink ?: ""
+        yepAdBean.loadCity = ipAfterVpnCity ?: ""
         return yepAdBean
     }
 
     fun afterLoadLink(yepAdBean: FlashAdBean): FlashAdBean {
         val ipAfterVpnLink = BaseAppUtils.vpn_ip.getLoadStringData()
         val ipAfterVpnCity = BaseAppUtils.vpn_city.getLoadStringData()
-        val raoliu = BaseAppFlash.mmkvFlash.getBoolean("raoliu", false)
-        if (DataHelp.isConnectFun() && !raoliu) {
-            yepAdBean.showIp = ipAfterVpnLink ?: ""
-            yepAdBean.showTheCity = ipAfterVpnCity ?: ""
-        } else {
-            yepAdBean.showIp = BaseAppUtils.ip_tab_flash.getLoadStringData()
-            yepAdBean.showTheCity = "null"
-        }
+        yepAdBean.showIp = ipAfterVpnLink ?: ""
+        yepAdBean.showTheCity = ipAfterVpnCity ?: ""
         getAdTotalCount()
         return yepAdBean
     }
+
     private fun getAdTotalCount() {
         if (!BaseAppFlash.is24H) {
             return
@@ -202,7 +214,7 @@ class BaseAd private constructor() {
             BaseAppUtils.adShowNum,
             BaseAppUtils.adShowNum.getLoadIntData() + 1
         )
-        Log.e(TAG, "getAdTotalCount: ${BaseAppUtils.adShowNum.getLoadIntData()}", )
+        Log.e(TAG, "getAdTotalCount: ${BaseAppUtils.adShowNum.getLoadIntData()}")
         val eventTokens = mapOf(
             2 to "8g7h34",
             3 to "96a9zc",
@@ -223,6 +235,38 @@ class BaseAd private constructor() {
             val adjustEvent = AdjustEvent(eventToken)
             eventTokenTba?.putPointFLash(BaseAppFlash.getInstance())
             Adjust.trackEvent(adjustEvent)
+        }
+    }
+
+    private fun getLoadIp(): String {
+        return when (getInstanceName()) {
+            "open" -> BaseAppUtils.openTypeIp
+            "home" -> BaseAppUtils.homeTypeIp
+            "end" -> BaseAppUtils.endTypeIp
+            "connect" -> BaseAppUtils.contTypeIp
+            "backEnd" -> BaseAppUtils.backEndTypeIp
+            "backList" -> BaseAppUtils.backListTypeIp
+            "banner" -> BaseAppUtils.bannerTypeIp
+            "rewarded" -> BaseAppUtils.rewardedTypeIp
+            else -> {
+                ""
+            }
+        }
+    }
+
+    private fun clearLoadIp() {
+        when (getInstanceName()) {
+            "open" -> BaseAppUtils.openTypeIp = ""
+            "home" -> BaseAppUtils.homeTypeIp = ""
+            "end" -> BaseAppUtils.endTypeIp = ""
+            "connect" -> BaseAppUtils.contTypeIp = ""
+            "backEnd" -> BaseAppUtils.backEndTypeIp = ""
+            "backList" -> BaseAppUtils.backListTypeIp = ""
+            "banner" -> BaseAppUtils.bannerTypeIp = ""
+            "rewarded" -> BaseAppUtils.rewardedTypeIp = ""
+            else -> {
+                ""
+            }
         }
     }
 }
