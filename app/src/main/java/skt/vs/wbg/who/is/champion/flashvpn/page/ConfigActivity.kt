@@ -40,6 +40,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointFLash
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.utils.BaseAppUtils
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.ConnectListViewModel
+import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -73,9 +74,9 @@ class ConfigActivity : BaseActivityFlash<ListLayoutBinding>() {
         mBinding.atvRegion.setOnClickListener {
 
         }
-
+        mBinding.inLoad.conDialog.setOnClickListener {  }
         onBackPressedDispatcher.addCallback(this) {
-            Log.e(BaseAppUtils.TAG, "showEndScAd: 0", )
+
             listViewModel.showEndScAd(this@ConfigActivity)
         }
         BaseAd.getRewardedInstance().advertisementLoadingFlash(this)
@@ -213,6 +214,14 @@ class LocationsAdapter(
     }
 
     private fun showConfigAd(activity: ConfigActivity, nextFun: () -> Unit) {
+        if (!DataHelp.isConnectFun()) {
+            Toast.makeText(
+                activity,
+                "No ads available，please connect VPN first",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
         showReJob = activity.lifecycleScope.launch {
             val adConnectData = BaseAd.getRewardedInstance().appAdDataFlash
             if (adConnectData == null) {

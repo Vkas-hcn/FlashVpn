@@ -471,7 +471,7 @@
 
         <include
             android:id="@+id/in_load"
-            layout="@layout/layout_load_2"
+            layout="@layout/layout_load"
             android:visibility="@{showLoading ? View.VISIBLE : View.GONE}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

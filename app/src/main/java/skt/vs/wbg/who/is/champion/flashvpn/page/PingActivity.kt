@@ -32,9 +32,13 @@ class PingActivity : BaseActivityFlash<ActivityPingBinding>() {
         super.onCreate(savedInstanceState)
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                if (mBinding?.showLoading == true) {
+                    return
+                }
                 finish()
             }
         })
+        mBinding.inLoad.conDialog.setOnClickListener {  }
         mBinding.imgBack.setOnClickListener {
             finish()
         }

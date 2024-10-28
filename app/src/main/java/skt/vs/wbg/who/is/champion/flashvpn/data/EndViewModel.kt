@@ -23,17 +23,17 @@ class EndViewModel : ViewModel() {
         if (!DataHelp.isConnectFun()) {
             return
         }
+        val adEndData = BaseAd.getEndInstance().appAdDataFlash
+        if (adEndData == null) {
+            BaseAd.getEndInstance().advertisementLoadingFlash(activity)
+        }
         activity.lifecycleScope.launch {
             delay(200)
             if (activity.lifecycle.currentState != Lifecycle.State.RESUMED) {
                 return@launch
             }
             while (isActive) {
-                val adEndData = BaseAd.getEndInstance().appAdDataFlash
-                if (adEndData == null) {
-                    BaseAd.getEndInstance().advertisementLoadingFlash(activity)
-                }
-                if (adEndData != null) {
+                if (BaseAd.getEndInstance().appAdDataFlash != null) {
                     FlashLoadEndAd.setDisplayEndNativeAdFlash(activity)
                     cancel()
                     break
@@ -44,6 +44,9 @@ class EndViewModel : ViewModel() {
     }
 
     fun showEndScAd(activity: EndActivity) {
+        if (activity.mBinding?.showLoad == true) {
+            return
+        }
         "o23".putPointFLash(activity)
         if (!DataHelp.isConnectFun()) {
             activity.finish()
@@ -64,7 +67,7 @@ class EndViewModel : ViewModel() {
                 nextFun()
                 return@launch
             }
-            BaseAd.getBackListInstance().advertisementLoadingFlash(activity)
+            BaseAd.getBackEndInstance().advertisementLoadingFlash(activity)
             val startTime = System.currentTimeMillis()
             var elapsedTime: Long
             activity.mBinding.showLoad = true

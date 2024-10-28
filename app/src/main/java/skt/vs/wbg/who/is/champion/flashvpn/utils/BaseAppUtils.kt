@@ -114,9 +114,8 @@ object BaseAppUtils {
     const val local_ad_logic = """
 {
     "onLsads":"1447428382588795",
-    "onLmatt": "2",
     "onLprob": "1",
-    "onLfeli": "1"
+    "longTerm": "10&10"
 }    """
 
     fun initApp(application: Application) {
@@ -241,6 +240,14 @@ object BaseAppUtils {
         }
     }
 
+    fun parseTwoNumbers(callback: (first: Int, second: Int) -> Unit) {
+        val default = 10
+        val num = getLogicJson().longTerm ?: ""
+        val parts = num.split("&")
+        val firstNumber = parts.getOrNull(0)?.toIntOrNull() ?: default
+        val secondNumber = parts.getOrNull(1)?.toIntOrNull() ?: default
+        callback(firstNumber, secondNumber)
+    }
 
     fun setLoadData(key: String, value: Any) {
         when (value) {

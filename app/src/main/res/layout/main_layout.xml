@@ -16,10 +16,6 @@
             type="Boolean"
             android:value="false" />
 
-        <variable
-            name="showLoad2"
-            type="Boolean"
-            android:value="false" />
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
@@ -373,10 +369,6 @@
                 layout="@layout/layout_load"
                 android:visibility="@{showLoad ? View.VISIBLE : View.GONE}" />
 
-            <include
-                android:id="@+id/in_load2"
-                layout="@layout/layout_load_2"
-                android:visibility="@{showLoad2 ? View.VISIBLE : View.GONE}" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

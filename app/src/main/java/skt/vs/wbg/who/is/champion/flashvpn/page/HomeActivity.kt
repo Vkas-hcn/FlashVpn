@@ -67,7 +67,7 @@ class HomeActivity : BaseActivityFlash<MainLayoutBinding>() {
             mBinding.flashListName,
             mBinding.chronometer
         )
-        mBinding.inLoad2.conDialog.setOnClickListener {  }
+        mBinding.inLoad.conDialog.setOnClickListener {  }
 //        mBinding.lottieGuide.setOnClickListener {
 //            "o1guidecc".putPointFLash(this)
 //            mainViewModel.cancelGuideLottie()

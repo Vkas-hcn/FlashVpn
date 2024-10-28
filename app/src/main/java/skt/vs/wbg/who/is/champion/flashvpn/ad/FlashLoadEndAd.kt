@@ -56,11 +56,9 @@ object FlashLoadEndAd {
         vpnNativeAds.forNativeAd {
             adBase.appAdDataFlash = it
             it.setOnPaidEventListener { advalue ->
-
                 it.responseInfo?.let { nav ->
                     FlashOkHttpUtils().getAdList(context, advalue, nav, "end", adEndData)
                 }
-                BaseAd.getEndInstance().advertisementLoadingFlash(context)
             }
         }
         vpnNativeAds.withAdListener(object : AdListener() {

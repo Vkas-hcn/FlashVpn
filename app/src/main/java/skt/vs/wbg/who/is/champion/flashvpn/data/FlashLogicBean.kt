@@ -5,8 +5,9 @@ import androidx.annotation.Keep
 @Keep
 data class FlashLogicBean(
     val onLsads:String,
-    val onLmatt: String,
     val onLprob: String,
-    val onLfeli: String
+    val longTerm:String,
+
+
 )
 

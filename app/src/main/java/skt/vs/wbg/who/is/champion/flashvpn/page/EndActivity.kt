@@ -37,6 +37,7 @@ class EndActivity : BaseActivityFlash<ConnectedLayoutBinding>() {
         super.onCreate(savedInstanceState)
         isConnected = intent.getBooleanExtra("IS_CONNECT", false)
         mBinding.back.setOnClickListener { endViewModel.showEndScAd(this) }
+        mBinding.inLoad.conDialog.setOnClickListener {  }
         ChatUtils.initChart(mBinding.chart)
         val data: LocaleProfile
         if (VPNDataHelper.cachePosition != -1) {

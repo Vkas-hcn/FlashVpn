@@ -90,6 +90,9 @@ class ConnectListViewModel : ViewModel() {
     }
 
     fun showEndScAd(activity: ConfigActivity) {
+        if (activity.mBinding?.showLoad == true) {
+            return
+        }
         "o25".putPointFLash(activity)
         if (!DataHelp.isConnectFun()) {
             activity.finish()
