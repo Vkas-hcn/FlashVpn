@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.ConfigActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
@@ -106,6 +107,7 @@ object FlashLoadRewardedAd {
                     adBase.whetherToShowFlash = true
                     Log.d(logTagFlash, "rewd----show")
                     adRewardData = adBase.afterLoadLink(adRewardData)
+                    BaseAppFlash.getInstance().adjustPoint("c9lvoj")
                 }
             }
     }

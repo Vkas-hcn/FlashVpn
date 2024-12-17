@@ -105,6 +105,7 @@ object FlashLoadConnectAd {
                     // Called when ad is shown.
                     adBase.whetherToShowFlash = true
                     adBackData = adBase.afterLoadLink(adBackData)
+                    BaseAppFlash.getInstance().adjustPoint("c9lvoj")
                 }
             }
     }

@@ -10,6 +10,7 @@ import android.provider.Settings
 import android.util.Log
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustConfig
+import com.adjust.sdk.AdjustEvent
 import com.android.installreferrer.api.InstallReferrerClient
 import com.android.installreferrer.api.InstallReferrerStateListener
 import com.google.android.gms.ads.AdActivity
@@ -75,7 +76,6 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
             checkLastOpenTime()
         }
     }
-
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         acFlashList.add(activity)
@@ -233,5 +233,10 @@ class BaseAppFlash : Application(), Application.ActivityLifecycleCallbacks {
             is24H = false
             Log.e(TAG, "checkLastOpenTime: 超过24小时未打开过应用", )
         }
+    }
+
+    fun adjustPoint(key:String){
+        val adjustEvent = AdjustEvent(key)
+        Adjust.trackEvent(adjustEvent)
     }
 }

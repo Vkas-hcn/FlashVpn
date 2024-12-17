@@ -111,6 +111,7 @@ object FlashLoadBackEndAd {
                     adBase.whetherToShowFlash = true
                     Log.d(logTagFlash, "backEnd----show")
                     adBackData = adBase.afterLoadLink(adBackData)
+                    BaseAppFlash.getInstance().adjustPoint("c9lvoj")
                 }
             }
     }

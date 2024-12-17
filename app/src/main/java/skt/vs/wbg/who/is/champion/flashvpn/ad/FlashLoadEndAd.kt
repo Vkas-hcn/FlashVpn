@@ -20,6 +20,7 @@ import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
 import skt.vs.wbg.who.`is`.champion.flashvpn.R
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.EndActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
@@ -133,6 +134,7 @@ object FlashLoadEndAd {
                     adBase.whetherToShowFlash = true
                     adBase.appAdDataFlash = null
                     adEndData = adBase.afterLoadLink(adEndData)
+                    BaseAppFlash.getInstance().adjustPoint("c9lvoj")
                 }
             }
         }

@@ -71,6 +71,7 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
 
             }
         })
+        BaseAppFlash.getInstance().adjustPoint("ss4rrg")
     }
 
     override fun setRequestedOrientation(requestedOrientation: Int) {
@@ -126,7 +127,6 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
         }
         Log.e("TAG", "initFaceBook: ${bean.onLsads}")
         FacebookSdk.setApplicationId(bean.onLsads)
-        // 初始化Facebook SDK
         FacebookSdk.sdkInitialize(BaseAppFlash.getInstance())
         AppEventsLogger.activateApp(BaseAppFlash.getInstance())
     }

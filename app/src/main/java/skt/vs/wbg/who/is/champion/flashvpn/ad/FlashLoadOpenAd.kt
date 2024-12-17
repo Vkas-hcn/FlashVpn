@@ -10,6 +10,7 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.FlashOkHttpUtils
@@ -107,6 +108,7 @@ object FlashLoadOpenAd {
                     adBase.appAdDataFlash = null
                     adBase.whetherToShowFlash = true
                     adOpenData = adBase.afterLoadLink(adOpenData)
+                    BaseAppFlash.getInstance().adjustPoint("c9lvoj")
                 }
 
                 override fun onAdClicked() {

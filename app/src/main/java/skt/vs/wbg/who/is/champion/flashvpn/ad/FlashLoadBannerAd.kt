@@ -27,6 +27,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import skt.vs.wbg.who.`is`.champion.flashvpn.R
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
+import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.data.FlashAdBean
 import skt.vs.wbg.who.`is`.champion.flashvpn.page.HomeActivity
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
@@ -140,5 +141,6 @@ object FlashLoadBannerAd {
             activity.mBinding.adViewContainer.addView(adBase.adView)
         }
         adBackData = adBase.afterLoadLink(adBackData)
+        BaseAppFlash.getInstance().adjustPoint("c9lvoj")
     }
 }
