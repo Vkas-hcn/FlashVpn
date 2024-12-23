@@ -20,24 +20,33 @@ object Raoliu {
 
     private fun getFlowData(): Boolean {
         val data = mmkv.decodeBool("raoliu", true)
-        Log.e("TAG", "getAroundFlowJsonData: ${data}")
+        Log.e("FlashVPN", "getAroundFlowJsonData: ${data}")
         return data
     }
     private fun getFlowCustomAll(): Boolean {
         val data = mmkv.decodeBool("app_is_custom", true)
-        Log.e("TAG", "getAroundFlowCustomData: ${data}")
+        Log.e("FlashVPN", "getAroundFlowCustomData: ${data}")
         return data
     }
 
     fun brand(builder: VpnService.Builder, myPackageName: String) {
         if(getFlowCustomAll()){
             val dataList = getFlowAppList()
-            Log.e("TAG", "getAroundFlowAPPList: ${dataList}")
+            Log.e("FlashVPN", "getAroundFlowAPPList: ${dataList}")
             (dataList)?.iterator()?.forEachRemaining {
                 runCatching { builder.addDisallowedApplication(it) }
             }
         }
+        if(getFlowData()){
+            (listOf(myPackageName) + listGmsPackages())
+                .iterator()
+                .forEachRemaining {
+                    runCatching { builder.addDisallowedApplication(it) }
+                }
+        }
     }
+
+
 
     private fun listGmsPackages(): List<String> {
         return listOf(

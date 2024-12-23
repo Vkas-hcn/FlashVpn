@@ -30,6 +30,7 @@ import skt.vs.wbg.who.`is`.champion.flashvpn.ad.FlashLoadOpenAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseActivityFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAd
 import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash
+import skt.vs.wbg.who.`is`.champion.flashvpn.base.BaseAppFlash.Companion.mmkvFlash
 import skt.vs.wbg.who.`is`.champion.flashvpn.databinding.ProgressLayoutBinding
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp
 import skt.vs.wbg.who.`is`.champion.flashvpn.tab.DataHelp.putPointFLash
@@ -78,7 +79,7 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
         return
     }
 
-    fun getFileBaseData() {
+    private fun getFileBaseData() {
         initFaceBook()
         startCateFlash = lifecycleScope.launch {
             var isCa = false
@@ -120,6 +121,22 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
         }
     }
 
+    fun getRaoLiuSetData(){
+        val bean = getLogicJson()
+        val data = bean.onLfeli?:""
+        when (bean.onLfeli) {
+            "1"->{
+                mmkvFlash.encode("raoliu",true)
+            }
+            "2"->{
+                mmkvFlash.encode("raoliu",false)
+            }
+            else -> {
+                mmkvFlash.encode("raoliu",true)
+            }
+        }
+    }
+
     private fun initFaceBook() {
         val bean = getLogicJson()
         if (bean.onLsads == null) {
@@ -132,6 +149,7 @@ class ProgressActivity : BaseActivityFlash<ProgressLayoutBinding>() {
     }
 
     private fun loadAdFun() {
+        getRaoLiuSetData()
         // 开屏
         BaseAd.getOpenInstance().advertisementLoadingFlash(this)
         waitForTheOpenAdToAppear()

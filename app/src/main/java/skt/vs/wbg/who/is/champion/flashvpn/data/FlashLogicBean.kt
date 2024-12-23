@@ -7,7 +7,7 @@ data class FlashLogicBean(
     val onLsads:String,
     val onLprob: String,
     val longTerm:String,
-
+    val onLfeli:String,
 
 )
 
