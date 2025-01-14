@@ -116,7 +116,7 @@ object BaseAppUtils {
     "onLsads":"1447428382588795",
     "onLprob": "1",
     "longTerm": "10&10",
-    "onLfeli": "1"
+    "onLfeli": "2"
 }    """
 
     fun initApp(application: Application) {
